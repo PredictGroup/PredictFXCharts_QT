@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<Title>Simple Bar Chart (2)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Simple Bar Chart (2)</p>
+<hr class="separator">
+<div class="content">
+<img src="images/simplebar2.png">
+<br><br>
+This example extends the <a href="simplebar.htm">Simple Bar Chart (1)</a> example to demonstrates various methods to control the chart appearance and to add titles.<br><br>
+<ul><li> Use <a href="XYChart.setPlotArea.htm">XYChart.setPlotArea</a> to configure the plot area to have transparent border and light grey (CCCCCC) grid lines.<br><br>
+<li> Use <a href="BaseChart.addTitle.htm">BaseChart.addTitle</a> and <a href="Axis.setTitle.htm">Axis.setTitle</a> to add chart and axis titles.<br><br>
+<li> Use <a href="Axis.setColors.htm">Axis.setColors</a> to set the axis stem and ticks to <a href="Chart.Transparent.htm">Transparent</a>.<br><br>
+<li> Use <a href="Axis.setLabelStyle.htm">Axis.setLabelStyle</a> to set the label style to grey 12pt Arial.<br><br>
+<li> Use <a href="XYChart.addBarLayer.htm">XYChart.addBarLayer</a> to add a bar layer with light navy blue color (6699BB).<br><br>
+<li> Use <a href="Layer.setBorderColor.htm">Layer.setBorderColor</a> to configure the border color to <a href="Chart.Transparent.htm">Transparent</a> to disable the bar border.<br><br>
+<li> Use <a href="Axis.setTickDensity.htm">Axis.setTickDensity</a> to configure a minimum label spacing for automatically generated labels. Although a chart will be more precise with more axis labels so long as they do not overlap, sometimes less labels are desirable for aesthetic reasons. Setting the minimum label spacing can control the label density without knowing how many labels would be produced (which depends on actual data).</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/simplebar2". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the bar chart
+    double data[] = {85, 156, 179, 211, 123, 189, 166};
+
+    // The labels for the bar chart
+    const char *labels[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+
+    // Create a XYChart object of size 600 x 400 pixels
+    XYChart *c = new XYChart(600, 400);
+
+    // Add a title box using grey (0x555555) 24pt Arial Bold font
+    c-&gt;addTitle("    Bar Chart Demonstration", "arialbd.ttf", 24, 0x555555);
+
+    // Set the plotarea at (70, 60) and of size 500 x 300 pixels, with transparent background and
+    // border and light grey (0xcccccc) horizontal grid lines
+    c-&gt;setPlotArea(70, 60, 500, 300, Chart::Transparent, -1, Chart::Transparent, 0xcccccc);
+
+    // Set the x and y axis stems to transparent and the label font to 12pt Arial
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;xAxis()-&gt;setLabelStyle("arial.ttf", 12);
+    c-&gt;yAxis()-&gt;setLabelStyle("arial.ttf", 12);
+
+    // Add a blue (0x6699bb) bar chart layer with transparent border using the given data
+    c-&gt;addBarLayer(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), 0x6699bb
+        )-&gt;setBorderColor(Chart::Transparent);
+
+    // Set the labels on the x axis.
+    c-&gt;xAxis()-&gt;setLabels(StringArray(labels, (int)(sizeof(labels) / sizeof(labels[0]))));
+
+    // For the automatic y-axis labels, set the minimum spacing to 40 pixels.
+    c-&gt;yAxis()-&gt;setTickDensity(40);
+
+    // Add a title to the y axis using dark grey (0x555555) 14pt Arial Bold font
+    c-&gt;yAxis()-&gt;setTitle("Y-Axis Title Placeholder", "arialbd.ttf", 14, 0x555555);
+
+    // Output the chart
+    c-&gt;makeChart("simplebar2.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<Title>Vertical Bar Meter</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Vertical Bar Meter</p>
+<hr class="separator">
+<div class="content">
+<img src="images/vbarmeter.png">
+<br><br>
+This example demonstrates the basic steps in creating a vertical bar meter.<br><br>
+A vertical bar meter can be created using the following steps:<br><br>
+<ul><li> Create a <a href="LinearMeter.htm">LinearMeter</a> object using <a href="LinearMeter.LinearMeter.htm">LinearMeter.LinearMeter</a>, optionally specify the background and border colors and whether to use rounded and/or thick frames..<br><br>
+<li> Specify the size of the meter scale and the orientation of the scale labels using <a href="LinearMeter.setMeter.htm">LinearMeter.setMeter</a>. In this example, the scale labels are positioned at the left of the meter scale. This automatically implies the meter as vertical.<br><br>
+<li> Set the numeric scale of the meter using <a href="BaseMeter.setScale.htm">BaseMeter.setScale</a>.<br><br>
+<li> Optionally add a color scale to the meter using <a href="BaseMeter.addColorScale.htm">BaseMeter.addColorScale</a>. Whereas the meter scale displays the values with text labels, a color scale represents the values with different colors.<br><br>
+<li> Add a bar to the meter using <a href="LinearMeter.addBar.htm">LinearMeter.addBar</a>. In this example, the bar is added with a glass shading effect specified using <a href="Chart.glassEffect.htm">Chart::glassEffect</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/vbarmeter". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The value to display on the meter
+    double value = 66.77;
+
+    // Create an LinearMeter object of size 70 x 240 pixels with a very light grey (0xeeeeee)
+    // background, and a rounded 3-pixel thick light grey (0xbbbbbb) border
+    LinearMeter *m = new LinearMeter(70, 240, 0xeeeeee, 0xbbbbbb);
+    m-&gt;setRoundedFrame(Chart::Transparent);
+    m-&gt;setThickFrame(3);
+
+    // Set the scale region top-left corner at (28, 18), with size of 20 x 205 pixels. The scale
+    // labels are located on the left (default - implies vertical meter).
+    m-&gt;setMeter(28, 18, 20, 205);
+
+    // Set meter scale from 0 - 100, with a tick every 10 units
+    m-&gt;setScale(0, 100, 10);
+
+    // Add a 5-pixel thick smooth color scale to the meter at x = 54 (right of meter scale)
+    double smoothColorScale[] = {0, 0x0000ff, 25, 0x0088ff, 50, 0x00ff00, 75, 0xffff00, 100,
+        0xff0000};
+    m-&gt;addColorScale(DoubleArray(smoothColorScale, (int)(sizeof(smoothColorScale) / sizeof(
+        smoothColorScale[0]))), 54, 5);
+
+    // Add a light blue (0x0088ff) bar from 0 to the data value with glass effect and 4 pixel
+    // rounded corners
+    m-&gt;addBar(0, value, 0x0088ff, Chart::glassEffect(Chart::NormalGlare, Chart::Left), 4);
+
+    // Output the chart
+    m-&gt;makeChart("vbarmeter.png");
+
+    //free up resources
+    delete m;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

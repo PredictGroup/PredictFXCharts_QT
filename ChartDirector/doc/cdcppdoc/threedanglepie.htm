@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>
+<Title>3D Angle</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">3D Angle</p>
+<hr class="separator">
+<div class="content">
+<img src="images/threedanglepie0.png">&nbsp;&nbsp;<img src="images/threedanglepie1.png">&nbsp;&nbsp;<img src="images/threedanglepie2.png">&nbsp;&nbsp;<img src="images/threedanglepie3.png">&nbsp;&nbsp;<img src="images/threedanglepie4.png">&nbsp;&nbsp;<img src="images/threedanglepie5.png">&nbsp;&nbsp;<img src="images/threedanglepie6.png">
+<br><br>
+This example demonstrates the effects of different 3D angles.<br><br>
+ChartDirector allows the 3D depth and angles to be configured using <a href="PieChart.set3D.htm">PieChart.set3D</a> and <a href="PieChart.set3D2.htm">PieChart.set3D2</a>.<br><br>
+This example also demonstrates how to disable sector labels. This is setting their colors to <a href="Chart.Transparent.htm">Transparent</a> using <a href="PieChart.setLabelStyle.htm">PieChart.setLabelStyle</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/threedanglepie". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+#include &lt;stdio.h&gt;
+
+void createChart(int chartIndex, const char *filename)
+{
+    char buffer[256];
+
+    // the tilt angle of the pie
+    int angle = chartIndex * 15;
+
+    // The data for the pie chart
+    double data[] = {25, 18, 15, 12, 8, 30, 35};
+
+    // Create a PieChart object of size 100 x 110 pixels
+    PieChart *c = new PieChart(100, 110);
+
+    // Set the center of the pie at (50, 55) and the radius to 38 pixels
+    c-&gt;setPieSize(50, 55, 38);
+
+    // Set the depth and tilt angle of the 3D pie (-1 means auto depth)
+    c-&gt;set3D(-1, angle);
+
+    // Add a title showing the tilt angle
+    sprintf(buffer, "Tilt = %d deg", angle);
+    c-&gt;addTitle(buffer, "arial.ttf", 8);
+
+    // Set the pie data
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))));
+
+    // Disable the sector labels by setting the color to Transparent
+    c-&gt;setLabelStyle("", 8, Chart::Transparent);
+
+    // Output the chart
+    c-&gt;makeChart(filename);
+
+    //free up resources
+    delete c;
+}
+
+int main(int argc, char *argv[])
+{
+    createChart(0, "threedanglepie0.png");
+    createChart(1, "threedanglepie1.png");
+    createChart(2, "threedanglepie2.png");
+    createChart(3, "threedanglepie3.png");
+    createChart(4, "threedanglepie4.png");
+    createChart(5, "threedanglepie5.png");
+    createChart(6, "threedanglepie6.png");
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

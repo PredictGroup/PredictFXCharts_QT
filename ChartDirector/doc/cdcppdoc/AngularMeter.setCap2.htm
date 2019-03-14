@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<Title>AngularMeter.setCap2</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="AngularMeter.htm">AngularMeter</a>.setCap2</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setCap2(int backColor = 0x888888, int frontColor = 0x000000, int frontEdgeColor = 0x888888, double lightingRatio = NoValue, double backRadiusRatio = NoValue, double frontRadiusRatio = NoValue, double frontEdgeWidthRatio = NoValue);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Configures the meter to use new style pointer cap.<br><br>
+The new style pointer cap is a circular object covering the the center of the meter. If is designed to be used with new style pointers (added with <a href="AngularMeter.addPointer2.htm">AngularMeter.addPointer2</a>). The cap consists of two circles, one at the background below the pointer, and one covering the pointer. The pointer will appear to be sandwiched between these two circles.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>backColor</td><td>0x888888</td><td>The fill color of the back circle.</td></tr><tr><td>frontColor</td><td>0x000000</td><td>The fill color of the front circle.</td></tr><tr><td>frontEdgeColor</td><td>0x888888</td><td>The edge color of the front circle.</td></tr><tr><td>lightingRatio</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>By default, lighting effect is applied to the back circle and the edge of the front circle, such that the bottom-right side will appear to be darkened. This argument configures how bright the bottom-right side is. The default value is 0.2, which means the bottom-right side is 20% as bright as the top-left side. Setting this argument to 1 disables the lighting effect.</td></tr><tr><td>backRadiusRatio</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The radius of the back circle, expressed as a ratio to the meter scale radius (set with <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>). The default is 0.15.</td></tr><tr><td>frontRadiusRatio</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The radius of the front circle, expressed as a ratio to the meter scale radius (set with <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>). The default is 0.11.</td></tr><tr><td>frontEdgeWidthRatio</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The edge width of the front circle, expressed as a ratio to the meter scale radius (set with <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>). The default is 0.01.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

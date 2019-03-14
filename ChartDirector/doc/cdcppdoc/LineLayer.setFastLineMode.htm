@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<Title>LineLayer.setFastLineMode</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="LineLayer.htm">LineLayer</a>.setFastLineMode</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setFastLineMode(bool b = true);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Enables or disables fast line mode.<br><br>
+In a chart, the plot area width is usually a few hundred to around 2000 pixels. For a line chart that "flows" horizontally (eg. from left to right), if there are a lot more data points (eg. 100000 data points than the plot area pixel width, many of the points would be at the same x-pixel coordinates. The line segments joining the data points at the same x-pixel coordinates would just be oscillating up and down, overlapping themselves. What is visible at each x-pixel position is essentially a line joining the minimum point and the maximum point.<br><br>
+In fast line mode, ChartDirector will automatically detect that there are too many points in the same x-pixel coordinate, and draws only a line segment joining the extreme points at that coordinate. The resulting line is visually indistinguishable from a line in which the line segments join all data points. The fast line mode can significantly reduce the number of points drawn without affecting the chart appearance.<br><br>
+The fast line mode has no effect if there are not significantly more data points than the pixel width of the plot area. For charts with evenly spaced data points, the fast line mode would only act on x-pixel positions with too many data points. Thus the fast line mode can be enabled on line charts regardless of the number of data points.<br><br>
+The fast line mode should not be used if the data points are not flowing horizontally (or vertically if <a href="XYChart.swapXY.htm">XYChart.swapXY</a> is in effect), but are flowing in random directions.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>b</td><td>true</td><td>A true value enables fast line mode. A false value disables fast line mode.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

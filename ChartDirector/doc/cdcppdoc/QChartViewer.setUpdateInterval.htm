@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<Title>QChartViewer.setUpdateInterval</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="QChartViewer.htm">QChartViewer</a>.setUpdateInterval</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setUpdateInterval(int interval);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets the minimum gap interval between two viewPortChanged signals in milliseconds.<br><br>
+Some GUI designs may be capable of generate a lot of <a href="QChartViewer.viewPortChanged.htm">QChartViewer.viewPortChanged</a> signal s rapidly. For example, an external scroll bar may update the viewport and call <a href="QChartViewer.updateViewPort.htm">QChartViewer.updateViewPort</a> rapidly and repeatedly when it is scrolling. As the chart is usually updated in the main GUI thread, updating too rapidly without a gap interval in between may cause other GUI elements to become sluggish.<br><br>
+This method specifies the minimum gap interval between two viewPortChanged signals. The default is 20ms.<br><br>
+If a viewPortChanged signal needs to be emitted during the gap interval, the signal will be delayed and emitted after the gap interval.<br><br>
+If multiple viewPortChanged signals needs to be emitted during the gap interval, they will be merged into one signal, and be emitted after the gap interval.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>interval</td><td>(Mandatory)</td><td>The minimum gap interval between two viewPortChanged signals in milliseconds.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

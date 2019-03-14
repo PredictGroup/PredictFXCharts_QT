@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>ThreeDScatterGroup.setLegendIcon</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ThreeDScatterGroup.htm">ThreeDScatterGroup</a>.setLegendIcon</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void void setLegendIcon(int width, int height = -1, int color = -1);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets the size and color of the legend icon.<br><br>
+By default, the legend icon is the same as the symbol added to the chart in its shape, size and color. In some cases, it may be desirable for the legend icon to have a different size from the plotted symbol. For example, the size of the legend icon may be sized to match the font size of the legend box, rather than the plotted size of the symbol.<br><br>
+ThreeDScatterChart allows the color of the symbols to vary based on the z value of the symbol. So the symbols may or may not have a fix color. By default, the mid-point of the <a href="ColorAxis.htm">ColorAxis</a> (accessible via <a href="ThreeDChart.colorAxis.htm">ThreeDChart.colorAxis</a>) will be used as the legend icon color. The setLegendIcon method can be used to modify the color of the legend icon.<br><br>
+Setting the width or height to 0 disables the legend entry.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>width</td><td>(Mandatory)</td><td>The width of the legend icon in pixels.</td></tr><tr><td>height</td><td>-1</td><td>The height of the legend icon in pixels. -1 means the height is the same as the width.</td></tr><tr><td>color</td><td>-1</td><td>The color of the legend icon. -1 means the color is the same as the symbol color at the mid-point of the <a href="ColorAxis.htm">ColorAxis</a>.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

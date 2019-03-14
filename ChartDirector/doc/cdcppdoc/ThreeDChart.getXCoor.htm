@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<Title>ThreeDChart.getXCoor</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ThreeDChart.htm">ThreeDChart</a>.getXCoor</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+int getXCoor(double x, double y, double z) const;
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Gets the x pixel coordinate of a point given its x, y and z data values.<br><br>
+<b>Note:</b> You must call <a href="BaseChart.layout.htm">BaseChart.layout</a> first before calling this method. ChartDirector needs to perform auto-scaling and layout the axis before it can compute pixel coordinates from data values.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>x</td><td>(Mandatory)</td><td>The x data value of the point.</td></tr><tr><td>y</td><td>(Mandatory)</td><td>The y data value of the point.</td></tr><tr><td>z</td><td>(Mandatory)</td><td>The z data value of the point.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+The x pixel coordinate of the point.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

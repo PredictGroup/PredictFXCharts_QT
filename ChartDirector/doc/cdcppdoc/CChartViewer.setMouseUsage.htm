@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<Title>CChartViewer.setMouseUsage</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="CChartViewer.htm">CChartViewer</a>.setMouseUsage</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setMouseUsage(int mouseUsage);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets the mouse usage mode.<br><br>
+The following table describes the supported mouse usage modes and the mouse behaviour in each mode.<br><br>
+<table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="19%">Constant<th width="19%%">Value<th width="60%">Description
+<tr><td><a href="Chart.MouseUsageDefault.htm">MouseUsageDefault</a><td>0<td>This represents the default mouse behaviour, which is to support tool tips and hot spot events as defined by the image map.<br><br>
+See <a href="CChartViewer.setImageMap.htm">CChartViewer.setImageMap</a>  on how to define an image map for a chart.
+<tr><td><a href="Chart.MouseUsageScroll.htm">MouseUsageScroll</a><td>1<td>The mouse is used for drag scrolling the chart.<br><br>
+When the mouse drags on the plot area, the mouse cursor will change to a scroll cursor, the viewport coordinates will shift to reflect the amount dragged, and CVN_ViewPortChanged messages will be sent to the parent container.<br><br>
+If the mouse is not dragging inside the plot area, its behaviour is the same as the default mouse behaviour.
+<tr><td><a href="Chart.MouseUsageZoomIn.htm">MouseUsageZoomIn</a><td>3<td>The mouse is used for zoom in actions.<br><br>
+When the mouse is inside the plot area, the following behaviour will apply:<br><br>
+<ul>
+<li>The mouse cursor will change to a zoom in cursor (a magnifying glass cursor with a '+' sign inside).<br><br>
+<li>When the mouse drags on the plot area, a selection rectangle will be visible. When the mouse button is subsequently released, the viewport coordinates will be updated to reflect the selection rectangle, and a CVN_ViewPortChanged message will be sent to the parent container.<br><br>
+<li>When the mouse clicks on the plot area without dragging, the viewport will be updated to reflect zooming into the clicked point by a ratio specified in <a href="CChartViewer.setZoomInRatio.htm">CChartViewer.setZoomInRatio</a>, and a CVN_ViewPortChanged message will be sent to the parent container. </ul>
+If the mouse is not inside the plot area, its behaviour is the same as the default mouse behaviour.
+<tr><td><a href="Chart.MouseUsageZoomOut.htm">MouseUsageZoomOut</a><td>4<td>The mouse is used for zoom out actions.<br><br>
+When the mouse is inside the plot area, the following behaviour will apply:<br><br>
+<ul>
+<li>The mouse cursor will change to a zoom out cursor (a magnifying glass cursor with a '-' sign inside).<br><br>
+<li>When the mouse clicks on the plot area , the viewport will be updated to reflect zooming out from the clicked point by a ratio specified in <a href="CChartViewer.setZoomOutRatio.htm">CChartViewer.setZoomOutRatio</a>, and a CVN_ViewPortChanged message will be sent to the parent container. </ul>
+If the mouse is not inside the plot area, its behaviour is the same as the default mouse behaviour.
+</table>
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>mouseUsage</td><td>(Mandatory)</td><td>The mouse usage mode of the control, which must be one of the predefined constants as shown in the table above.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

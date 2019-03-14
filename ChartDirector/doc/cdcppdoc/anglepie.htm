@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<Title>Start Angle and Direction</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Start Angle and Direction</p>
+<hr class="separator">
+<div class="content">
+<img src="images/anglepie0.png">&nbsp;&nbsp;<img src="images/anglepie1.png">
+<br><br>
+This example demonstrates different sector layout angles and directions.<br><br>
+By default, ChartDirector positions sectors starting from the upward pointing position, and in clockwise direction.<br><br>
+The start angle and layout direction can be changed using <a href="PieChart.setStartAngle.htm">PieChart.setStartAngle</a>.<br><br>
+One common application for <a href="PieChart.setStartAngle.htm">PieChart.setStartAngle</a> is to facilitate layout of pie charts containing many small sectors. Please refer to <a href="sidelabelpie.htm">Side Label Layout</a> for an example.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/anglepie". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+void createChart(int chartIndex, const char *filename)
+{
+    // The data for the pie chart
+    double data[] = {25, 18, 15, 12, 8, 30, 35};
+
+    // The labels for the pie chart
+    const char *labels[] = {"Labor", "Licenses", "Taxes", "Legal", "Insurance", "Facilities",
+        "Production"};
+
+    // Create a PieChart object of size 280 x 240 pixels
+    PieChart *c = new PieChart(280, 240);
+
+    // Set the center of the pie at (140, 130) and the radius to 80 pixels
+    c-&gt;setPieSize(140, 130, 80);
+
+    // Add a title to the pie to show the start angle and direction
+    if (chartIndex == 0) {
+        c-&gt;addTitle("Start Angle = 0 degrees\nDirection = Clockwise");
+    } else {
+        c-&gt;addTitle("Start Angle = 90 degrees\nDirection = AntiClockwise");
+        c-&gt;setStartAngle(90, false);
+    }
+
+    // Draw the pie in 3D
+    c-&gt;set3D();
+
+    // Set the pie data and the pie labels
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), StringArray(labels, (int)(
+        sizeof(labels) / sizeof(labels[0]))));
+
+    // Explode the 1st sector (index = 0)
+    c-&gt;setExplode(0);
+
+    // Output the chart
+    c-&gt;makeChart(filename);
+
+    //free up resources
+    delete c;
+}
+
+int main(int argc, char *argv[])
+{
+    createChart(0, "anglepie0.png");
+    createChart(1, "anglepie1.png");
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

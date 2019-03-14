@@ -1,0 +1,301 @@
+<HTML>
+<HEAD>
+<Title>Track Box with Floating Legend (MFC)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Track Box with Floating Legend (MFC)</p>
+<hr class="separator">
+<div class="content"><img src="images/trackbox_cpp.png"><br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b><font color="#FF0000">NOTE:</font></b> This section describes Track Box with Floating Legend for MFC, and is available on the Windows edition of ChartDirector for C++ only. For QT, please refer to <a href="trackboxqt.htm">Track Box with Floating Legend (QT)</a>.
+</div><br>
+This sample program demonstrates a track cursor programmed with the following features:<br><br>
+<ul>
+<li>A box that horizontally centers around the x data value nearest to the mouse cursor.<br><br>
+<li>A floating legend box that moves with the mouse cursor, displaying the data values at the x data value nearest to the mouse cursor.<br><br>
+</ul>
+The code first draws the chart. Then in the      <a href="CChartViewer.CVN_MouseMovePlotArea.htm">CVN_MouseMovePlotArea</a> message       handler, the track cursor is drawn to reflect the mouse position. The track cursor is configured to automatically hide itself when the mouse leaves the plot area.<br><br>
+The <b>trackBoxLegend</b> method is the routine that draws the track cursor. Its key elements are:<br><br>
+<ul>
+<li>To draw dynamic contents on the chart, the code obtains the <a href="DrawArea.htm">DrawArea</a> object for drawing on the dynamic layer of the chart using <a href="BaseChart.initDynamicLayer.htm">BaseChart.initDynamicLayer</a>.<br><br>
+<li>The nearest x data value is obtained using <a href="XYChart.getNearestXValue.htm">XYChart.getNearestXValue</a>.<br><br>
+<li>The code draws a rectangle that horizontally spans from (x - 0.5) to (x + 0.5) with <a href="DrawArea.rect.htm">DrawArea.rect</a>. The +/- 0.5 offset is the suitable value to use for a label based x-axis (that is, for axis set up with <a href="Axis.setLabels.htm">Axis.setLabels</a> or <a href="Axis.setLabels2.htm">Axis.setLabels2</a>). For this type of axis, the label distance is assumed to be 1 x-axis unit irrespective of what are the labels, so an offset of 0.5 refers to the middle position between two labels.<br><br>
+<li>The code then iterates through all data sets in all layers to find all the data points at the nearest x data value. For each of these points, it formats a legend entry for the point, which consists of the data set icon (obtained using <a href="DataSet.getLegendIcon.htm">DataSet.getLegendIcon</a>), data set name (obtained using <a href="DataSet.getDataName.htm">DataSet.getDataName</a>), and the data value (obtained using <a href="DataSet.getValue.htm">DataSet.getValue</a>).<br><br>
+<li>Finally, the code combines all the legend entries into a legend box and draws it near the mouse cursor using <a href="DrawArea.text.htm">DrawArea.text</a>.<br><br>
+</ul>
+</div><p class="heading1a">Source Code Listing</p><div class="content">
+The following is the main source code of this demo. The complete MFC project is in "mfcdemo/trackbox".<br><br>
+[File: mfcdemo/trackbox/trackboxDlg.cpp]<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>// trackboxDlg.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "trackbox.h"
+#include "trackboxDlg.h"
+#include "chartdir.h"
+#include &lt;vector&gt;
+#include &lt;sstream&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
+// CtrackboxDlg dialog
+
+CtrackboxDlg::CtrackboxDlg(CWnd* pParent /*=NULL*/)
+    : CDialog(CtrackboxDlg::IDD, pParent)
+{
+    m_hIcon = AfxGetApp()-&gt;LoadIcon(IDR_MAINFRAME);
+}
+
+CtrackboxDlg::~CtrackboxDlg()
+{
+    delete m_ChartViewer.getChart();
+}
+
+void CtrackboxDlg::DoDataExchange(CDataExchange* pDX)
+{
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_ChartViewer, m_ChartViewer);
+}
+
+BEGIN_MESSAGE_MAP(CtrackboxDlg, CDialog)
+    ON_WM_PAINT()
+    ON_WM_QUERYDRAGICON()
+    ON_WM_ERASEBKGND()
+    ON_CONTROL(CVN_MouseMovePlotArea, IDC_ChartViewer, OnMouseMovePlotArea)
+    //}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+
+// CtrackboxDlg message handlers
+
+BOOL CtrackboxDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    // Set the icon for this dialog.  The framework does this automatically
+    //  when the application's main window is not a dialog
+    SetIcon(m_hIcon, TRUE);            // Set big icon
+    SetIcon(m_hIcon, FALSE);        // Set small icon
+
+    drawChart(&amp;m_ChartViewer);
+
+    CRect winSize;
+    m_ChartViewer.GetWindowRect(winSize);
+    m_ChartViewer.MoveWindow(5, 5, winSize.Width(), winSize.Height());
+
+    CalcWindowRect(&amp;winSize, CWnd::adjustBorder);
+    SetWindowPos(&amp;wndTop, 0, 0, winSize.Width() + 10, winSize.Height() + 10, SWP_NOMOVE);
+ 
+    return TRUE;  // return TRUE  unless you set the focus to a control
+}
+
+// If you add a minimize button to your dialog, you will need the code below
+//  to draw the icon.  For MFC applications using the document/view model,
+//  this is automatically done for you by the framework.
+
+void CtrackboxDlg::OnPaint()
+{
+    if (IsIconic())
+    {
+        CPaintDC dc(this); // device context for painting
+
+        SendMessage(WM_ICONERASEBKGND, reinterpret_cast&lt;WPARAM&gt;(dc.GetSafeHdc()), 0);
+
+        // Center icon in client rectangle
+        int cxIcon = GetSystemMetrics(SM_CXICON);
+        int cyIcon = GetSystemMetrics(SM_CYICON);
+        CRect rect;
+        GetClientRect(&amp;rect);
+        int x = (rect.Width() - cxIcon + 1) / 2;
+        int y = (rect.Height() - cyIcon + 1) / 2;
+
+        // Draw the icon
+        dc.DrawIcon(x, y, m_hIcon);
+    }
+    else
+    {
+        CDialog::OnPaint();
+    }
+}
+
+// The system calls this function to obtain the cursor to display while the user drags
+//  the minimized window.
+HCURSOR CtrackboxDlg::OnQueryDragIcon()
+{
+    return static_cast&lt;HCURSOR&gt;(m_hIcon);
+}
+
+//
+// Handle the ON_WM_ERASEBKGND message to set background color
+//
+BOOL CtrackboxDlg::OnEraseBkgnd(CDC* pDC) 
+{ 
+    // Set brush to desired background color 
+    CBrush backBrush(RGB(255, 255, 255)); 
+
+    // Save old brush 
+    CBrush* pOldBrush = pDC-&gt;SelectObject(&amp;backBrush); 
+
+    // Erase the area needed with the given background color
+    CRect rect; 
+    pDC-&gt;GetClipBox(&amp;rect);
+    pDC-&gt;PatBlt(rect.left, rect.top, rect.Width(), rect.Height(), PATCOPY); 
+
+    // Restore old brush and exit
+    pDC-&gt;SelectObject(pOldBrush); 
+    return TRUE; 
+} 
+
+//
+// Draw track cursor when mouse is moving over plotarea
+//
+void CtrackboxDlg::OnMouseMovePlotArea()
+{
+    trackBoxLegend((XYChart *)m_ChartViewer.getChart(), m_ChartViewer.getPlotAreaMouseX(), 
+        m_ChartViewer.getPlotAreaMouseY()); 
+    m_ChartViewer.updateDisplay();
+
+    // Hide the track cursor when the mouse leaves the plot area
+    m_ChartViewer.removeDynamicLayer(CVN_MouseLeavePlotArea);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CtrackboxDlg methods
+
+//
+// Draw the chart and display it in the given viewer
+//
+void CtrackboxDlg::drawChart(CChartViewer *viewer)
+{
+    // The data for the bar chart
+    double data0[] = {100, 125, 245, 147, 67};
+    double data1[] = {85, 156, 179, 211, 123};
+    double data2[] = {97, 87, 56, 267, 157};
+    const char *labels[] = {"Mon", "Tue", "Wed", "Thur", "Fri"};
+    int noOfPoints = (int)(sizeof(data0)/sizeof(*data0));
+
+    // Create a XYChart object of size 540 x 375 pixels
+    XYChart *c = new XYChart(540, 375);
+
+    // Add a title to the chart using 18 pts Times Bold Italic font
+    c-&gt;addTitle("Average Weekly Network Load", "timesbi.ttf", 18);
+
+    // Set the plotarea at (50, 55) and of 440 x 280 pixels in size. Use a vertical gradient color
+    // from light blue (f9f9ff) to blue (6666ff) as background. Set border and grid lines to white
+    // (ffffff).
+    c-&gt;setPlotArea(50, 55, 440, 280, c-&gt;linearGradientColor(0, 55, 0, 335, 0xf9f9ff, 0x6666ff), -1,
+        0xffffff, 0xffffff);
+
+    // Add a legend box at (50, 28) using horizontal layout. Use 10pts Arial Bold as font, with
+    // transparent background.
+    c-&gt;addLegend(50, 28, false, "arialbd.ttf", 10)-&gt;setBackground(Chart::Transparent);
+
+    // Set the x axis labels
+    c-&gt;xAxis()-&gt;setLabels(StringArray(labels, noOfPoints));
+
+    // Draw the ticks between label positions (instead of at label positions)
+    c-&gt;xAxis()-&gt;setTickOffset(0.5);
+
+    // Set axis label style to 8pts Arial Bold
+    c-&gt;xAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+    c-&gt;yAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+
+    // Set axis line width to 2 pixels
+    c-&gt;xAxis()-&gt;setWidth(2);
+    c-&gt;yAxis()-&gt;setWidth(2);
+
+    // Add axis title
+    c-&gt;yAxis()-&gt;setTitle("Throughput (MBytes Per Hour)");
+
+    // Add a multi-bar layer with 3 data sets
+    BarLayer *layer = c-&gt;addBarLayer(Chart::Side);
+    layer-&gt;addDataSet(DoubleArray(data0, noOfPoints), 0xff0000, "Server #1");
+    layer-&gt;addDataSet(DoubleArray(data1, noOfPoints), 0x00ff00, "Server #2");
+    layer-&gt;addDataSet(DoubleArray(data2, noOfPoints), 0xff8800, "Server #3");
+
+    // Set bar border to transparent. Use glass lighting effect with light direction from left.
+    layer-&gt;setBorderColor(Chart::Transparent, Chart::glassEffect(Chart::NormalGlare, Chart::Left));
+
+    // Configure the bars within a group to touch each others (no gap)
+    layer-&gt;setBarGap(0.2, Chart::TouchBar);
+
+    // Assign the chart to the WinChartViewer
+    viewer-&gt;setChart(c);
+}
+
+//
+// Draw the track box with legend
+//
+void CtrackboxDlg::trackBoxLegend(XYChart *c, int mouseX, int mouseY)
+{
+   // Clear the current dynamic layer and get the DrawArea object to draw on it.
+    DrawArea *d = c-&gt;initDynamicLayer();
+
+    // The plot area object
+    PlotArea *plotArea = c-&gt;getPlotArea();
+
+    // Get the data x-value that is nearest to the mouse
+    double xValue = c-&gt;getNearestXValue(mouseX);
+
+    // Compute the position of the box. This example assumes a label based x-axis, in which the
+    // labeling spacing is one x-axis unit. So the left and right sides of the box is 0.5 unit from
+    // the central x-value.
+    int boxLeft = c-&gt;getXCoor(xValue - 0.5);
+    int boxRight = c-&gt;getXCoor(xValue + 0.5);
+    int boxTop = plotArea-&gt;getTopY();
+    int boxBottom = plotArea-&gt;getBottomY();
+
+    // Draw the track box
+    d-&gt;rect(boxLeft, boxTop, boxRight, boxBottom, 0x000000, Chart::Transparent);
+
+    // Container to hold the legend entries
+    vector&lt;string&gt; legendEntries;
+
+    // Iterate through all layers to build the legend array
+    for(int i = 0; i &lt; c-&gt;getLayerCount(); ++i) {
+        Layer *layer = c-&gt;getLayerByZ(i);
+
+        // The data array index of the x-value
+        int xIndex = layer-&gt;getXIndexOf(xValue);
+
+        // Iterate through all the data sets in the layer
+        for(int j = 0; j &lt; layer-&gt;getDataSetCount(); ++j) {
+            DataSet *dataSet = layer-&gt;getDataSetByZ(j);
+
+            // Build the legend entry, consist of the legend icon, the name and the data value.
+            double dataValue = dataSet-&gt;getValue(xIndex);
+            if ((dataValue != Chart::NoValue) &amp;&amp; (dataSet-&gt;getDataColor() != Chart::Transparent)) {
+                ostringstream legendEntry;
+                legendEntry &lt;&lt; dataSet-&gt;getLegendIcon() &lt;&lt; " " &lt;&lt; dataSet-&gt;getDataName() &lt;&lt; ": " 
+                    &lt;&lt; c-&gt;formatValue(dataValue, "{value|P4}");
+                legendEntries.push_back(legendEntry.str());
+            }
+        }
+    }
+
+    // Create the legend by joining the legend entries
+    if (legendEntries.size() &gt; 0) {
+        ostringstream legend;
+        legend &lt;&lt; "&lt;*block,bgColor=FFFFCC,edgeColor=000000,margin=5*&gt;&lt;*font,underline=1*&gt;" &lt;&lt; 
+            c-&gt;xAxis()-&gt;getFormattedLabel(xValue) &lt;&lt; "&lt;*/font*&gt;";
+        for (int i = ((int)legendEntries.size()) - 1; i &gt;= 0; --i)
+            legend &lt;&lt; "&lt;*br*&gt;" &lt;&lt; legendEntries[i];
+        legend &lt;&lt; "&lt;*/*&gt;";
+
+        // Display the legend at the bottom-right side of the mouse cursor, and make sure the legend
+        // will not go outside the chart image.
+        TTFText *t = d-&gt;text(legend.str().c_str(), "arialbd.ttf", 8);
+        t-&gt;draw(min(mouseX + 12, c-&gt;getWidth() - t-&gt;getWidth()), min(mouseY + 18, c-&gt;getHeight()
+            - t-&gt;getHeight()), 0x000000, Chart::TopLeft);
+        t-&gt;destroy();
+    }
+}</pre></td></tr></table></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

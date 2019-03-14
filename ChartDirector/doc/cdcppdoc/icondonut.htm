@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+<Title>Icon Donut Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Icon Donut Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/icondonut.png">
+<br><br>
+This example modifies the <a href="iconpie.htm">Icon Pie Chart</a> example by using a semi-transparent donut instead of a pie, and using metallic background color.<br><br>
+<ul><li> <a href="BaseChart.setColors.htm">BaseChart.setColors</a> is used to select the default semi-transparent palette <a href="Chart.transparentPalette.htm">transparentPalette</a>. This palette uses semi-transparent data colors instead of the normal data colors.<br><br>
+<li> <a href="Chart.metalColor.htm">Chart::metalColor</a> is used to create metallic colors using light blue and blue as the base colors. The colors are then used as the chart background color by calling <a href="BaseChart.setBackground.htm">BaseChart.setBackground</a>, and as chart title background color by calling <a href="Box.setBackground.htm">Box.setBackground</a> of the title <a href="TextBox.htm">TextBox</a> object.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/icondonut". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the pie chart
+    double data[] = {72, 18, 15, 12};
+
+    // The depths for the sectors
+    double depths[] = {30, 20, 10, 10};
+
+    // The labels for the pie chart
+    const char *labels[] = {"Sunny", "Cloudy", "Rainy", "Snowy"};
+
+    // The icons for the sectors
+    const char *icons[] = {"sun.png", "cloud.png", "rain.png", "snowy.png"};
+
+    // Create a PieChart object of size 400 x 300 pixels
+    PieChart *c = new PieChart(400, 300);
+
+    // Use the semi-transparent palette for this chart
+    c-&gt;setColors(Chart::transparentPalette);
+
+    // Set the background to metallic light blue (CCFFFF), with a black border and 1 pixel 3D border
+    // effect,
+    c-&gt;setBackground(Chart::metalColor(0xccccff), 0x000000, 1);
+
+    // Set donut center at (200, 175), and outer/inner radii as 100/50 pixels
+    c-&gt;setDonutSize(200, 175, 100, 50);
+
+    // Add a title box using 15pt Times Bold Italic font and metallic blue (8888FF) background color
+    c-&gt;addTitle("Weather Profile in Wonderland", "timesbi.ttf", 15)-&gt;setBackground(
+        Chart::metalColor(0x8888ff));
+
+    // Set the pie data and the pie labels
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), StringArray(labels, (int)(
+        sizeof(labels) / sizeof(labels[0]))));
+
+    // Add icons to the chart as a custom field
+    c-&gt;addExtraField(StringArray(icons, (int)(sizeof(icons) / sizeof(icons[0]))));
+
+    // Configure the sector labels using CDML to include the icon images
+    c-&gt;setLabelFormat(
+        "&lt;*block,valign=absmiddle*&gt;&lt;*img={field0}*&gt; &lt;*block*&gt;{label}\n{percent}%&lt;*/*&gt;&lt;*/*&gt;");
+
+    // Draw the pie in 3D with variable 3D depths
+    c-&gt;set3D(DoubleArray(depths, (int)(sizeof(depths) / sizeof(depths[0]))));
+
+    // Set the start angle to 225 degrees may improve layout when the depths of the sector are
+    // sorted in descending order, because it ensures the tallest sector is at the back.
+    c-&gt;setStartAngle(225);
+
+    // Output the chart
+    c-&gt;makeChart("icondonut.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

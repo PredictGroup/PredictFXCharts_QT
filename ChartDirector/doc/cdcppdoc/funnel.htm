@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<Title>Funnel Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Funnel Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/funnel.png">
+<br><br>
+This example demonstrates using <a href="PyramidChart.setFunnelSize.htm">PyramidChart.setFunnelSize</a> to specify using a funnel instead of a pyramid to represent the data.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/funnel". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the pyramid chart
+    double data[] = {156, 123, 211, 179};
+
+    // The labels for the pyramid chart
+    const char *labels[] = {"Corporate Tax", "Working Capital", "Re-investment", "Dividend"};
+
+    // The colors for the pyramid layers
+    int colors[] = {0x66aaee, 0xeebb22, 0xcccccc, 0xcc88ff};
+
+    // Create a PyramidChart object of size 500 x 400 pixels
+    PyramidChart *c = new PyramidChart(500, 400);
+
+    // Set the funnel center at (200, 210), and width x height to 150 x 300 pixels
+    c-&gt;setFunnelSize(200, 210, 150, 300);
+
+    // Set the elevation to 5 degrees
+    c-&gt;setViewAngle(5);
+
+    // Set the pyramid data and labels
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), StringArray(labels, (int)(
+        sizeof(labels) / sizeof(labels[0]))));
+
+    // Set the layer colors to the given colors
+    c-&gt;setColors(Chart::DataColor, IntArray(colors, (int)(sizeof(colors) / sizeof(colors[0]))));
+
+    // Leave 1% gaps between layers
+    c-&gt;setLayerGap(0.01);
+
+    // Add labels at the right side of the pyramid layers using Arial Bold font. The labels will
+    // have 3 lines showing the layer name, value and percentage.
+    c-&gt;setRightLabel("{label}\nUS ${value}K\n({percent}%)", "arialbd.ttf");
+
+    // Output the chart
+    c-&gt;makeChart("funnel.png");
+
+    //free up resources
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

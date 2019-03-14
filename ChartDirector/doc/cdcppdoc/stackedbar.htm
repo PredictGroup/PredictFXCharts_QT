@@ -1,0 +1,103 @@
+<HTML>
+<HEAD>
+<Title>Stacked Bar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Stacked Bar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/stackedbar.png">
+<br><br>
+This example demonstrates creating a stacked bar chart, completed with bar labels and legend box.<br><br>
+The key features demonstrated in this example are:<br><br>
+<ul><li> Add a legend to the chart using <a href="BaseChart.addLegend.htm">BaseChart.addLegend</a>.<br><br>
+<li> The legend box is configured to have no border by setting the border color to transparent using <a href="Box.setBackground.htm">Box.setBackground</a>.<br><br>
+<li> By default, the legend icon has a black border. This is to allow white or light color icons to be more visible on a white background. In this example, no such colors are used, and the icon border is disabled by setting its color to the same as the icon fill color. This is by using <a href="LegendBox.setKeyBorder.htm">LegendBox.setKeyBorder</a> with <a href="Chart.SameAsMainColor.htm">SameAsMainColor</a>.<br><br>
+<li> Add a stacked bar layer using <a href="XYChart.addBarLayer2.htm">XYChart.addBarLayer2</a> with the <a href="Chart.Stack.htm">Stack</a> predefined constant.<br><br>
+<li> Add multiple data sets to the bar layer using <a href="Layer.addDataSet.htm">Layer.addDataSet</a>.<br><br>
+<li> Add labels to the whole bar using <a href="Layer.setAggregateLabelStyle.htm">Layer.setAggregateLabelStyle</a>.<br><br>
+<li> Add labels to the bar segments within a stacked bar using <a href="Layer.setDataLabelStyle.htm">Layer.setDataLabelStyle</a>.</ul>
+For bar labels, <a href="Layer.setDataLabelStyle.htm">Layer.setDataLabelStyle</a> and <a href="Layer.setAggregateLabelStyle.htm">Layer.setAggregateLabelStyle</a> control the styles (fonts, colors, backgrounds, etc), while <a href="Layer.setDataLabelFormat.htm">Layer.setDataLabelFormat</a> and <a href="Layer.setAggregateLabelFormat.htm">Layer.setAggregateLabelFormat</a> control the formats (the label text, number of decimal points, etc). You can also add custom labels to the bars using <a href="Layer.addCustomDataLabel.htm">Layer.addCustomDataLabel</a>, <a href="Layer.addCustomAggregateLabel.htm">Layer.addCustomAggregateLabel</a> and <a href="Layer.addCustomGroupLabel.htm">Layer.addCustomGroupLabel</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/stackedbar". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the bar chart
+    double data0[] = {100, 115, 165, 107, 67};
+    double data1[] = {85, 106, 129, 161, 123};
+    double data2[] = {67, 87, 86, 167, 157};
+
+    // The labels for the bar chart
+    const char *labels[] = {"Mon", "Tue", "Wed", "Thu", "Fri"};
+
+    // Create a XYChart object of size 600 x 360 pixels
+    XYChart *c = new XYChart(600, 360);
+
+    // Set the plotarea at (70, 20) and of size 400 x 300 pixels, with transparent background and
+    // border and light grey (0xcccccc) horizontal grid lines
+    c-&gt;setPlotArea(70, 20, 400, 300, Chart::Transparent, -1, Chart::Transparent, 0xcccccc);
+
+    // Add a legend box at (480, 20) using vertical layout and 12pt Arial font. Set background and
+    // border to transparent and key icon border to the same as the fill color.
+    LegendBox *b = c-&gt;addLegend(480, 20, true, "arial.ttf", 12);
+    b-&gt;setBackground(Chart::Transparent, Chart::Transparent);
+    b-&gt;setKeyBorder(Chart::SameAsMainColor);
+
+    // Set the x and y axis stems to transparent and the label font to 12pt Arial
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;xAxis()-&gt;setLabelStyle("arial.ttf", 12);
+    c-&gt;yAxis()-&gt;setLabelStyle("arial.ttf", 12);
+
+    // Add a stacked bar layer
+    BarLayer *layer = c-&gt;addBarLayer(Chart::Stack);
+
+    // Add the three data sets to the bar layer
+    layer-&gt;addDataSet(DoubleArray(data0, (int)(sizeof(data0) / sizeof(data0[0]))), 0xaaccee,
+        "Server # 1");
+    layer-&gt;addDataSet(DoubleArray(data1, (int)(sizeof(data1) / sizeof(data1[0]))), 0xbbdd88,
+        "Server # 2");
+    layer-&gt;addDataSet(DoubleArray(data2, (int)(sizeof(data2) / sizeof(data2[0]))), 0xeeaa66,
+        "Server # 3");
+
+    // Set the bar border to transparent
+    layer-&gt;setBorderColor(Chart::Transparent);
+
+    // Enable labelling for the entire bar and use 12pt Arial font
+    layer-&gt;setAggregateLabelStyle("arial.ttf", 12);
+
+    // Enable labelling for the bar segments and use 12pt Arial font with center alignment
+    layer-&gt;setDataLabelStyle("arial.ttf", 10)-&gt;setAlignment(Chart::Center);
+
+    // For a vertical stacked bar with positive data, the first data set is at the bottom. For the
+    // legend box, by default, the first entry at the top. We can reverse the legend order to make
+    // the legend box consistent with the stacked bar.
+    layer-&gt;setLegendOrder(Chart::ReverseLegend);
+
+    // Set the labels on the x axis.
+    c-&gt;xAxis()-&gt;setLabels(StringArray(labels, (int)(sizeof(labels) / sizeof(labels[0]))));
+
+    // For the automatic y-axis labels, set the minimum spacing to 40 pixels.
+    c-&gt;yAxis()-&gt;setTickDensity(40);
+
+    // Add a title to the y axis using dark grey (0x555555) 14pt Arial Bold font
+    c-&gt;yAxis()-&gt;setTitle("Y-Axis Title Placeholder", "arialbd.ttf", 14, 0x555555);
+
+    // Output the chart
+    c-&gt;makeChart("stackedbar.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

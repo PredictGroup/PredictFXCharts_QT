@@ -1,0 +1,47 @@
+<HTML>
+<HEAD>
+<Title>BaseChart.setAntiAlias</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="BaseChart.htm">BaseChart</a>.setAntiAlias</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setAntiAlias(bool shapeAntiAlias = true, int textAntiAlias = AutoAntiAlias);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Controls whether anti-alias is used when drawing lines, shapes and text.<br><br>
+For anti-aliasing text, ChartDirector supports the following modes.<br><br>
+<table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="19%">Constant<th width="19%%">Value<th width="60%">Description <tr><td><a href="Chart.NoAntiAlias.htm">NoAntiAlias</a><td>0<td>Disable anti-alias when drawing text
+<tr><td><a href="Chart.AntiAlias.htm">AntiAlias</a><td>1<td>Use classical anti-alias when drawing text
+<tr><td><a href="Chart.AutoAntiAlias.htm">AutoAntiAlias</a><td>2<td>Automatically determine if anti-alias should be used for the text. This is the default.<br><br>
+Since version 5.1, ChartDirector would automatically choose ClearType  or a similar technology as the default anti-alias method. Earlier versions of ChartDirector did not support ClearType, and ChartDirector would choose classical anti-alias for large or bold fonts, and no anti-alias for small non-bold fonts.<br><br>
+To force ChartDirector to revert to pre-5.1 behaviour, you may add the following line into your license file:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> &#64;TextAA=CompatAntiAlias </div><br>
+<tr><td><a href="Chart.ClearTypeColor.htm">ClearTypeColor</a><td>[Method]<td>Use ClearType or a similar technology when drawing text.
+<tr><td><a href="Chart.ClearTypeMono.htm">ClearTypeMono</a><td>[Method]<td>Use monochrome ClearType or a similar technology when drawing text.
+</table>
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>shapeAntiAlias</td><td>true</td><td>A true value enables anti-alias when drawing lines and shapes. A false value disables anti-alias when drawing lines and shapes</td></tr><tr><td>textAntiAlias</td><td><a href="Chart.AutoAntiAlias.htm">AutoAntiAlias</a></td><td>The text anti-alias mode, which must be one of <a href="Chart.NoAntiAlias.htm">NoAntiAlias</a>, <a href="Chart.AntiAlias.htm">AntiAlias</a>, <a href="Chart.AutoAntiAlias.htm">AutoAntiAlias</a>, <a href="Chart.ClearTypeColor.htm">ClearTypeColor</a> or <a href="Chart.ClearTypeMono.htm">ClearTypeMono</a>.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

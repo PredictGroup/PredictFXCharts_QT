@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<Title>Tick Density</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Tick Density</p>
+<hr class="separator">
+<div class="content">
+<img src="images/ticks0.png">&nbsp;&nbsp;<img src="images/ticks1.png">
+<br><br>
+This example demonstrates how to control the axis tick density in auto-scaling.<br><br>
+By default, in auto-scaling, ChartDirector automatically chooses the tick spacing for the axis.<br><br>
+In some cases, you may want to suggest the tick spacing to use. This can be done by using <a href="Axis.setTickDensity.htm">Axis.setTickDensity</a>.<br><br>
+Note that the actual tick spacing chosen by ChartDirector may not be equal to the suggested tick spacing. The suggested tick spacing is only a lower bound. It is because there may be other constraints when choosing the ticks. For example, the tick positions should be "neat numbers", such as (0, 5, 10, ...), and not arbitrary numbers like (0, 4.792, 9.584, ...). Also, by default, the axis starts and ends at tick positions (configurable using <a href="Axis.setRounding.htm">Axis.setRounding</a>), which means the axis length must be divisible by the tick spacing. These and other constraints will affect the exact ticks being chosen.<br><br>
+In this example, one of the charts is drawn using the default tick spacing. The other chart is drawn using a suggested tick spacing of 10 pixels. Note that the actual tick spacing is slightly larger than 10 pixels.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/ticks". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+void createChart(int chartIndex, const char *filename)
+{
+    // The data for the chart
+    double data[] = {100, 125, 265, 147, 67, 105};
+    const char *labels[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun"};
+
+    // Create a XYChart object of size 250 x 250 pixels
+    XYChart *c = new XYChart(250, 250);
+
+    // Set the plot area at (27, 25) and of size 200 x 200 pixels
+    c-&gt;setPlotArea(27, 25, 200, 200);
+
+    if (chartIndex == 1) {
+        // High tick density, uses 10 pixels as tick spacing
+        c-&gt;addTitle("Tick Density = 10 pixels");
+        c-&gt;yAxis()-&gt;setTickDensity(10);
+    } else {
+        // Normal tick density, just use the default setting
+        c-&gt;addTitle("Default Tick Density");
+    }
+
+    // Set the labels on the x axis
+    c-&gt;xAxis()-&gt;setLabels(StringArray(labels, (int)(sizeof(labels) / sizeof(labels[0]))));
+
+    // Add a color bar layer using the given data. Use a 1 pixel 3D border for the bars.
+    c-&gt;addBarLayer(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), IntArray(0, 0)
+        )-&gt;setBorderColor(-1, 1);
+
+    // Output the chart
+    c-&gt;makeChart(filename);
+
+    //free up resources
+    delete c;
+}
+
+int main(int argc, char *argv[])
+{
+    createChart(0, "ticks0.png");
+    createChart(1, "ticks1.png");
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

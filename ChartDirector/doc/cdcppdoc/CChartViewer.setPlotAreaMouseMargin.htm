@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>CChartViewer.setPlotAreaMouseMargin</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="CChartViewer.htm">CChartViewer</a>.setPlotAreaMouseMargin</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setPlotAreaMouseMargin(int m);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets all margins (left, right, top, and bottom) of the plot area mouse event region to the same value.<br><br>
+Plot area events are often used for implementing track cursors. For example, a track line can be drawn that follows the mouse cursor when the mouse cursor is moving on the plot area. For these usages, it is important to be able to put the mouse cursor at the edge of the plot area, because the latest data points are usually plotted at the edge.<br><br>
+In practice, it is difficult to put the mouse cursor exactly on the edge, as it is hard to move the mouse cursor precisely. To address this issue, ChartDirector supports extending the plot area event region by a configuration margin. A mouse cursor on that extended region will be treated as if it is on the nearest edge of the plot area for the purpose of trigger plot area events.<br><br>
+By default, the left, right, top and bottom margins of the plot area event region are 5 pixels.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>m</td><td>(Mandatory)</td><td>The left, right, top and bottom margins in pixels.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

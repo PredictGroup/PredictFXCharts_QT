@@ -1,0 +1,118 @@
+<HTML>
+<HEAD>
+<Title>Percentage Bar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Percentage Bar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/percentbar.png">
+<br><br>
+This example demonstrates creating a percentage bar chart with a legend box. It also demonstrates gradient background color, rounded frame, soft drop shadow, and using <a href="cdml.htm">CDML</a> to include custom icons in the legend box.<br><br>
+A percentage bar chart is like a stacked bar chart, except the bars are individually scaled so that they stacked up to 100.<br><br>
+The key features demonstrated in this example are:<br><br>
+<ul><li> The gradient background is achieved by using <a href="BaseChart.linearGradientColor.htm">BaseChart.linearGradientColor</a> to define the gradient color, then use <a href="BaseChart.setBackground.htm">BaseChart.setBackground</a> to set it as the chart background color.<br><br>
+<li> The rounded frame is configured using <a href="BaseChart.setRoundedFrame.htm">BaseChart.setRoundedFrame</a>.<br><br>
+<li> The soft drop shadow is configured using <a href="BaseChart.setDropShadow.htm">BaseChart.setDropShadow</a>.<br><br>
+<li> The legend box is added using <a href="BaseChart.addLegend.htm">BaseChart.addLegend</a>. The legend key (the color box to the right of each legend entry) is set to 16 x 32 pixels using <a href="LegendBox.setKeySize.htm">LegendBox.setKeySize</a>, so as to match the size of the custom icons.<br><br>
+<li> The ordering of the legend entries is reversed using <a href="Layer.setLegend.htm">Layer.setLegend</a>, so that the legend box shows the last data set name first. This is useful for a vertical legend box in a vertical stacked chart with purely positive data. In such case, the last data set will be on the top of the stacked bars. Reversing the ordering of the legend entries will make it visually consistent with the stacking order of the data set.<br><br>
+<li> The percentage bar layer is added using <a href="XYChart.addBarLayer2.htm">XYChart.addBarLayer2</a> with the <a href="Chart.Percentage.htm">Percentage</a> predefined constant.<br><br>
+<li> Multiple data sets are added to the bar layer using <a href="Layer.addDataSet.htm">Layer.addDataSet</a>. <a href="cdml.htm">CDML</a> is used to include custom icons in the data set names.<br><br>
+<li> Labels for the bar segments are added using <a href="Layer.setDataLabelStyle.htm">Layer.setDataLabelStyle</a>, with center alignment configured using <a href="TextBox.setAlignment.htm">TextBox.setAlignment</a>.</ul>
+Note that by default, the data label format is <b>{percent}%</b> (showing the percentage) for a percentage bar layer, as opposed to <b>{value}</b> (showing the data value) for other types of bar layer. The data label format can be modified using <a href="Layer.setDataLabelFormat.htm">Layer.setDataLabelFormat</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/percentbar". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the bar chart
+    double data0[] = {100, 125, 245, 147, 67};
+    double data1[] = {85, 156, 179, 211, 123};
+    double data2[] = {97, 87, 56, 267, 157};
+
+    // The labels for the bar chart
+    const char *labels[] = {"Mon", "Tue", "Wed", "Thu", "Fri"};
+
+    // Create a XYChart object of size 500 x 320 pixels. Use a vertical gradient color from pale
+    // blue (e8f0f8) to sky blue (aaccff) spanning half the chart height as background. Set border
+    // to blue (88aaee). Use rounded corners. Enable soft drop shadow.
+    XYChart *c = new XYChart(500, 320);
+    c-&gt;setBackground(c-&gt;linearGradientColor(0, 0, 0, c-&gt;getHeight() / 2, 0xe8f0f8, 0xaaccff),
+        0x88aaee);
+    c-&gt;setRoundedFrame();
+    c-&gt;setDropShadow();
+
+    // Add a title to the chart using 15 points Arial Italic. Set top/bottom margins to 15 pixels.
+    TextBox *title = c-&gt;addTitle("Weekly Product Sales", "ariali.ttf", 15);
+    title-&gt;setMargin(0, 0, 15, 15);
+
+    // Tentatively set the plotarea to 50 pixels from the left edge, and to just under the title.
+    // Set the width to 60% of the chart width, and the height to 50 pixels from the bottom edge.
+    // Use pale blue (e8f0f8) background, transparent border, and grey (aaaaaa) grid lines.
+    c-&gt;setPlotArea(50, title-&gt;getHeight(), c-&gt;getWidth() * 6 / 10, c-&gt;getHeight() -
+        title-&gt;getHeight() - 50, 0xe8f0f8, -1, Chart::Transparent, 0xaaaaaa);
+
+    // Add a legend box where the top-right corner is anchored at 10 pixels from the right edge, and
+    // just under the title. Use vertical layout and 8 points Arial font.
+    LegendBox *legendBox = c-&gt;addLegend(c-&gt;getWidth() - 10, title-&gt;getHeight(), true, "arial.ttf", 8
+        );
+    legendBox-&gt;setAlignment(Chart::TopRight);
+
+    // Set the legend box background and border to transparent
+    legendBox-&gt;setBackground(Chart::Transparent, Chart::Transparent);
+
+    // Set the legend box icon size to 16 x 32 pixels to match with custom icon size
+    legendBox-&gt;setKeySize(16, 32);
+
+    // Set axes to transparent
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent);
+
+    // Set the labels on the x axis
+    c-&gt;xAxis()-&gt;setLabels(StringArray(labels, (int)(sizeof(labels) / sizeof(labels[0]))));
+
+    // Add a percentage bar layer
+    BarLayer *layer = c-&gt;addBarLayer(Chart::Percentage);
+
+    // Add the three data sets to the bar layer, using icons images with labels as data set names
+    layer-&gt;addDataSet(DoubleArray(data0, (int)(sizeof(data0) / sizeof(data0[0]))), 0x66aaee,
+        "&lt;*block,valign=absmiddle*&gt;&lt;*img=service.png*&gt; Service&lt;*/*&gt;");
+    layer-&gt;addDataSet(DoubleArray(data1, (int)(sizeof(data1) / sizeof(data1[0]))), 0xeebb22,
+        "&lt;*block,valign=absmiddle*&gt;&lt;*img=software.png*&gt; Software&lt;*/*&gt;");
+    layer-&gt;addDataSet(DoubleArray(data2, (int)(sizeof(data2) / sizeof(data2[0]))), 0xcc88ff,
+        "&lt;*block,valign=absmiddle*&gt;&lt;*img=computer.png*&gt; Hardware&lt;*/*&gt;");
+
+    // Use soft lighting effect with light direction from top
+    layer-&gt;setBorderColor(Chart::Transparent, Chart::softLighting(Chart::Top));
+
+    // Enable data label at the middle of the the bar
+    layer-&gt;setDataLabelStyle()-&gt;setAlignment(Chart::Center);
+
+    // For a vertical stacked chart with positive data only, the last data set is always on top.
+    // However, in a vertical legend box, the last data set is at the bottom. This can be reversed
+    // by using the setLegend method.
+    layer-&gt;setLegend(Chart::ReverseLegend);
+
+    // Adjust the plot area size, such that the bounding box (inclusive of axes) is 15 pixels from
+    // the left edge, just below the title, 10 pixels to the right of the legend box, and 15 pixels
+    // from the bottom edge.
+    c-&gt;packPlotArea(15, title-&gt;getHeight(), c-&gt;layoutLegend()-&gt;getLeftX() - 10, c-&gt;getHeight() - 15)
+        ;
+
+    // Output the chart
+    c-&gt;makeChart("percentbar.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,101 @@
+<HTML>
+<HEAD>
+<Title>Simple Gantt Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Simple Gantt Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/gantt.png">
+<br><br>
+This example demonstrates a simple gantt chart.<br><br>
+This chart is created by using a horizontal box-whisker layer, in which only the "box" part of the box-whisker layer is used. Date/time values are used as box data, resulting in a gantt chart.<br><br>
+The key features demonstrated in this example are:<br><br>
+<ul><li> Create the box-whisker layer using <a href="XYChart.addBoxWhiskerLayer.htm">XYChart.addBoxWhiskerLayer</a>, in which the data arrays are dates.<br><br>
+<li> Swap the x-axis and y-axis using <a href="XYChart.swapXY.htm">XYChart.swapXY</a>, so the chart is using a horizontal orientation.<br><br>
+<li> Use <a href="XYChart.setYAxisOnRight.htm">XYChart.setYAxisOnRight</a> to move the y-axis to the opposite side of the plot area, so that the y-axis is at the top of the plot area. (<b>Note:</b> the "right" word on setYAxisOnRight means the "right" side before "swapXY" rotation. After rotation, the right side will become to top side.)<br><br>
+<li> Use <a href="Axis.setReverse.htm">Axis.setReverse</a> to reverse the direction of the x-axis, so that the x-axis is vertical from top to bottom (instead of from bottom to top).<br><br>
+<li> Set the y-axis to date scale using <a href="Axis.setDateScale.htm">Axis.setDateScale</a>.<br><br>
+<li> Set multi-format axis labels for the y-axis using <a href="Axis.setMultiFormat.htm">Axis.setMultiFormat</a>. Note that the labels for the first week of the month are in bold, with the month name shown. The other labels just show the day.<br><br>
+<li> Use alternative background colors for the plot area by providing two background colors when calling <a href="XYChart.setPlotArea.htm">XYChart.setPlotArea</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/gantt". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // data for the gantt chart, representing the start date, end date and names for various
+    // activities
+    double startDate[] = {Chart::chartTime(2004, 8, 16), Chart::chartTime(2004, 8, 30),
+        Chart::chartTime(2004, 9, 13), Chart::chartTime(2004, 9, 20), Chart::chartTime(2004, 9, 27),
+        Chart::chartTime(2004, 10, 4), Chart::chartTime(2004, 10, 25), Chart::chartTime(2004, 11, 1
+        ), Chart::chartTime(2004, 11, 8)};
+    double endDate[] = {Chart::chartTime(2004, 8, 30), Chart::chartTime(2004, 9, 13),
+        Chart::chartTime(2004, 9, 27), Chart::chartTime(2004, 10, 4), Chart::chartTime(2004, 10, 11
+        ), Chart::chartTime(2004, 11, 8), Chart::chartTime(2004, 11, 8), Chart::chartTime(2004, 11,
+        22), Chart::chartTime(2004, 11, 22)};
+    const char *labels[] = {"Market Research", "Define Specifications", "Overall Archiecture",
+        "Project Planning", "Detail Design", "Software Development", "Test Plan", "Testing and QA",
+        "User Documentation"};
+
+    // Create a XYChart object of size 620 x 280 pixels. Set background color to light blue
+    // (ccccff), with 1 pixel 3D border effect.
+    XYChart *c = new XYChart(620, 280, 0xccccff, 0x000000, 1);
+
+    // Add a title to the chart using 15 points Times Bold Itatic font, with white (ffffff) text on
+    // a deep blue (000080) background
+    c-&gt;addTitle("Simple Gantt Chart Demo", "timesbi.ttf", 15, 0xffffff)-&gt;setBackground(0x000080);
+
+    // Set the plotarea at (140, 55) and of size 460 x 200 pixels. Use alternative white/grey
+    // background. Enable both horizontal and vertical grids by setting their colors to grey
+    // (c0c0c0). Set vertical major grid (represents month boundaries) 2 pixels in width
+    c-&gt;setPlotArea(140, 55, 460, 200, 0xffffff, 0xeeeeee, Chart::LineColor, 0xc0c0c0, 0xc0c0c0
+        )-&gt;setGridWidth(2, 1, 1, 1);
+
+    // swap the x and y axes to create a horziontal box-whisker chart
+    c-&gt;swapXY();
+
+    // Set the y-axis scale to be date scale from Aug 16, 2004 to Nov 22, 2004, with ticks every 7
+    // days (1 week)
+    c-&gt;yAxis()-&gt;setDateScale(Chart::chartTime(2004, 8, 16), Chart::chartTime(2004, 11, 22), 86400 *
+        7);
+
+    // Set multi-style axis label formatting. Month labels are in Arial Bold font in "mmm d" format.
+    // Weekly labels just show the day of month and use minor tick (by using '-' as first character
+    // of format string).
+    c-&gt;yAxis()-&gt;setMultiFormat(Chart::StartOfMonthFilter(), "&lt;*font=arialbd.ttf*&gt;{value|mmm d}",
+        Chart::StartOfDayFilter(), "-{value|d}");
+
+    // Set the y-axis to shown on the top (right + swapXY = top)
+    c-&gt;setYAxisOnRight();
+
+    // Set the labels on the x axis
+    c-&gt;xAxis()-&gt;setLabels(StringArray(labels, (int)(sizeof(labels) / sizeof(labels[0]))));
+
+    // Reverse the x-axis scale so that it points downwards.
+    c-&gt;xAxis()-&gt;setReverse();
+
+    // Set the horizontal ticks and grid lines to be between the bars
+    c-&gt;xAxis()-&gt;setTickOffset(0.5);
+
+    // Add a green (33ff33) box-whisker layer showing the box only.
+    c-&gt;addBoxWhiskerLayer(DoubleArray(startDate, (int)(sizeof(startDate) / sizeof(startDate[0]))),
+        DoubleArray(endDate, (int)(sizeof(endDate) / sizeof(endDate[0]))), DoubleArray(),
+        DoubleArray(), DoubleArray(), 0x00cc00, Chart::SameAsMainColor, Chart::SameAsMainColor);
+
+    // Output the chart
+    c-&gt;makeChart("gantt.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

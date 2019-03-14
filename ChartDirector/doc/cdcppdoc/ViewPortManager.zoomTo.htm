@@ -1,0 +1,39 @@
+<HTML>
+<HEAD>
+<Title>ViewPortManager.zoomTo</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ViewPortManager.htm">ViewPortManager</a>.zoomTo</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+bool zoomTo(int zoomDirection, int x1, int y1, int x2, int y2);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Zooms to the selected rectangular region.<br><br>
+This method updates the viewport position and size to reflect a rectangular region on the chart. (x1, y1) and (x2, y2) are opposite vertices of the rectangular region in pixel coordinates.<br><br>
+The final viewport position may not exactly reflect the rectangular region because of zoom limits. See <a href="ViewPortManager.setZoomInWidthLimit.htm">ViewPortManager.setZoomInWidthLimit</a>, <a href="ViewPortManager.setZoomOutWidthLimit.htm">ViewPortManager.setZoomOutWidthLimit</a>, <a href="ViewPortManager.setZoomInHeightLimit.htm">ViewPortManager.setZoomInHeightLimit</a> and <a href="ViewPortManager.setZoomOutHeightLimit.htm">ViewPortManager.setZoomOutHeightLimit</a> for the meaning of zoom limits.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>zoomDirection</td><td>(Mandatory)</td><td>The allowed zoom direction. Must be one of the predefined constants <a href="Chart.DirectionHorizontal.htm">DirectionHorizontal</a>, <a href="Chart.DirectionVertical.htm">DirectionVertical</a> and <a href="Chart.DirectionHorizontalVertical.htm">DirectionHorizontalVertical</a> for horizontal, vertical and bi-directional zooming.</td></tr><tr><td>x1</td><td>(Mandatory)</td><td>The x-coordinate of one vertices of the selected rectangular region.</td></tr><tr><td>y1</td><td>(Mandatory)</td><td>The y-coordinate of one vertices of the selected rectangular region.</td></tr><tr><td>x2</td><td>(Mandatory)</td><td>The x-coordinate of the vertex that is opposite to the vertex (x1, y1).</td></tr><tr><td>y2</td><td>(Mandatory)</td><td>The y-coordinate of the vertex that is opposite to the vertex (x1, y1).</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+True if viewport is changed, otherwise false.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

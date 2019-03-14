@@ -1,0 +1,156 @@
+<HTML>
+<HEAD>
+<Title>Using ChartDirector with MFC</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Using ChartDirector with MFC</p>
+<hr class="separator">
+<div class="content">This section describes how to use ChartDirector with MFC on Windows.
+</div><p class="heading2">MFC Sample Programs</p><div class="content">
+ChartDirector comes with a number of MFC sample programs in the "ChartDirector/mfcdemo" subdirectory. If you are using Visual Studio, you may open the solution file "mfcdemo.sln", and it will open the Visual Studio solution with the sample projects.<br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b>Note:</b> The Visual Studio project files for the sample programs are based on Visual Studio 2005. If you are using later versions of Visual Studio, it may prompt you to convert them to match the Visual Studio version. Please proceed to convert them. If you are using earlier versions of Visual Studio, you may need to recreate the project files in order to compile the sample code.
+</div><br>
+<table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="24%">Project Name<th width="74%">Description
+<tr><td>helloworld<td>The "Hello World" example of using ChartDirector with MFC. This is a basic MFC project displaying a simple bar chart.
+<tr><td>mfcdemo<td>The main MFC sample program, containing a chart browser for browsing over 200 charting subroutines, producing over 400 charts of various types.
+<tr><td>financedemo<td>An interactive financial chart will comprehensive technical indicators support.
+<tr><td>tracklegend<td>Demonstrates a sweep line track cursor with dynamic legend entries for the data points at the cursor position.
+<tr><td>tracklabel<td>Demonstrates a sweep line track cursor with dynamic labels for the data points at the cursor position.
+<tr><td>trackaxis<td>Demonstrates a sweep line track cursor with dynamic axis labels for the data points at the cursor position.
+<tr><td>trackbox<td>Demonstrates a track rectangle and a floating legend box for the data points in the rectangle.
+<tr><td>trackfinance<td>A finance chart with a sweep line track cursor and dynamic legend entries for the price and technical indicator values at the cursor position.
+<tr><td>crosshair<td>Demonstrates a crosshair cursor with dynamic axis labels showing the position of the cursor.
+<tr><td>simplezoomscroll<td>A simple zoomable and scrollable chart that uses mouse click and drag to control zooming and scrolling.
+<tr><td>zoomscrolltrack<td>Demonstrates using mouse click and drag, mouse wheel, and a scrollbar to control zooming and scrolling. There is also a sweep line track cursor that displays dynamic legend entries.
+<tr><td>zoomscrolltrack2<td>Demonstrates using mouse click and drag, mouse wheel, and a scrollbar to control zooming and scrolling. The axis range can also be set using date picker controls, and there is also a sweep line track cursor that displays dynamic data labels.
+<tr><td>viewportcontroldemo<td>Demonstrates using the ChartDirector viewport control to control zooming and scrolling. Other methods to control zooming and scrolling, such as using mouse click and drag and mouse wheel, are also included. There is also a sweep line track cursor, and a save button to save the chart as PDF, SVG, PNG, JPG, GIF or BMP.
+<tr><td>xyzoomscroll<td>Demonstrates using mouse click and drag, mouse wheel, a slider, and the ChartDirector viewport control to control zooming and scrolling both horizontally and vertically. There is also a crosshair cursor with axis labels, pop up tooltips over the data points, and a save button to save the chart as PDF, SVG, PNG, JPG, GIF or BMP.
+<tr><td>realtimedemo<td>A simple realtime chart with configurable update rate from 250ms to 2 sec.
+<tr><td>realtimetrack<td>A realtime chart with configurable update rate and a sweep line track cursor that displays dynamic legend entries.
+<tr><td>realtimezoomscroll<td>A realtime chart that is zoomable and scrollable, and with configurable update rate and a sweep line track cursor that displays dynamic legend entries. There is also a save button to save the chart as PDF, SVG, PNG, JPG, GIF or BMP.
+</table><br>
+To try a sample program, simply set the corresponding project as the "StartUp Project", then compile and run the program.<br><br>
+It is recommended you start with the helloworld project and then the mfcdemo project. The mfcdemo project demonstrates over 200 sample charting subroutine which produce over 400 charts of various types. The charting code are from simple to sophisticated, and are designed for use as tutorials.
+</div><p class="heading2">The CChartViewer MFC Control</p><div class="content">
+All ChartDirector MFC sample programs uses the <a href="CChartViewer.htm">CChartViewer</a> control to display charts and handle mouse interactions. The CChartViewer is a derived class of the MFC CStatic control. It is released in source code format.<br><br>
+To use CChartViewer in your own project:<br><br>
+<ul>
+<li>Include "ChartViewer.h" and "ChartViewer.cpp" in your project.<br><br>
+<li>Use the VC++ Dialog Editor to put a "Picture Control" in your Form or Dialog. Set the "Type" to "Bitmap". Set a valid resource ID for the control.<br><br>
+<li>Add a member variable for the control (eg. right click on the control and select "Add variable"), and set the variable type to CChartViewer.<br><br>
+<li>Visual Studio should automatically add the following line in the header file of your Form or Dialog. You may open the header file to verify if this is the case.<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> #include "ChartViewer.h" </div><br>
+</ul>
+</div><p class="heading2">Displaying Charts On Screen</p><div class="content">
+To display a chart using CChartViewer, only one line of code is needed:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>     // m_ChartViewer is a CChartViewer control; myChart is a BaseChart pointer
+     m_ChartViewer.<a href="CChartViewer.setChart.htm">setChart</a>(myChart);</pre></div><br>
+</div><p class="heading2">Handling Hot Spots Mouse Interactions</p><div class="content">
+Hot spots are special regions in on the chart that are usually used to represent chart objects, such as data representation objects (sectors for pie chart, bars for bar charts, etc). One can display tool tips when the mouse is over the hot spots, and/or to make the hot spots clickable with mouse cursor feedback.<br><br>
+In ChartDirector, hot spots for the charts are defined using standard HTML image maps (text strings containing HTML <AREA> tags). The <a href="BaseChart.getHTMLImageMap.htm">BaseChart.getHTMLImageMap</a> method can be used to generate image maps automatically for a chart. To set the image map to the CChartViewer control, one may use:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>     m_ChartViewer.<a href="CChartViewer.setImageMap.htm">setImageMap</a>(myImageMap);</pre></div><br>
+After setting the image map, the CChartViewer control will display the tool tips defined in the image map when the mouse is over the hot spots. For clickable hot spots, it will also change the mouse cursor into a "hand" shape.<br><br>
+When the mouse clicks on the CChartViewer control, a <a href="CChartViewer.BN_CLICKED.htm">BN_CLICKED</a> notification code will be sent to the parent container. The parent container can handle this message and use <a href="ImageMapHandler.htm">ImageMapHandler</a> to determine which hot spot has been clicked.<br><br>
+Microsoft MFC documentation contains the details on how to handle BN_CLICKED notification code. In brief, the steps are:<br><br>
+<ul>
+<li>Add an ON_BN_CLICKED entry to the message map section of the Window. An example is as follows, in which IDC_ChartViewer is the resource ID of the CChartViewer control, and OnClickChartViewer is the event handling method.<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> ON_BN_CLICKED(IDC_ChartViewer, OnClickChartViewer) </div><br>
+<li>Declare the event handling method in the message map function section of the header file.<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> afx_msg void OnClickChartViewer(); </div><br>
+<li>Add the implementation of the event handling method. For example:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>void CMyDialog::OnClickChartViewer()
+{
+    // m_ChartViewer = member variable representing the CChartViewer control
+    <a href="ImageMapHandler.htm">ImageMapHandler</a> *handler = m_ChartViewer.<a href="CChartViewer.getImageMapHandler.htm">getImageMapHandler</a>();
+    if (0 != handler)
+    {
+        //
+        // Query the ImageMapHandler to check if the mouse is on a clickable hot
+        // spot. A hot spot is considered clickable if its href ("path") parameter
+        // is not empty.
+        //
+        const char *path = handler-&gt;<a href="ImageMapHandler.getValue.htm">getValue</a>("path");
+        if ((0 != path) && (0 != *path))
+        {
+            // In a clickable hot spot - do something ......
+            // In the standard MFC sample code, we just show all hot spot
+            // parameters using the CHotSpotDlg included in the sample code.
+            CHotSpotDlg hs;
+            hs.SetData(handler);
+            hs.DoModal();
+        }
+    }
+}</pre></div><br>
+</div><p class="heading2">Adding Track Cursor to the Chart</p><div class="content">
+In ChartDirector, track cursors can be created by drawing them on a "dynamic layer" when the mouse moves on the chart. For example, drawing a horizontal line and a vertical line will create a crosshair cursor that tracks the mouse. Other things, such as legend entries, data labels and axis labels, can also be drawn, allowing them to update as the mouse moves over the chart.<br><br>
+CChartViewer will send <a href="CChartViewer.CVN_MouseMovePlotArea.htm">CVN_MouseMovePlotArea</a> notification codes to the parent container when the mouse moves over the extended plot area. The track cursor drawing code can be implemented in the handler of this message.
+</div><p class="heading2">Handling View Port Interactions</p><div class="content">
+A view port can be imagined as a window to an underlying surface. For example, a data series with 10 years of data can be imagined as a long surface. If only 1 year of data is displayed, we may consider this as the view port showing 10% of the underlying surface.<br><br>
+Scrolling can be handled as moving the view port, while zooming in and out can be handled as changing the view port size.<br><br>
+CChartViewer supports using mouse click and drag to control the view port (see <a href="CChartViewer.setMouseUsage.htm">CChartViewer.setMouseUsage</a>). When the view port is changed by mouse actions, CChartViewer will send a <a href="CChartViewer.CVN_ViewPortChanged.htm">CVN_ViewPortChanged</a> notification code to its parent container. The parent can handle this message and redraw the chart to reflect the updated view port.<br><br>
+CChartViewer also includes methods for changing the view port programmatically. This allows external controls (such as scroll bars, mouse wheel, sliders, date picker, etc) to manipulate the view port.<br><br>
+Microsoft MFC documentation contains the details on how to handle the control notification messages. In brief, the steps are:<br><br>
+<ul>
+<li>Add an ON_CONTROL entry to the message map section of the Window. An example is as follows, in which IDC_ChartViewer is the resource ID of the CChartViewer control, and OnViewPortChanged is the event handling method.<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> ON_CONTROL(CVN_ViewPortChanged, IDC_ChartViewer, OnViewPortChanged) </div><br>
+<li>Declare the event handling method in the message map function section of the header file.<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> afx_msg void OnViewPortChanged(); </div><br>
+<li>Add the implementation of the event handling method. For example:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>void CMyDialog::OnViewPortChanged()
+{
+    // View Port may have changed
+    // - update other controls if necessary
+    // - redraw chart
+}</pre></div><br>
+</ul>
+</div><p class="heading2">The CViewPortControl</p><div class="content">
+The <a href="CViewPortControl.htm">CViewPortControl</a> is a MFC control introduced in ChartDirector 6.0. It allows user to visualize and control the CChartViewer viewport.<br><br>
+In typical usage, the CViewPortControl will display an "overall chart" that shows the full data range. Once the CViewPortControl is associated with the CChartViewer, it will draw a rectangle on the overall chart to represent the CChartViewer viewport, and dim out the region outside the rectangle. If the viewport changed, such as if the user zooms in the chart, the rectangle will automatically update.<br><br>
+The user can drag the rectangle to move the CChartViewer viewport (equivalent to scrolling). The user can also resize the viewport by dragging the border of the rectangle (equivalent to zooming), or drag a new rectangular region on the overall chart to be used as the new viewport, or click on a point on the chart to center the viewport at that point. In all these cases, as the viewport has changed, the CVN_ViewPortChanged message will be sent.<br><br>
+The steps to use CViewPortControl in your own project is similar to that of CChartViewer:<br><br>
+<ul>
+<li>Include "ChartViewer.h" and "ChartViewer.cpp" in your project.<br><br>
+<li>Use the VC++ Dialog Editor to put a "Picture Control" in your Form or Dialog. Set the "Type" to "Bitmap". Set a valid resource ID for the control.<br><br>
+<li>Add a member variable for the control (eg. right click on the control and select "Add variable"), and set the variable type to CViewPortControl.<br><br>
+<li>Visual Studio should automatically add the following line in the header file of your Form or Dialog. You may open the header file to verify if this is the case.<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> #include "ChartViewer.h" </div><br>
+</ul>
+The CViewPortControl requires an "overall chart" on which the viewport rectangle is drawn. It also requires connection to a CChartViewer so as to visualize and control its viewport. The code to do this is:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    // m_ViewPortControl is a CViewPortControl; myOverallChart is a BaseChart pointer
+    m_ViewPortControl.<a href="CViewPortControl.setChart.htm">setChart</a>(myOverallChart);
+
+    // m_ChartViewer is the CChartViewer to be associated with the CViewPortControl
+    m_ViewPortControl.<a href="CViewPortControl.setViewer.htm">setViewer</a>(&m_ChartViewer);</pre></div><br>
+</div><p class="heading2">Saving the Charts</p><div class="content">
+ChartDirector can output the charts in PDF, SVG, PNG, JPG, GIF and BMP format to a file using <a href="BaseChart.makeChart.htm">BaseChart.makeChart</a>, or to memory using <a href="BaseChart.makeChart2.htm">BaseChart.makeChart2</a>. For example, to save the chart in a CChartViewer to a file, the code is:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    // m_ChartViewer is a CChartViewer object which contains the chart to save. The
+    // format is determined by the file extension in pathname.
+    m_ChartViewer.<a href="CChartViewer.getChart.htm">getChart</a>()-&gt;makeChart(pathname);</pre></div><br>
+</div><p class="heading2">Printing Charts On Paper</p><div class="content">
+ChartDirector can output charts in BMP or DIB (Device Independent Bitmap) format in memory. The easiest method to print the chart is to blit the DIB directly to the printer device context. For example:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    // Output the chart as BMP
+    MemBlock bmp = c-&gt;makeChart(Chart::BMP);
+
+    // The BITMAPINFOHEADER is 14 bytes offset from the beginning
+    LPBITMAPINFO header = (LPBITMAPINFO)(bmp.data + 14);
+
+    // The bitmap data
+    LPBYTE bitData = (LPBYTE)(bmp.data) +
+        ((LPBITMAPFILEHEADER)(bmp.data))-&gt;bfOffBits;
+
+    // The scaling factor to adjust for printer resolution
+    // (pDC = CDC pointer representing the printer device context)
+    double xScaleFactor = pDC-&gt;GetDeviceCaps(LOGPIXELSX) / 96.0;
+    double yScaleFactor = pDC-&gt;GetDeviceCaps(LOGPIXELSY) / 96.0;
+
+    // Output to device context
+    StretchDIBits(pDC-&gt;m_hDC, (int)(40 * xScaleFactor), (int)(40 * yScaleFactor),
+                  (int)(header-&gt;bmiHeader.biWidth * xScaleFactor),
+                  (int)(header-&gt;bmiHeader.biHeight * yScaleFactor),
+                  0, 0, header-&gt;bmiHeader.biWidth, header-&gt;bmiHeader.biHeight,
+                  bitData, header, DIB_RGB_COLORS, SRCCOPY);</pre></div></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

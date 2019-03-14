@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<Title>RanSeries.getDateSeries</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="RanSeries.htm">RanSeries</a>.getDateSeries</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+DoubleArray getDateSeries(int len, double startTime, double tickInc, bool weekDayOnly = false);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Gets an array of <a href="dateformat.htm">date/time</a> values.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>len</td><td>(Mandatory)</td><td>The number of random values to get.</td></tr><tr><td>startTime</td><td>(Mandatory)</td><td>The <a href="dateformat.htm">date/time</a> of the first record in the column.</td></tr><tr><td>tickInc</td><td>(Mandatory)</td><td>The change in date/time for subsequent records in seconds. The value 30 * 86400 is assumed to mean 1 month (which is not a constant interval), and its multiplies are assumed to mean multiple months. In particular, the value 360 * 86400 is assumed to mean 12 months, or 1 year.</td></tr><tr><td>weekDayOnly</td><td>false</td><td>A true value means skipping dates that are not weekdays (Saturday and Sunday). A %F value means no skipping.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+An array of date/time values.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

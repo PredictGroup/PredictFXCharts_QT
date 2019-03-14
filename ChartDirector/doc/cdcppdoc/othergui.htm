@@ -1,0 +1,140 @@
+<HTML>
+<HEAD>
+<Title>Using ChartDirector with Other GUI Frameworks</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Using ChartDirector with Other GUI Frameworks</p>
+<hr class="separator">
+<div class="content">This section is intended for developers that need to use ChartDirector with GUI frameworks that are not MFC or Qt based.<br><br>
+ChartDirector is designed to be GUI framework neutral and should work with all GUI frameworks. Because there is no standard GUI framework in C/C++ (some common ones are MFC, Qt, WTL, wxWindows, Cocoa, Tk, GTK, Motif), it is impractical for ChartDirector to include sample code for all possible GUI frameworks.<br><br>
+Instead, ChartDirector includes <a href="CChartViewer.htm">CChartViewer</a> (a MFC control) and <a href="QChartViewer.htm">QChartViewer</a> (a Qt widget), and releases them in source code format as part of the sample code. They are intended to serve as examples on how to use ChartDirector in typical GUI frameworks. Developers that need to use other GUI frameworks may use them as references.<br><br>
+In this section, we will describe the key steps of using ChartDirector in a typical GUI framework, using the MFC and Qt as examples.
+</div><p class="heading2">Displaying Charts On Screen</p><div class="content">
+ChartDirector can output charts in memory in standard formats, such as BMP, GIF, PNG and JPG. To display the chart on screen, one only needs to use the standard methods of the GUI framework for displaying standard images. The followings are some examples.<br><br>
+On Windows, a DIB (device independent bitmap, which is the data part of BMP) can be blitted to a device context directly using StretchDIBits. This can be used to display a chart, like:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    // Output the chart as BMP
+    <a href="MemBlock.htm">MemBlock</a> bmp = c-&gt;<a href="BaseChart.makeChart.htm">makeChart</a>(Chart::<a href="Chart.BMP.htm">BMP</a>);
+
+    // The BITMAPINFOHEADER is 14 bytes offset from the beginning
+    LPBITMAPINFO header = (LPBITMAPINFO)(bmp.data + 14);
+
+    // The bitmap data
+    LPBYTE bitData = (LPBYTE)(bmp.data) +
+        ((LPBITMAPFILEHEADER)(bmp.data))-&gt;bfOffBits;
+
+    // Output to screen device context
+    StretchDIBits(myDeviceContext,
+                  0, 0, header-&gt;bmiHeader.biWidth, header-&gt;bmiHeader.biHeight,
+                  0, 0, header-&gt;bmiHeader.biWidth, header-&gt;bmiHeader.biHeight,
+                  bitData, header, DIB_RGB_COLORS, SRCCOPY);</pre></div><br>
+On Windows, in many cases, HBITMAP is used instead of DIB. The Win32 API to convert DIB to HBITMAP is CreateDIBitmap. An example conversion function is:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>HBITMAP makeChartAsHBITMAP(HDC hdc, <a href="BaseChart.htm">BaseChart</a> *c)
+{
+    // Output the chart as BMP
+    <a href="MemBlock.htm">MemBlock</a> bmp = c-&gt;<a href="BaseChart.makeChart.htm">makeChart</a>(Chart::<a href="Chart.BMP.htm">BMP</a>);
+
+    // The BITMAPINFOHEADER is 14 bytes offset from the beginning
+    LPBITMAPINFO header = (LPBITMAPINFO)(bmp.data + 14);
+
+    // The bitmap data
+    LPBYTE bitData = (LPBYTE)(bmp.data) +
+        ((LPBITMAPFILEHEADER)(bmp.data))-&gt;bfOffBits;
+
+    // Convert the DIB to HBITMAP
+    return CreateDIBitmap(hdc, &(header-&gt;bmiHeader), CBM_INIT, bitData, header,
+        DIB_RGB_COLORS);
+}</pre></div><br>
+In MFC, a CStatic control can be used to display HBITMAP. The code to display a chart is like:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    // Get the device context
+    CDC *cdc = GetDC();
+
+    //output the chart as HBITMAP
+    HBITMAP hBMP = makeChartAsHBITMAP(myDeviceContext, chart);
+
+    // Put the chart in the picture control (m_Picture). Also delete any old
+    // HBITMAP in the picture control
+    if (0 != (hBMP = m_Picture-&gt;SetBitmap(hBMP)))
+        DeleteObject(hBMP);
+
+    // Release the CDC
+    ReleaseDC(cdc);</pre></div><br>
+In Qt, many widgets can display QPixmap, which can be created with BMP data. This can be used to display a chart, like:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    // Output chart as BMP
+    MemBlock m = c-&gt;makeChart(Chart::BMP);
+
+    // Create a QPixmap with the BMP
+    QPixmap image;
+    image.loadFromData((uchar *)m.data, (uint)m.len);
+
+    // Display the QPixmap using a QLabel widget
+    myQLabel.setFixedSize(c-&gt;getWidth(), c-&gt;getHeight());
+    myQLabel.setPixmap(image);</pre></div><br>
+</div><p class="heading2">Handling Hot Spot Mouse Interactions</p><div class="content">
+Hot spots are special regions in on the chart usually used to represent objects inside the chart, such as data representation objects (sectors for pie chart, bars for bar charts, etc). One can display tool tips when the mouse is over the hot spots, and/or to make the hot spots clickable with mouse cursor feedback.<br><br>
+ChartDirector for C++ includes an <a href="ImageMapHandler.htm">ImageMapHandler</a> class that determine if a given point is on a hot spot, and to retrieve the various parameters associated with the hot spot. ImageMapHandler accepts standard HTML image maps for defining the hot spots. The <a href="BaseChart.getHTMLImageMap.htm">BaseChart.getHTMLImageMap</a> method can be used to generate image maps automatically for a chart.<br><br>
+In a typical GUI framework, the ImageMapHandler can be used in the "mouse move" event handler to determine if the mouse cursor is over a hot spot. If the mouse cursor is over a hot spot, the tooltip features of the GUI framework can be used to display tooltips.<br><br>
+For example, in MFC, the code for showing tool tips is like:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>void MyControl::OnMouseMove(UINT nFlags, CPoint point)
+{
+    // m_hotSpotTester = ChartDirector <a href="ImageMapHandler.htm">ImageMapHandler</a> handler object previously
+    // created with the image map of the chart
+    if (0 != m_hotSpotTester)
+    {
+        // Retrieve the hot spot under the mouse cursor
+        m_hotSpotTester-&gt;<a href="ImageMapHandler.getHotSpot.htm">getHotSpot</a>(point.x, point.y);
+
+        // Get the tool tip on the hot spot (returns NULL if not on any hot spot)
+        const char *tooltip = m_hotSpotTester-&gt;<a href="ImageMapHandler.getValue.htm">getValue</a>("title");
+
+        // Show the tool tip. We assume there is an MFC CToolTipCtrl control
+        // (m_ToolTip) to show tool tips. As ChartDirector uses UTF8 strings, while
+        // MFC uses TCHAR for strings, we need to use UTF8toTCHAR for conversion.
+        m_ToolTip.UpdateTipText(<a href="UTF8toTCHAR.htm">UTF8toTCHAR</a>(tooltip), this);
+    }
+}</pre></div><br>
+For Qt, it is like:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>void MyControl::mouseMoveEvent(QMouseEvent *event)
+{
+    // m_hotSpotTester = ChartDirector <a href="ImageMapHandler.htm">ImageMapHandler</a> handler object previously
+    // created with the image map of the chart
+    if (0 != m_hotSpotTester)
+    {
+        // Retrieve the hot spot under the mouse cursor
+        m_hotSpotTester-&gt;<a href="ImageMapHandler.getHotSpot.htm">getHotSpot</a>(point.x, point.y);
+
+        // Get the tool tip on the hot spot (returns NULL if not on any hot spot)
+        const char *tooltip = m_hotSpotTester-&gt;<a href="ImageMapHandler.getValue.htm">getValue</a>("title");
+
+        // Show the tool tip using QToolTip
+        QToolTip::showText(event-&gt;globalPos(), QString::fromUtf8(m_hotSpotTester-&gt;getValue("title")));
+    }
+}</pre></div><br>
+Similar code structure can be used to handle other mouse interactions (such as mouse clicks), and to provide mouse cursor feedback.
+</div><p class="heading2">Adding Track Cursor to the Chart</p><div class="content">
+In ChartDirector, track cursors are created by drawing them on a "dynamic layer" when the mouse moves on the chart. For example, drawing a horizontal line and a vertical line will create a crosshair cursor that tracks the mouse. Other things, such as legend entries, data labels and axis labels, can also be drawn, allowing them to update as the mouse moves over the chart.<br><br>
+The drawing of the track cursor only requires the ChartDirector API and is GUI framework independent. For example, the track drawing code in the MFC and Qt sample programs are identical and does not use any MFC or Qt functions. The same code can be used in other GUI frameworks.<br><br>
+The only support required from the GUI framework is the mouse move event to run the track cursor drawing code. In some track cursor styles, the track cursor may need to be hidden when the mouse leaves the chart. In this case, the mouse leave event may also be useful.
+</div><p class="heading2">Handling View Port Interactions</p><div class="content">
+A view port can be imagined as a rectangular window of an underlying rectangular surface. For example, a chart that has 10 years of data can be imagined as a very long chart. If one only displays one of the year, we can say the view port covers only 10% of the underlying chart.<br><br>
+With the view port concept, scrolling can be handled as moving the view port, while zooming in and out can be handled as changing the view port size.<br><br>
+ChartDirector for C++ includes a <a href="ViewPortManager.htm">ViewPortManager</a> class for managing the view port. To illustrate how it can be used, we will describe the general steps for implementing the "drag to select" style of zooming in a typical GUI framework:<br><br>
+<ul>
+<li>Initially, use <a href="ViewPortManager.setChartMetrics.htm">ViewPortManager.setChartMetrics</a> to set the chart metrics to the ViewPortManager object, so it knows where is the plot area. The chart metrics of a chart can be obtained using <a href="BaseChart.getChartMetrics.htm">BaseChart.getChartMetrics</a>.<br><br>
+<li>In the mouse move event handler, use <a href="ViewPortManager.inPlotArea.htm">ViewPortManager.inPlotArea</a> to test if the mouse is over the plot area. If the result is positive, the cursor can be changed to a magnifying class icon with a plus sign to provide user feedback.<br><br>
+<li>When a mouse button is pressed, save the position of the mouse cursor. When the mouse moves with the button still pressed (dragging), put a rectangle on top of the chart, using the saved position and the current mouse position as the opposite vertices of the rectangle. This creates the selection box.<br><br>
+For the <a href="CChartViewer.htm">CChartViewer</a> MFC control and the <a href="QChartViewer.htm">QChartViewer</a> Qt widget, the rectangle is created as four "line controls/widgets" on top of the chart. The chart itself is not modified at all. The "line controls/widgets" are CStatic controls in MFC and QLabel widgets in Qt. They are configured with black background and sized to be thin and long, so they look like thin lines.<br><br>
+<li>When the mouse button is released, pass the opposite vertices of the rectangle to <a href="ViewPortManager.zoomTo.htm">ViewPortManager.zoomTo</a>. The ViewPortManager will then update the view port position and size.<br><br>
+<li>Redraw the chart based on the new view port position and size.<br><br>
+</ul>
+Similarly, for zoom out, the followings steps may be used:<br><br>
+<ul>
+<li>In the mouse move event handler, use <a href="ViewPortManager.inPlotArea.htm">ViewPortManager.inPlotArea</a> to test if the mouse is over the plot area. If the result is positive, the cursor can be changed to a magnifying class icon with a minus sign to provide user feedback.<br><br>
+<li>When the mouse is clicked, pass the mouse cursor coordinates and the zoom out ratio to <a href="ViewPortManager.zoomAt.htm">ViewPortManager.zoomAt</a>. The ViewPortManager will then update the view port position and size.<br><br>
+<li>Redraw the chart based on the new view port position and size.<br><br>
+</ul>
+</div><p class="heading2">Printing Charts On Paper</p><div class="content">
+ChartDirector charts can be created as standard BMP, GIF, PNG and JPG images. These images should be printable with standard printing features of typical GUI frameworks. Example printing code for MFC and Qt can be found in <a href="firstmfcproject.htm">Using ChartDirector with MFC</a> and <a href="firstqtproject.htm">Using ChartDirector with Qt</a>.</div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

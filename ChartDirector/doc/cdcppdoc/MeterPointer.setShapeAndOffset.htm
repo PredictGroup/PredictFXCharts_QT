@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<Title>MeterPointer.setShapeAndOffset</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="MeterPointer.htm">MeterPointer</a>.setShapeAndOffset</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setShapeAndOffset(int pointerType, double startOffset = NoValue, double endOffset = NoValue, double widthRatio = NoValue);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets the shape of new style angular meter pointers.<br><br>
+<img src="images/angularpointer2.png"><br><br>
+New style pointers are designed to have configurable starting and ending points, as well as configurable width. In this documentation, the ending point refers to the "tip" of the pointer, while the starting point is the "base" of the pointer.<br><br>
+By default, the starting and ending points are at -0.15 and 0.95. It means the distance between the starting point and the center is 15% of the scale radius. The negative sign means that relative to the center, the starting point is at the opposite direction to the value the pointer is supposed to point to. Similarly, the distance between the ending point and the center is 95% of the scale radius, which means the ending point should be quite close to the outer rim of the meter scale.<br><br>
+In the above figure, the red pointer pointing at 25 and the green pointer are default new style triangular and line pointers. The blue and yellow pointers are new style triangular pointers, but with increased width, and with the starting and ending points at the same side relative to the center. The two red pointers at 72 and 94 are also new style triangular pointers, but with the starting points further away from the center than the ending points so that they point towards the center. The starting point positions are greater than 1 to put them outside the scale radius.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>pointerType</td><td>(Mandatory)</td><td>Should be <a href="Chart.TriangularPointer2.htm">TriangularPointer2</a> for new style triangular pointer, and <a href="Chart.LinePointer2.htm">LinePointer2</a> for new style line pointer.</td></tr><tr><td>startOffset</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The radius the pointer starts at, expressed as a ratio to the scale radius. NoValue means the radius is automatically determined.</td></tr><tr><td>endOffset</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>he radius the pointer ends at, expressed as a ratio to the scale radius. NoValue means the radius is automatically determined.</td></tr><tr><td>widthRatio</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The width of the pointer relative to the default width. NoValue means the width is automatically determined.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,102 @@
+<HTML>
+<HEAD>
+<Title>H-Linear Meter Orientation</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">H-Linear Meter Orientation</p>
+<hr class="separator">
+<div class="content">
+<img src="images/hlinearmeterorientation0.png">&nbsp;&nbsp;<img src="images/hlinearmeterorientation1.png">&nbsp;&nbsp;<img src="images/hlinearmeterorientation2.png">&nbsp;&nbsp;<img src="images/hlinearmeterorientation3.png">
+<br><br>
+This example demonstrates horizontal linear meters in different orientations.<br><br>
+In a horizontal linear meter, the scale labels can be positioned above the meter scale or below it. This is controlled by the last argument to <a href="LinearMeter.setMeter.htm">LinearMeter.setMeter</a>, which can be <a href="Chart.Top.htm">Top</a> or <a href="Chart.Bottom.htm">Bottom</a>,<br><br>
+The title and value readout added using <a href="BaseChart.addText.htm">BaseChart.addText</a> can be put at any position. In this example, we put them at the opposite side to the scale labels.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/hlinearmeterorientation". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+void createChart(int chartIndex, const char *filename)
+{
+    // The value to display on the meter
+    double value = 74.25;
+
+    // Create a LinearMeter object of size 250 x 75 pixels with very light grey (0xeeeeee)
+    // backgruond and a light grey (0xccccccc) 3-pixel thick rounded frame
+    LinearMeter *m = new LinearMeter(250, 75, 0xeeeeee, 0xcccccc);
+    m-&gt;setRoundedFrame(Chart::Transparent);
+    m-&gt;setThickFrame(3);
+
+    // This example demonstrates putting the text labels at the top or bottom. This is by setting
+    // the label alignment, scale position and label position.
+    int alignment[] = {Chart::Top, Chart::Top, Chart::Bottom, Chart::Bottom};
+    int meterYPos[] = {23, 23, 34, 34};
+    int labelYPos[] = {61, 61, 15, 15};
+
+    // Set the scale region
+    m-&gt;setMeter(14, meterYPos[chartIndex], 218, 20, alignment[chartIndex]);
+
+    // Set meter scale from 0 - 100, with a tick every 10 units
+    m-&gt;setScale(0, 100, 10);
+
+    // Add a smooth color scale at the default position
+    double smoothColorScale[] = {0, 0x6666ff, 25, 0x00bbbb, 50, 0x00ff00, 75, 0xffff00, 100,
+        0xff0000};
+    m-&gt;addColorScale(DoubleArray(smoothColorScale, (int)(sizeof(smoothColorScale) / sizeof(
+        smoothColorScale[0]))));
+
+    // Add a blue (0x0000cc) pointer at the specified value
+    m-&gt;addPointer(value, 0x0000cc);
+
+    //
+    // In this example, some charts have the "Temperauture" label on the left side and the value
+    // readout on the right side, and some charts have the reverse
+    //
+
+    if (chartIndex % 2 == 0) {
+        // Add a label on the left side using 8pt Arial Bold font
+        m-&gt;addText(10, labelYPos[chartIndex], "Temperature C", "arialbd.ttf", 8, Chart::TextColor,
+            Chart::Left);
+
+        // Add a text box on the right side. Display the value using white (0xffffff) 8pt Arial Bold
+        // font on a black (0x000000) background with depressed rounded border.
+        TextBox *t = m-&gt;addText(235, labelYPos[chartIndex], m-&gt;formatValue(value, "2"),
+            "arialbd.ttf", 8, 0xffffff, Chart::Right);
+        t-&gt;setBackground(0x000000, 0x000000, -1);
+        t-&gt;setRoundedCorners(3);
+    } else {
+        // Add a label on the right side using 8pt Arial Bold font
+        m-&gt;addText(237, labelYPos[chartIndex], "Temperature C", "arialbd.ttf", 8, Chart::TextColor,
+            Chart::Right);
+
+        // Add a text box on the left side. Display the value using white (0xffffff) 8pt Arial Bold
+        // font on a black (0x000000) background with depressed rounded border.
+        TextBox *t = m-&gt;addText(11, labelYPos[chartIndex], m-&gt;formatValue(value, "2"),
+            "arialbd.ttf", 8, 0xffffff, Chart::Left);
+        t-&gt;setBackground(0x000000, 0x000000, -1);
+        t-&gt;setRoundedCorners(3);
+    }
+
+    // Output the chart
+    m-&gt;makeChart(filename);
+
+    //free up resources
+    delete m;
+}
+
+int main(int argc, char *argv[])
+{
+    createChart(0, "hlinearmeterorientation0.png");
+    createChart(1, "hlinearmeterorientation1.png");
+    createChart(2, "hlinearmeterorientation2.png");
+    createChart(3, "hlinearmeterorientation3.png");
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

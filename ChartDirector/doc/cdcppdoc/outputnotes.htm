@@ -1,0 +1,26 @@
+<HTML>
+<HEAD>
+<Title>Notes On Output Formats</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Notes On Output Formats</p>
+<hr class="separator">
+<div class="content">This section contains notes on using certain output formats in ChartDirector.
+</div><p class="heading1a">3D Graphics with SVG/PDF</p><div class="content">
+In ChartDirector, certain chart types, such as surface charts, 3D scatter charts and 3D pyramids and cones, are based on true 3D graphics technology. For example, curved surfaces are created with many triangles. Textures on the triangles (such as the color bands in surface charts) are transformed to a suitable view angle and perspective. There are also 3D lighting effects.<br><br>
+SVG and PDF are essentially 2D vector graphics formats. To output 3D graphics, ChartDirector must use many 2D graphics instructions to emulate a 3D graphics instruction. For example, in the <a href="surface.htm">Surface Chart (1)</a> sample code, the surface is created with 12800 triangles. To translate into SVG or PDF, it would need several times the number of gradients for proper shading and lighting of the triangles. The resulting SVG or PDF would be quite large in file size. It can be very slow when displayed on a SVG or PDF viewer, if the viewer can handle it at all.<br><br>
+The above issue only affects 3D charts with curved surfaces composed with many triangles. It does not affect surface chart which only uses a few triangles (configurable with <a href="SurfaceChart.setInterpolation.htm">SurfaceChart.setInterpolation</a>), or using wireframes instead of surfaces. It also does not affect 3D scatter charts, which does not have curved surface. It moderately affects 3D cones, which use triangles but not in a very large number.<br><br>
+Another issue in using SVG or PDF for 3D graphics is that most SVG or PDF viewers cannot combine shapes seamlessly. If a shape is composed of multiple triangles, the boundary among the triangles are often visible as very thin lines. When you zoom-in the shapes, these very thin lines will always be very thin and will not become thicker. This shows that these very thin lines are artifacts created by the viewer and does not actually exists in the graphics. They are caused by the anti-alias algorithm commonly used in 2D graphics.<br><br>
+If your application must output SVG, and the above issues are a concern, you may consider to output the charts as raster graphics (bitmaps) and embed them in SVG. This can be achieved using <a href="BaseChart.setOutputOptions.htm">BaseChart.setOutputOptions</a>. The raster graphics will be rendered by ChartDirector, which can handle 3D graphics properly. The drawback is that the output is essentially raster graphics, though in a SVG container.
+</div><p class="heading1a">Raster Only Graphics Primitives</p><div class="content">
+For historical reasons, ChartDirector includes certain low level raster only graphics primitives. Examples are <a href="DrawArea.pixel.htm">DrawArea.pixel</a> and <a href="DrawArea.getPixel.htm">DrawArea.getPixel</a> which sets and gets a pixel from the frame buffer of the image, <a href="DrawArea.fill2.htm">DrawArea.fill2</a> and <a href="DrawArea.fill2.htm">DrawArea.fill2</a> which perform flood filling, and various non-affine transform functions. These functions have no effect in vector graphics formats such as SVG and PDF, and should not be used with these formats.<br><br>
+ChartDirector does not use any raster only graphics primitive, so they will not affect charts created by ChartDirector. The above would only be a concern if your code is using the <a href="DrawArea.htm">DrawArea</a> object for custom drawing and the output is in a vector graphics format such as SVG or PDF.
+</div><p class="heading1a">Fonts in PDF</p><div class="content">
+When creating PDF, it is common to embed the fonts into the PDF output. In this way, the viewing computer can display the contents even if the computer does not have the necessary fonts installed.<br><br>
+ChartDirector PDF currently only supports true type fonts (.ttf), including true type font collections (.ttc) and open type fonts (.otf) with true type outlines. If a non-supported font is used, it will be substituted with one of the 14 standard PDF fonts. According to the Adobe PDF standard, all PDF viewers should contain 14 standard fonts, and so no embedding is needed. The 14 standard fonts are the 4 variants (normal, bold, italic/oblique and bold-italic/bold- oblique) of the Times, Helvetica and Courier typeface, as well as the Symbol and ZapfDingbats fonts. These fonts only support characters defined in the WinAnsiEncoding.
+</div><p class="heading1a">Drop Shadows in PDF</p><div class="content">
+ChartDirector currently does not support drop shadows in PDF. If a drop shadow is added, extra margins may be included in the output to accommodate the drop shadow, but the shadow will not appear.</div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

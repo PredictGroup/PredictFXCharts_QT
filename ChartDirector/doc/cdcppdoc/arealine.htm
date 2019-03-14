@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<Title>Area Line Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Area Line Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/arealine.png">
+<br><br>
+This example demonstrates an area chart with a line layer overlap on top. It also demonstrates using date/time x coordinates for the data points (as opposed to using x-axis labels), and also various methods to control the chart appearance.<br><br>
+In ChartDirector, x coordinates for the data points are optional. If no x coordinates are provided for the data points, the x coordinates will be assumed to be the array indexes (0, 1, 2, 3 ...), and the data points would be evenly spaced in the x direction. Axis labels specified using <a href="Axis.setLabels.htm">Axis.setLabels</a> or <a href="Axis.setLabels2.htm">Axis.setLabels2</a> are also positioned using the array indexes as the x coordinates, so the labels will match with the data points.<br><br>
+In some applications, it may be necessary or more convenient to provide x coordinates for the data points. For example, if the data points are unevenly spaced, or if there are multiple data series with different data point spacing in the x direction, x coordinates are needed. In this case, <a href="Layer.setXData.htm">Layer.setXData</a> or <a href="Layer.setXData2.htm">Layer.setXData2</a> can be used to provide the x coordinates. By default, ChartDirector will then automatically determine the x-axis scale and labels, just like how the y-axis is handled. The axis scale and labels can also be specified by using various <a href="Axis.htm">Axis</a> methods, such as <a href="Axis.setLinearScale.htm">Axis.setLinearScale</a>, <a href="Axis.setLogScale.htm">Axis.setLogScale</a> and <a href="Axis.setDateScale.htm">Axis.setDateScale</a> (please refer to <a href="Axis.htm">Axis</a> for the full list).<br><br>
+<a href="Axis.setLabels.htm">Axis.setLabels</a> or <a href="Axis.setLabels2.htm">Axis.setLabels2</a> should not be used if x coordinates are provided, as they use array indexes as the x coordinates, which is unlikely to be consistent with the provided x coordinates.<br><br>
+In this example, x coordinates are used to demonstrate the automatic x-axis scale and labels.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/arealine". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // In this example, we simply use random data for the 2 data series.
+    RanSeries *r = new RanSeries(127);
+    DoubleArray data0 = r-&gt;getSeries(180, 70, -5, 5);
+    DoubleArray data1 = r-&gt;getSeries(180, 150, -15, 15);
+    DoubleArray timeStamps = r-&gt;getDateSeries(180, Chart::chartTime(2014, 3, 1), 86400);
+
+    // Create a XYChart object of size 640 x 420 pixels
+    XYChart *c = new XYChart(640, 420);
+
+    // Add a title box using grey (0x555555) 20pt Arial Bold font
+    c-&gt;addTitle("   Plasma Stabilizer Energy Usage", "arialbd.ttf", 20, 0x555555);
+
+    // Set the plotarea at (70, 70) and of size 540 x 320 pixels, with transparent background and
+    // border and light grey (0xcccccc) horizontal grid lines
+    c-&gt;setPlotArea(70, 70, 540, 320, -1, -1, Chart::Transparent, 0xcccccc);
+
+    // Add a legend box with horizontal layout above the plot area at (70, 32). Use 12pt Arial Bold
+    // dark grey (0x555555) font, transparent background and border, and line style legend icon.
+    LegendBox *b = c-&gt;addLegend(70, 32, false, "arialbd.ttf", 12);
+    b-&gt;setFontColor(0x555555);
+    b-&gt;setBackground(Chart::Transparent, Chart::Transparent);
+    b-&gt;setLineStyleKey();
+
+    // Set axis label font to 12pt Arial
+    c-&gt;xAxis()-&gt;setLabelStyle("arial.ttf", 12);
+    c-&gt;yAxis()-&gt;setLabelStyle("arial.ttf", 12);
+
+    // Set the x and y axis stems to transparent, and the x-axis tick color to grey (0xaaaaaa)
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent, Chart::TextColor, Chart::TextColor, 0xaaaaaa);
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent);
+
+    // Set the major/minor tick lengths for the x-axis to 10 and 0.
+    c-&gt;xAxis()-&gt;setTickLength(10, 0);
+
+    // For the automatic axis labels, set the minimum spacing to 80/40 pixels for the x/y axis.
+    c-&gt;xAxis()-&gt;setTickDensity(80);
+    c-&gt;yAxis()-&gt;setTickDensity(40);
+
+    // Use "mm/yyyy" as the x-axis label format for the first plotted month of a year, and "mm" for
+    // other months
+    c-&gt;xAxis()-&gt;setMultiFormat(Chart::StartOfYearFilter(), "{value|mm/yyyy} ",
+        Chart::StartOfMonthFilter(), "{value|mm}");
+
+    // Add a title to the y axis using dark grey (0x555555) 12pt Arial Bold font
+    c-&gt;yAxis()-&gt;setTitle("Energy (kWh)", "arialbd.ttf", 14, 0x555555);
+
+    // Add a line layer with 2-pixel line width
+    LineLayer *layer0 = c-&gt;addLineLayer(data0, 0xcc0000, "Power Usage");
+    layer0-&gt;setXData(timeStamps);
+    layer0-&gt;setLineWidth(2);
+
+    // Add an area layer using semi-transparent blue (0x7f0044cc) as the fill color
+    AreaLayer *layer1 = c-&gt;addAreaLayer(data1, 0x7f0044cc, "Effective Load");
+    layer1-&gt;setXData(timeStamps);
+    layer1-&gt;setBorderColor(Chart::SameAsMainColor);
+
+    // Output the chart
+    c-&gt;makeChart("arealine.png");
+
+    //free up resources
+    delete r;
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

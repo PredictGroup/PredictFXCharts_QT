@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<Title>3D Shadow Mode</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">3D Shadow Mode</p>
+<hr class="separator">
+<div class="content">
+<img src="images/shadowpie0.png">&nbsp;&nbsp;<img src="images/shadowpie1.png">&nbsp;&nbsp;<img src="images/shadowpie2.png">&nbsp;&nbsp;<img src="images/shadowpie3.png">
+<br><br>
+This example demonstrates an alternative 3D drawing method that uses shadows.<br><br>
+The standard way to draw a pie chart in 3D is to view the chart from an inclined angle. Using this method, the surface of a 3D pie will become an ellipse.<br><br>
+ChartDirector supports an alternative way to draw a pie chart in 3D - to draw the 3D portion like a shadow. The 3D pie will remain perfectly circular, and the sector areas will correctly reflect its percentages.<br><br>
+The 3D drawing method is configured using <a href="PieChart.set3D.htm">PieChart.set3D</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/shadowpie". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+#include &lt;stdio.h&gt;
+
+void createChart(int chartIndex, const char *filename)
+{
+    char buffer[256];
+
+    // the tilt angle of the pie
+    int angle = chartIndex * 90 + 45;
+
+    // The data for the pie chart
+    double data[] = {25, 18, 15, 12, 8, 30, 35};
+
+    // Create a PieChart object of size 110 x 110 pixels
+    PieChart *c = new PieChart(110, 110);
+
+    // Set the center of the pie at (50, 55) and the radius to 36 pixels
+    c-&gt;setPieSize(55, 55, 36);
+
+    // Set the depth, tilt angle and 3D mode of the 3D pie (-1 means auto depth, "true" means the 3D
+    // effect is in shadow mode)
+    c-&gt;set3D(-1, angle, true);
+
+    // Add a title showing the shadow angle
+    sprintf(buffer, "Shadow @ %d deg", angle);
+    c-&gt;addTitle(buffer, "arial.ttf", 8);
+
+    // Set the pie data
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))));
+
+    // Disable the sector labels by setting the color to Transparent
+    c-&gt;setLabelStyle("", 8, Chart::Transparent);
+
+    // Output the chart
+    c-&gt;makeChart(filename);
+
+    //free up resources
+    delete c;
+}
+
+int main(int argc, char *argv[])
+{
+    createChart(0, "shadowpie0.png");
+    createChart(1, "shadowpie1.png");
+    createChart(2, "shadowpie2.png");
+    createChart(3, "shadowpie3.png");
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

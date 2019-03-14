@@ -1,0 +1,39 @@
+<HTML>
+<HEAD>
+<Title>QChartViewer.setChart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="QChartViewer.htm">QChartViewer</a>.setChart</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setChart(BaseChart *c);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets a <a href="BaseChart.htm">BaseChart</a> object for display.<br><br>
+QChartViewer stores the BaseChart pointer internally so it can later be retrieved with <a href="QChartViewer.getChart.htm">QChartViewer.getChart</a>. However, QChartViewer does not use the stored pointer itself. So it is perfectly safe to immediately delete the BaseChart after calling setChart, or to use a BaseChart that is allocated on the stack for this method.<br><br>
+Calling setChart automatically clears any existing image map.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>c</td><td>(Mandatory)</td><td>The BaseChart object to be displayed.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

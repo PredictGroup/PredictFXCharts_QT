@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<Title>BaseBoxLayer.setRoundedCorners</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="BaseBoxLayer.htm">BaseBoxLayer</a>.setRoundedCorners</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setRoundedCorners(int r1 = -0x7fffffff, int r2 = -0x7fffffff, int r3 = -0x7fffffff, int r4 = -0x7fffffff);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Configures rounded corners for the boxes. This method currently is only supported by the <a href="BoxWhiskerLayer.htm">BoxWhiskerLayer</a>.<br><br>
+A box has 4 corners, two of them are at "box-top", and two of them are at "box-bottom". Note that "box-top" and "bottom-bottom" refer to the sides of the box representing the boxTop and boxBottom parameters in <a href="XYChart.addBoxWhiskerLayer.htm">XYChart.addBoxWhiskerLayer</a> or <a href="XYChart.addBoxLayer.htm">XYChart.addBoxLayer</a>. Note that they are not necessarily the geometric top or bottom of the box. For example, if the y-axis is reversed (such as configured using <a href="Axis.setReverse.htm">Axis.setReverse</a>), the top and bottom side may be reversed. For horizontal boxes (with <a href="XYChart.swapXY.htm">XYChart.swapXY</a> in effect), the box-top and box-bottom sides may actually be the right and left sides.<br><br>
+Of the 2 box-top corners, one of them is at the negative x direction while the other is at the positive x direction. The same applies to the box-bottom corners.<br><br>
+This method accepts 0, 1, 2 or 4 radius values. The usage of these values depend how many values are provided as follows.<br><br>
+<table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="23%">Values Provided<th width="80%">Description
+<tr><td>0<td>The radii of all the box corners are automatically determined.
+<tr><td>1<td>The radii of all the box corners are set to the specified value.
+<tr><td>2<td>The radii of the box-top corners are set to the first value. The radii of the box-bottom corners are set to the second value.
+<tr><td>4<td>The radius of the box-top corner at the negative x direction is set to the first value. The radius of the box-top corner at the positive x direction is set to the second value. The radius of the box-bottom corner at the negative x direction is set to the third value. The radius of the box-bottom corner at the positive x direction is set to the fourth value.
+</table>
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>r1</td><td>-0x7fffffff</td><td>The first radius. See description above on how this radius value is used.</td></tr><tr><td>r2</td><td>-0x7fffffff</td><td>The second radius. See description above on how this radius value is used.</td></tr><tr><td>r3</td><td>-0x7fffffff</td><td>The third radius. See description above on how this radius value is used.</td></tr><tr><td>r4</td><td>-0x7fffffff</td><td>The fourth radius. See description above on how this radius value is used.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

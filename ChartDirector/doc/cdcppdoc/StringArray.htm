@@ -1,0 +1,35 @@
+<HTML>
+<HEAD>
+<Title>StringArray</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">StringArray</p>
+<hr class="separator">
+<div class="content">
+The StringArray class represents arrays of strings (const char *). It encapsulates a pointer to a C array of "const char *" and the size of the array in a single object as follows:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>class StringArray
+{
+public :
+    int len;
+    const char * const *data;
+    StringArray() : data(0), len(0) {}
+    StringArray(const char * const *data, int len) : data(data), len(len) {}
+    const char *operator[](int i) const { return data[i]; }
+};</pre></div>
+<br><br>
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Method</th><th width="19%">Inherited</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td><a href="StringArray.StringArray.htm">StringArray</a></td><td>(Self)</td><td>The constructor of the StringArray class.</td>
+</tr>
+</table>
+
+</div>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

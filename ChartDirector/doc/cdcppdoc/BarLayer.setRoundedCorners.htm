@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<Title>BarLayer.setRoundedCorners</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="BarLayer.htm">BarLayer</a>.setRoundedCorners</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setRoundedCorners(int r1 = -0x7fffffff, int r2 = -0x7fffffff, int r3 = -0x7fffffff, int r4 = -0x7fffffff);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Configures rounded corners for rectangular bars.<br><br>
+A rectangular bar has 4 corners. Two of them are at the base of the bar, while the other two are at the "data end" of the bar. Note that the base of the bar can be any side of the bar, depending on whether the bar is positive or negative, vertical or horizontal.<br><br>
+For the 2 base corners, one of them is at the negative x direction while the other is at the positive x direction. The same applies to the two data end corners.<br><br>
+This method accepts 0, 1, 2 or 4 radius values. The usage of these values depend how many values are provided as follows.<br><br>
+<table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="23%">Values Provided<th width="80%">Description
+<tr><td>0<td>The radii of the data end corners are automatically determined. The radii of the base corners are set to 0.
+<tr><td>1<td>The radii of the data end corners are set to the specified value. The radii of the base corners are set to 0.
+<tr><td>2<td>The radii of the data end corners are set to the first value. The radii of the base corners are set to the second value.
+<tr><td>4<td>The radius of the data end corner at the negative x direction is set to the first value. The radius of the data end corner at the positive x direction is set to the second value. The radius of the base corner at the negative x direction is set to the third value. The radius of the base corner at the positive x direction is set to the fourth value.
+</table>
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>r1</td><td>-0x7fffffff</td><td>The first radius. See description above on how this radius value is used.</td></tr><tr><td>r2</td><td>-0x7fffffff</td><td>The second radius. See description above on how this radius value is used.</td></tr><tr><td>r3</td><td>-0x7fffffff</td><td>The third radius. See description above on how this radius value is used.</td></tr><tr><td>r4</td><td>-0x7fffffff</td><td>The fourth radius. See description above on how this radius value is used.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,47 @@
+<HTML>
+<HEAD>
+<Title>Layer.setBorderColor</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="Layer.htm">Layer</a>.setBorderColor</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setBorderColor(int color, int lightingEffect = 0);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets the default border color and lighting effect for the data representation.<br><br>
+The border color only applies to data representation that has a border, such as a bar, an area or a 3D line. It does not apply to data representation that does not have a border, such as a 2D line. The border color affect all data sets in the layer. To set the border color of one particular data set, use <a href="DataSet.setDataColor.htm">DataSet.setDataColor</a>.<br><br>
+Only certain layer types support lighting effects. They are described in the following table.<br><br>
+<table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="38%">Layer Type<th width="60%">Lighting Effects
+<tr><td><a href="BarLayer.htm">BarLayer</a><td>Setting <i>lightingEffect</i> to an integer within +/- 4000 will create a bevel border around the bar. The border will appear as raised for a positive number, and depressed for a negative number. The border width will be the magnitude of the number in pixels.<br><br>
+Setting <i>lightingEffect</i> to the return value of <a href="Chart.flatBorder.htm">Chart::flatBorder</a> will result in a flat border of the specified width.<br><br>
+Setting <i>lightingEffect</i> to the return value of <a href="Chart.glassEffect.htm">Chart::glassEffect</a>, <a href="Chart.softLighting.htm">Chart::softLighting</a>, <a href="Chart.cylinderEffect.htm">Chart::cylinderEffect</a> or <a href="Chart.barLighting.htm">Chart::barLighting</a> will enable the respective effect on the bar.
+<tr><td><a href="BoxWhiskerLayer.htm">BoxWhiskerLayer</a><td>Supports the same lighting effect as the BarLayer.
+<tr><td><a href="LineLayer.htm">LineLayer</a><td>For a 3D line layer, <a href="Chart.phongLighting.htm">Chart::phongLighting</a> can be used to shade the 3D line surface.
+<tr><td><a href="SplineLayer.htm">SplineLayer</a><td>Supports the same lighting effect as the LineLayer.
+</table>
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>color</td><td>(Mandatory)</td><td>The border color.</td></tr><tr><td>lightingEffect</td><td>0</td><td>Specifies the 3D bevel or border width, flat border effect, or other special shading effects as described in the above table.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

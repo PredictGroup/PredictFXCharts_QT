@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<Title>AngularMeter.relativeLinearGradient</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="AngularMeter.htm">AngularMeter</a>.relativeLinearGradient</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+int relativeLinearGradient(DoubleArray gradient, double angle = 0, double radius = -1);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Creates a linear gradient color relative to the meter center and radius.<br><br>
+A general linear gradient color can be created by <a href="BaseChart.linearGradientColor2.htm">BaseChart.linearGradientColor2</a>, which involves specifying the x and y coordinates of the starting and ending points and the color stops. The <b>relativeLinearGradient</b> simplifies creating a linear gradient by assuming the gradient line passes through the meter center at an configurable angle.<br><br>
+The linear gradient is defined using an array of numbers, in which each pair of numbers represents the relative distance and its associated color. The relative distance is the ratio of the absolute distance to the reference radius, which defaults to the meter scale radius (set by <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>).<br><br>
+For example, to define a linear gradient with blue (0000FF) at the bottom-left of reference radius,  green (00FF00) at the center, and red (FF0000) at the top-right of the reference radius, the angle should be set to 45 degrees, and the array of numbers should be:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>-1.0, 0x0000ff, 0.0, 0x00ff00, 1.0, 0xff0000</pre></div><br>
+The relative distances in the array should be arranged in increasing order. It is possible to define a relative linear gradient shorter or longer than the reference radius by using a relative distance of magnitude smaller or greater than 1. A negative relative distance means the distance is measured at the opposite side of center.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>gradient</td><td>(Mandatory)</td><td>An numeric array defining the color stops. Please refer to the description above for details.</td></tr><tr><td>angle</td><td>0</td><td>The direction of the linear gradient line. It is specified as a clockwise angle in degrees, with 0 being the upward pointing direction.</td></tr><tr><td>radius</td><td>-1</td><td>The reference radius to define the relative distance. The default is the meter scale radius (set by <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>).</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+A 32-bit integer representing the linear gradient color.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

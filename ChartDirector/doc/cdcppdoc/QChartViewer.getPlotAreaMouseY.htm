@@ -1,0 +1,32 @@
+<HTML>
+<HEAD>
+<Title>QChartViewer.getPlotAreaMouseY</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="QChartViewer.htm">QChartViewer</a>.getPlotAreaMouseY</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void getPlotAreaMouseY();
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Gets the mouse  y-coordinate on the plot area in the chart pixel coordinate system.<br><br>
+If the mouse cursor  is not on the plot area, but is on the extended plot area (see <a href="QChartViewer.setPlotAreaMouseMargin.htm">QChartViewer.setPlotAreaMouseMargin</a>), this method will behave as if the mouse cursor  is on the nearest plot area edge.<br><br>
+If the mouse cursor  is not even on the extended plot area mouse region, this method will return the last coordinate when the mouse cursor  was still on the extended plot area.<br><br>
+This method is only valid when called inside the<br><br>
+chart or plot area mouse events.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">None</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+The mouse  y-coordinate in the chart pixel coordinate system.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

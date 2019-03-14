@@ -1,0 +1,122 @@
+<HTML>
+<HEAD>
+<Title>Uneven Data Points</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Uneven Data Points</p>
+<hr class="separator">
+<div class="content">
+<img src="images/unevenpoints.png">
+<br><br>
+This example demonstrates data series that are unevenly spaced in the x dimension.<br><br>
+In ChartDirector, x coordinates for the data points are optional. If no x coordinates are provided for the data points, the x coordinates will be assumed to be the array indexes (0, 1, 2, 3 ...), and the data points would be evenly spaced in the x direction. Axis labels specified using <a href="Axis.setLabels.htm">Axis.setLabels</a> or <a href="Axis.setLabels2.htm">Axis.setLabels2</a> are also positioned using the array indexes as the x coordinates, so the labels will match with the data points.<br><br>
+In some applications, it may be necessary or more convenient to provide x coordinates for the data points. For example, if the data points are unevenly spaced, or if there are multiple data series with different data point spacing in the x direction, x coordinates are needed. In this case, <a href="Layer.setXData.htm">Layer.setXData</a> or <a href="Layer.setXData2.htm">Layer.setXData2</a> can be used to provide the x coordinates. By default, ChartDirector will then automatically determine the x-axis scale and labels, just like how the y-axis is handled. The axis scale and labels can also be specified by using various <a href="Axis.htm">Axis</a> methods, such as <a href="Axis.setLinearScale.htm">Axis.setLinearScale</a>, <a href="Axis.setLogScale.htm">Axis.setLogScale</a> and <a href="Axis.setDateScale.htm">Axis.setDateScale</a> (please refer to <a href="Axis.htm">Axis</a> for the full list).<br><br>
+<a href="Axis.setLabels.htm">Axis.setLabels</a> or <a href="Axis.setLabels2.htm">Axis.setLabels2</a> should not be used if x coordinates are provided, as they use array indexes as the x coordinates, which is unlikely to be consistent with the provided x coordinates.<br><br>
+In this example, the red line has unevenly spaced x coordinates, which are provided using <a href="Layer.setXData.htm">Layer.setXData</a>. Both the green and orange lines have evenly spaced x coordinates, but their spacing in the x direction differs. Their x coordinates are provided using <a href="Layer.setXData2.htm">Layer.setXData2</a>. Note that the lines start and end at different x coordinates, and they do not need to span the entire x-axis range. The x-axis in this example is automatically scaled.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/unevenpoints". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // Data points which more unevenly spaced in time
+    double data0Y[] = {62, 69, 53, 58, 84, 76, 49, 61, 64, 77, 79};
+    double data0X[] = {Chart::chartTime(2007, 1, 1), Chart::chartTime(2007, 1, 2), Chart::chartTime(
+        2007, 1, 5), Chart::chartTime(2007, 1, 7), Chart::chartTime(2007, 1, 10), Chart::chartTime(
+        2007, 1, 14), Chart::chartTime(2007, 1, 17), Chart::chartTime(2007, 1, 18),
+        Chart::chartTime(2007, 1, 19), Chart::chartTime(2007, 1, 20), Chart::chartTime(2007, 1, 21)}
+        ;
+
+    // Data points which are evenly spaced in a certain time range
+    double data1Y[] = {36, 25, 28, 38, 20, 30, 27, 35, 65, 60, 40, 73, 62, 90, 75, 72};
+    double data1Start = Chart::chartTime(2007, 1, 1);
+    double data1End = Chart::chartTime(2007, 1, 16);
+
+    // Data points which are evenly spaced in another time range, in which the spacing is different
+    // from the above series
+    double data2Y[] = {25, 15, 30, 23, 32, 55, 45};
+    double data2Start = Chart::chartTime(2007, 1, 9);
+    double data2End = Chart::chartTime(2007, 1, 21);
+
+    // Create a XYChart object of size 600 x 400 pixels. Use a vertical gradient color from light
+    // blue (99ccff) to white (ffffff) spanning the top 100 pixels as background. Set border to grey
+    // (888888). Use rounded corners. Enable soft drop shadow.
+    XYChart *c = new XYChart(600, 400);
+    c-&gt;setBackground(c-&gt;linearGradientColor(0, 0, 0, 100, 0x99ccff, 0xffffff), 0x888888);
+    c-&gt;setRoundedFrame();
+    c-&gt;setDropShadow();
+
+    // Add a title using 18pt Times New Roman Bold Italic font. Set top margin to 16 pixels.
+    c-&gt;addTitle("Product Line Order Backlog", "timesbi.ttf", 18)-&gt;setMargin(0, 0, 16, 0);
+
+    // Set the plotarea at (60, 80) and of 510 x 275 pixels in size. Use transparent border and dark
+    // grey (444444) dotted grid lines
+    PlotArea *plotArea = c-&gt;setPlotArea(60, 80, 510, 275, -1, -1, Chart::Transparent,
+        c-&gt;dashLineColor(0x444444, 0x0101), -1);
+
+    // Add a legend box where the top-center is anchored to the horizontal center of the plot area
+    // at y = 45. Use horizontal layout and 10 points Arial Bold font, and transparent background
+    // and border.
+    LegendBox *legendBox = c-&gt;addLegend(plotArea-&gt;getLeftX() + plotArea-&gt;getWidth() / 2, 45, false,
+        "arialbd.ttf", 10);
+    legendBox-&gt;setAlignment(Chart::TopCenter);
+    legendBox-&gt;setBackground(Chart::Transparent, Chart::Transparent);
+
+    // Set x-axis tick density to 75 pixels and y-axis tick density to 30 pixels. ChartDirector
+    // auto-scaling will use this as the guidelines when putting ticks on the x-axis and y-axis.
+    c-&gt;yAxis()-&gt;setTickDensity(30);
+    c-&gt;xAxis()-&gt;setTickDensity(75);
+
+    // Set all axes to transparent
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent);
+
+    // Set the x-axis margins to 15 pixels, so that the horizontal grid lines can extend beyond the
+    // leftmost and rightmost vertical grid lines
+    c-&gt;xAxis()-&gt;setMargin(15, 15);
+
+    // Set axis label style to 8pt Arial Bold
+    c-&gt;xAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+    c-&gt;yAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+    c-&gt;yAxis2()-&gt;setLabelStyle("arialbd.ttf", 8);
+
+    // Add axis title using 10pt Arial Bold Italic font
+    c-&gt;yAxis()-&gt;setTitle("Backlog in USD millions", "arialbi.ttf", 10);
+
+    // Add the first data series
+    LineLayer *layer0 = c-&gt;addLineLayer();
+    layer0-&gt;addDataSet(DoubleArray(data0Y, (int)(sizeof(data0Y) / sizeof(data0Y[0]))), 0xff0000,
+        "Quantum Computer")-&gt;setDataSymbol(Chart::GlassSphere2Shape, 11);
+    layer0-&gt;setXData(DoubleArray(data0X, (int)(sizeof(data0X) / sizeof(data0X[0]))));
+    layer0-&gt;setLineWidth(3);
+
+    // Add the second data series
+    LineLayer *layer1 = c-&gt;addLineLayer();
+    layer1-&gt;addDataSet(DoubleArray(data1Y, (int)(sizeof(data1Y) / sizeof(data1Y[0]))), 0x00ff00,
+        "Atom Synthesizer")-&gt;setDataSymbol(Chart::GlassSphere2Shape, 11);
+    layer1-&gt;setXData(data1Start, data1End);
+    layer1-&gt;setLineWidth(3);
+
+    // Add the third data series
+    LineLayer *layer2 = c-&gt;addLineLayer();
+    layer2-&gt;addDataSet(DoubleArray(data2Y, (int)(sizeof(data2Y) / sizeof(data2Y[0]))), 0xff6600,
+        "Proton Cannon")-&gt;setDataSymbol(Chart::GlassSphere2Shape, 11);
+    layer2-&gt;setXData(data2Start, data2End);
+    layer2-&gt;setLineWidth(3);
+
+    // Output the chart
+    c-&gt;makeChart("unevenpoints.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

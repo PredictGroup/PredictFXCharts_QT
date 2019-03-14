@@ -1,0 +1,35 @@
+<HTML>
+<HEAD>
+<Title>DoubleArray</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">DoubleArray</p>
+<hr class="separator">
+<div class="content">
+The DoubleArray class represents arrays of double precision numbers. It encapsulates a pointer to a C array and the size of the array in a single object as follows:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>class DoubleArray
+{
+public :
+    int len;
+    const double *data;
+    DoubleArray() : data(0), len(0) {}
+    DoubleArray(const double *data, int len) : data(data), len(len) {}
+    double operator[](int i) const { return data[i]; }
+};</pre></div>
+<br><br>
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Method</th><th width="19%">Inherited</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td><a href="DoubleArray.DoubleArray.htm">DoubleArray</a></td><td>(Self)</td><td>The constructor of the DoubleArray class.</td>
+</tr>
+</table>
+
+</div>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

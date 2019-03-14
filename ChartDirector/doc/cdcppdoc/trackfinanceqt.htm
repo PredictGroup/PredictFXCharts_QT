@@ -1,0 +1,317 @@
+<HTML>
+<HEAD>
+<Title>Finance Chart Track Line (QT)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Finance Chart Track Line (QT)</p>
+<hr class="separator">
+<div class="content"><img src="images/trackfinance_qt.png"><br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b><font color="#FF0000">NOTE:</font></b> This section describes Finance Chart Track Line for QT only. For MFC, please refer to <a href="trackfinance.htm">Finance Chart Track Line (MFC)</a>.
+</div><br>
+This sample program demonstrates a track cursor for a finance chart programmed with the following features:<br><br>
+<ul>
+<li>A vertical line that follows the mouse cursor on the plot area and snaps to the nearest trading session.<br><br>
+<li>Dynamically updated legend entries that show the price, volume and other technical indicators at the nearest trading session.<br><br>
+</ul>
+The code first draws the finance chart with the legend box set to transparent (so that the default legend box is not displayed). It then sets the track cursor to the right side of the plot area. This ensures the chart initially has a dynamic legend for the latest trading session. In the     <a href="QChartViewer.mouseMovePlotArea.htm">QChartViewer.mouseMovePlotArea</a> signal handler, the track cursor is updated to reflect the mouse position.<br><br>
+The <b>trackFinance</b> method is the routine that draws the track cursor. Its key elements are:<br><br>
+<ul>
+<li>To draw dynamic contents on the chart, the code obtains the <a href="DrawArea.htm">DrawArea</a> object for drawing on the dynamic layer of the chart using <a href="BaseChart.initDynamicLayer.htm">BaseChart.initDynamicLayer</a>.<br><br>
+<li>The nearest trading session is obtained from the first <a href="XYChart.htm">XYChart</a> in the <a href="FinanceChart.htm">FinanceChart</a> using <a href="XYChart.getNearestXValue.htm">XYChart.getNearestXValue</a>.<br><br>
+<li>The code iterates through all the <a href="XYChart.htm">XYChart</a> objects in the <a href="FinanceChart.htm">FinanceChart</a>. For each <a href="XYChart.htm">XYChart</a>, the code iterates through all the layers to create dynamic legend entries. The FinanceChart creates default static legend entries for all indicators showing their latest values (even though the default static legend box is set to transparent in the chart). The code creates the dynamic legend entries by replacing the values in the static legend entries.<br><br>
+<li>If a layer contains 4 data sets, the code assumes it is either a <a href="CandleStickLayer.htm">CandleStickLayer</a> or <a href="HLOCLayer.htm">HLOCLayer</a>. It formats a legend entry consisting of the open, high, low, close values, as well as an up/down icon and the percentage change.<br><br>
+<li>If a layer contains 2 data sets, the code assumes the layer is for a "band" or "channel" (such as Bollinger Band or Donchian Channel). The code formats a legend entry by replacing the values in the default legend entry (obtained using <a href="DataSet.getDataName.htm">DataSet.getDataName</a>).<br><br>
+<li>If a layer contains 3 data sets, the code assumes the layer is for volume bars, with the 3 data sets representing volume bars of different colors for up, down and flat days. The code computes the volume by adding the values from the three data sets, and formats a legend entry by replacing the value in the default legend entry (obtained using <a href="DataSet.getDataName.htm">DataSet.getDataName</a>) with the computed value.<br><br>
+<li>In all other cases, the code iterates the data sets. For each of them, it formats a legend by replacing the value in the default legend entry (obtained using <a href="DataSet.getDataName.htm">DataSet.getDataName</a>) with the value for the nearest trading session (obtained using <a href="DataSet.getValue.htm">DataSet.getValue</a>).<br><br>
+<li>Finally, the code combines all the legend entries into a legend box and draws it on top of the plot area using <a href="DrawArea.text.htm">DrawArea.text</a>. It also draws a vertical line at the nearest trading session using <a href="DrawArea.vline.htm">DrawArea.vline</a>.<br><br>
+</ul>
+</div><p class="heading1a">Source Code Listing</p><div class="content">
+The following is the main source code of this demo. The complete QT  project is in "qtdemo/trackfinance".<br><br>
+[File: qtdemo/trackfinance/trackfinance.cpp]<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include &lt;QApplication&gt;
+#include "FinanceChart.h"
+#include "trackfinance.h"
+#include &lt;vector&gt;
+#include &lt;sstream&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+    app.setStyleSheet("* {font-family:arial;font-size:11px}");
+    TrackFinance demo;
+    demo.show();
+    return app.exec();
+}
+
+
+TrackFinance::TrackFinance(QWidget *parent) :
+    QDialog(parent)
+{
+    setWindowTitle("Finance Chart Track Line");
+
+    // Create the QChartViewer and draw the chart
+    m_ChartViewer = new QChartViewer(this);
+    drawChart(m_ChartViewer);
+
+    // Set the window to be of the same size as the chart
+    setFixedSize(m_ChartViewer-&gt;width(), m_ChartViewer-&gt;height());
+
+    // Set up the mouseMovePlotArea handler for drawing the track cursor
+    connect(m_ChartViewer, SIGNAL(mouseMovePlotArea(QMouseEvent*)),
+        SLOT(onMouseMovePlotArea(QMouseEvent*)));
+}
+
+TrackFinance::~TrackFinance()
+{
+    delete m_ChartViewer-&gt;getChart();
+}
+
+//
+// Draw the chart and display it in the given viewer
+//
+void TrackFinance::drawChart(QChartViewer *viewer)
+{
+    // Create a finance chart demo containing 100 days of data
+    int noOfDays = 100;
+
+    // To compute moving averages starting from the first day, we need to get extra data points before
+    // the first day
+    int extraDays = 30;
+
+    // In this exammple, we use a random number generator utility to simulate the data. We set up the
+    // random table to create 6 cols x (noOfDays + extraDays) rows, using 9 as the seed.
+    RanTable rantable(9, 6, noOfDays + extraDays);
+
+    // Set the 1st col to be the timeStamp, starting from Sep 4, 2011, with each row representing one
+    // day, and counting week days only (jump over Sat and Sun)
+    rantable.setDateCol(0, Chart::chartTime(2011, 9, 4), 86400, true);
+
+    // Set the 2nd, 3rd, 4th and 5th columns to be high, low, open and close data. The open value
+    // starts from 100, and the daily change is random from -5 to 5.
+    rantable.setHLOCCols(1, 100, -5, 5);
+
+    // Set the 6th column as the vol data from 5 to 25 million
+    rantable.setCol(5, 50000000, 250000000);
+
+    // Now we read the data from the table into arrays
+    DoubleArray timeStamps = rantable.getCol(0);
+    DoubleArray highData = rantable.getCol(1);
+    DoubleArray lowData = rantable.getCol(2);
+    DoubleArray openData = rantable.getCol(3);
+    DoubleArray closeData = rantable.getCol(4);
+    DoubleArray volData = rantable.getCol(5);
+
+    // Create a FinanceChart object of width 720 pixels
+    FinanceChart *c = new FinanceChart(720);
+
+    // Add a title to the chart
+    c-&gt;addTitle("Finance Chart Demonstration");
+
+    // Disable default legend box, as we are using dynamic legend
+    c-&gt;setLegendStyle("normal", 8, Chart::Transparent, Chart::Transparent);
+
+    // Set the data into the finance chart object
+    c-&gt;setData(timeStamps, highData, lowData, openData, closeData, volData, extraDays);
+
+    // Add the main chart with 240 pixels in height
+    c-&gt;addMainChart(240);
+
+    // Add a 10 period simple moving average to the main chart, using brown color
+    c-&gt;addSimpleMovingAvg(10, 0x663300);
+
+    // Add a 20 period simple moving average to the main chart, using purple color
+    c-&gt;addSimpleMovingAvg(20, 0x9900ff);
+
+    // Add candlestick symbols to the main chart, using green/red for up/down days
+    c-&gt;addCandleStick(0x00ff00, 0xff0000);
+
+    // Add 20 days bollinger band to the main chart, using light blue (9999ff) as the border and
+    // semi-transparent blue (c06666ff) as the fill color
+    c-&gt;addBollingerBand(20, 2, 0x9999ff, 0xc06666ff);
+
+    // Add a 75 pixels volume bars sub-chart to the bottom of the main chart, using green/red/grey for
+    // up/down/flat days
+    c-&gt;addVolBars(75, 0x99ff99, 0xff9999, 0x808080);
+
+    // Append a 14-days RSI indicator chart (75 pixels high) after the main chart. The main RSI line
+    // is purple (800080). Set threshold region to +/- 20 (that is, RSI = 50 +/- 25). The upper/lower
+    // threshold regions will be filled with red (ff0000)/blue (0000ff).
+    c-&gt;addRSI(75, 14, 0x800080, 20, 0xff0000, 0x0000ff);
+
+    // Append a MACD(26, 12) indicator chart (75 pixels high) after the main chart, using 9 days for
+    // computing divergence.
+    c-&gt;addMACD(75, 26, 12, 9, 0x0000ff, 0xff00ff, 0x008000);
+
+    // Include track line with legend for the latest data values
+    trackFinance(c, ((XYChart *)c-&gt;getChart(0))-&gt;getPlotArea()-&gt;getRightX());
+    
+    // Set the chart image to the QChartViewer
+    viewer-&gt;setChart(c);
+}
+
+//
+// Draw track cursor when mouse is moving over plotarea
+//
+void TrackFinance::onMouseMovePlotArea(QMouseEvent *)
+{
+    trackFinance((MultiChart *)m_ChartViewer-&gt;getChart(), m_ChartViewer-&gt;getPlotAreaMouseX());
+    m_ChartViewer-&gt;updateDisplay();
+}
+
+//
+// Draw finance chart track line with legend
+//
+void TrackFinance::trackFinance(MultiChart *m, int mouseX)
+{
+    // Clear the current dynamic layer and get the DrawArea object to draw on it.
+    DrawArea *d = m-&gt;initDynamicLayer();
+
+    // It is possible for a FinanceChart to be empty, so we need to check for it.
+    if (m-&gt;getChartCount() == 0)
+        return ;
+
+    // Get the data x-value that is nearest to the mouse
+    int xValue = (int)(((XYChart *)m-&gt;getChart(0))-&gt;getNearestXValue(mouseX));
+
+    // Iterate the XY charts (main price chart and indicator charts) in the FinanceChart
+    XYChart *c = 0;
+    for(int i = 0; i &lt; m-&gt;getChartCount(); ++i) {
+        c = (XYChart *)m-&gt;getChart(i);
+
+        // Variables to hold the legend entries
+        ostringstream ohlcLegend;
+        vector&lt;string&gt; legendEntries;
+
+        // Iterate through all layers to find the highest data point
+        for(int j = 0; j &lt; c-&gt;getLayerCount(); ++j) {
+            Layer *layer = c-&gt;getLayerByZ(j);
+            int xIndex = layer-&gt;getXIndexOf(xValue);
+            int dataSetCount = layer-&gt;getDataSetCount();
+
+            // In a FinanceChart, only layers showing OHLC data can have 4 data sets
+            if (dataSetCount == 4) {
+                double highValue = layer-&gt;getDataSet(0)-&gt;getValue(xIndex);
+                double lowValue = layer-&gt;getDataSet(1)-&gt;getValue(xIndex);
+                double openValue = layer-&gt;getDataSet(2)-&gt;getValue(xIndex);
+                double closeValue = layer-&gt;getDataSet(3)-&gt;getValue(xIndex);
+
+                if (closeValue != Chart::NoValue) {
+                    // Build the OHLC legend
+                    ohlcLegend &lt;&lt; "      &lt;*block*&gt;";
+                    ohlcLegend &lt;&lt; "Open: " &lt;&lt; c-&gt;formatValue(openValue, "{value|P4}");
+                    ohlcLegend &lt;&lt; ", High: " &lt;&lt; c-&gt;formatValue(highValue, "{value|P4}"); 
+                    ohlcLegend &lt;&lt; ", Low: " &lt;&lt; c-&gt;formatValue(lowValue, "{value|P4}"); 
+                    ohlcLegend &lt;&lt; ", Close: " &lt;&lt; c-&gt;formatValue(closeValue, "{value|P4}");
+
+                    // We also draw an upward or downward triangle for up and down days and the %
+                    // change
+                    double lastCloseValue = layer-&gt;getDataSet(3)-&gt;getValue(xIndex - 1);
+                    if (lastCloseValue != Chart::NoValue) {
+                        double change = closeValue - lastCloseValue;
+                        double percent = change * 100 / closeValue;
+                        string symbol = (change &gt;= 0) ?
+                            "&lt;*font,color=008800*&gt;&lt;*img=@triangle,width=8,color=008800*&gt;" :
+                            "&lt;*font,color=CC0000*&gt;&lt;*img=@invertedtriangle,width=8,color=CC0000*&gt;";
+
+                        ohlcLegend &lt;&lt; "  " &lt;&lt; symbol &lt;&lt; " " &lt;&lt; c-&gt;formatValue(change, "{value|P4}");
+                        ohlcLegend &lt;&lt; " (" &lt;&lt; c-&gt;formatValue(percent, "{value|2}") &lt;&lt; "%)&lt;*/font*&gt;";
+                    }
+
+                    ohlcLegend &lt;&lt; "&lt;*/*&gt;";
+                }
+            } else {
+                // Iterate through all the data sets in the layer
+                for(int k = 0; k &lt; layer-&gt;getDataSetCount(); ++k) {
+                    DataSet *dataSet = layer-&gt;getDataSetByZ(k);
+
+                    string name = dataSet-&gt;getDataName();
+                    double value = dataSet-&gt;getValue(xIndex);
+                    if ((0 != name.size()) &amp;&amp; (value != Chart::NoValue)) {
+
+                        // In a FinanceChart, the data set name consists of the indicator name and its
+                        // latest value. It is like "Vol: 123M" or "RSI (14): 55.34". As we are
+                        // generating the values dynamically, we need to extract the indictor name
+                        // out, and also the volume unit (if any).
+
+                        // The volume unit
+                        string unitChar;
+
+                        // The indicator name is the part of the name up to the colon character.
+                        int delimiterPosition = (int)name.find(':');
+                        if ((int)name.npos != delimiterPosition) {
+                            
+                            // The unit, if any, is the trailing non-digit character(s).
+                            int lastDigitPos = (int)name.find_last_of("0123456789");
+                            if (((int)name.npos != lastDigitPos) &amp;&amp; (lastDigitPos + 1 &lt; (int)name.size())
+                                &amp;&amp; (lastDigitPos &gt; delimiterPosition))
+                                unitChar = name.substr(lastDigitPos + 1);
+
+                            name.resize(delimiterPosition);
+                        }
+
+                        // In a FinanceChart, if there are two data sets, it must be representing a
+                        // range.
+                        if (dataSetCount == 2) {
+                            // We show both values in the range in a single legend entry
+                            value = layer-&gt;getDataSet(0)-&gt;getValue(xIndex);
+                            double value2 = layer-&gt;getDataSet(1)-&gt;getValue(xIndex);
+                            name = name + ": " + c-&gt;formatValue(min(value, value2), "{value|P3}");
+                            name = name + " - " + c-&gt;formatValue(max(value, value2), "{value|P3}");
+                        } else {
+                            // In a FinanceChart, only the layer for volume bars has 3 data sets for
+                            // up/down/flat days
+                            if (dataSetCount == 3) {
+                                // The actual volume is the sum of the 3 data sets.
+                                value = layer-&gt;getDataSet(0)-&gt;getValue(xIndex) + layer-&gt;getDataSet(1
+                                    )-&gt;getValue(xIndex) + layer-&gt;getDataSet(2)-&gt;getValue(xIndex);
+                            }
+
+                            // Create the legend entry
+                            name = name + ": " + c-&gt;formatValue(value, "{value|P3}") + unitChar;
+                        }
+
+                        // Build the legend entry, consist of a colored square box and the name (with
+                        // the data value in it).
+                        ostringstream legendEntry;
+                        legendEntry &lt;&lt; "&lt;*block*&gt;&lt;*img=@square,width=8,edgeColor=000000,color=" 
+                            &lt;&lt; hex &lt;&lt; dataSet-&gt;getDataColor() &lt;&lt; "*&gt; " &lt;&lt; name &lt;&lt; "&lt;*/*&gt;";
+                        legendEntries.push_back(legendEntry.str());
+                    }
+                }
+            }
+        }
+
+        // Get the plot area position relative to the entire FinanceChart
+        PlotArea *plotArea = c-&gt;getPlotArea();
+        int plotAreaLeftX = plotArea-&gt;getLeftX() + c-&gt;getAbsOffsetX();
+        int plotAreaTopY = plotArea-&gt;getTopY() + c-&gt;getAbsOffsetY();
+
+        // The legend begins with the date label, then the ohlcLegend (if any), and then the
+        // entries for the indicators.
+        ostringstream legendText;
+        legendText &lt;&lt; "&lt;*block,valign=top,maxWidth=" &lt;&lt; (plotArea-&gt;getWidth() - 5) 
+            &lt;&lt; "*&gt;&lt;*font=arialbd.ttf*&gt;[" &lt;&lt; c-&gt;xAxis()-&gt;getFormattedLabel(xValue, "mmm dd, yyyy")
+            &lt;&lt; "]&lt;*/font*&gt;" &lt;&lt; ohlcLegend.str();
+        for (int i = ((int)legendEntries.size()) - 1; i &gt;= 0; --i) {
+            legendText &lt;&lt; "      " &lt;&lt; legendEntries[i];
+        }
+        legendText &lt;&lt; "&lt;*/*&gt;";
+
+        // Draw a vertical track line at the x-position
+        d-&gt;vline(plotAreaTopY, plotAreaTopY + plotArea-&gt;getHeight(), c-&gt;getXCoor(xValue) +
+            c-&gt;getAbsOffsetX(), d-&gt;dashLineColor(0x000000, 0x0101));
+
+        // Display the legend on the top of the plot area
+        TTFText *t = d-&gt;text(legendText.str().c_str(), "arial.ttf", 8);
+        t-&gt;draw(plotAreaLeftX + 5, plotAreaTopY + 3, 0x000000, Chart::TopLeft);
+        t-&gt;destroy();
+    }
+}</pre></td></tr></table></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

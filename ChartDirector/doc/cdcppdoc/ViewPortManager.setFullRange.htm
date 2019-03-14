@@ -1,0 +1,39 @@
+<HTML>
+<HEAD>
+<Title>ViewPortManager.setFullRange</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ViewPortManager.htm">ViewPortManager</a>.setFullRange</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setFullRange(const char *id, double minValue, double maxValue);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Defines the full range of a viewport data scale.<br><br>
+In the ChartDirector zooming and scrolling framework, the viewport coordinates are expressed as the visible fractions of the "full data scale". For example, if the "full data scale" is 10 years horizontally, a viewport width of 0.1 means that 1 year of data are visible.<br><br>
+The setFullRange method defines the full range of a data scale and gives it a name. As ChartDirector supports multiple x-axes and y-axes, so there can be multiple data scales with different names. The name can be used in other ChartDirector APIs to convert between the viewport coordinates and data scale (see <a href="ViewPortManager.getValueAtViewPort.htm">ViewPortManager.getValueAtViewPort</a>, <a href="ViewPortManager.getViewPortAtValue.htm">ViewPortManager.getViewPortAtValue</a>), and to configure an <a href="Axis.htm">Axis</a> to reflect the visible data scale (see <a href="ViewPortManager.syncLinearAxisWithViewPort.htm">ViewPortManager.syncLinearAxisWithViewPort</a>, <a href="ViewPortManager.syncLogAxisWithViewPort.htm">ViewPortManager.syncLogAxisWithViewPort</a> and <a href="ViewPortManager.syncDateAxisWithViewPort.htm">ViewPortManager.syncDateAxisWithViewPort</a>).
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>id</td><td>(Mandatory)</td><td>The name of the data scale.</td></tr><tr><td>minValue</td><td>(Mandatory)</td><td>The minimum value of the data scale.</td></tr><tr><td>maxValue</td><td>(Mandatory)</td><td>The maximum value of the data scale.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

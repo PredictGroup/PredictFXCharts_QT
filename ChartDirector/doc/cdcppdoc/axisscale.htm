@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<Title>Y-Axis Scaling</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Y-Axis Scaling</p>
+<hr class="separator">
+<div class="content">
+<img src="images/axisscale0.png">&nbsp;&nbsp;<img src="images/axisscale1.png">&nbsp;&nbsp;<img src="images/axisscale2.png">&nbsp;&nbsp;<img src="images/axisscale3.png">&nbsp;&nbsp;<img src="images/axisscale4.png">
+<br><br>
+This example demonstrates how to control auto-scaling.<br><br>
+By default, ChartDirector auto-scales all axes. The <a href="Axis.setAutoScale.htm">Axis.setAutoScale</a> method controls the top extension, bottom extension and the zero affinity parameters that ChartDirector uses during auto-scaling. The first two parameters determine the amount of top and bottom margins to reserve during auto-scaling, while the last parameter determines when the axis should start from the origin (0).<br><br>
+The first 3 charts demonstrate the effects of different top/bottom extensions.<br><br>
+The 4th chart demonstrates that one could exclude a segment on the ends of an axis from scaling using <a href="Axis.setMargin.htm">Axis.setMargin</a>.<br><br>
+The 5th chart demonstrates manual scaling instead of auto-scaling. In manual scaling, the axis scale is explicitly provided by using <a href="Axis.setLinearScale.htm">Axis.setLinearScale</a>, <a href="Axis.setLinearScale2.htm">Axis.setLinearScale2</a>, <a href="Axis.setLogScale.htm">Axis.setLogScale</a>, <a href="Axis.setLogScale2.htm">Axis.setLogScale2</a>, <a href="Axis.setDateScale.htm">Axis.setDateScale</a> or <a href="Axis.setDateScale2.htm">Axis.setDateScale2</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/axisscale". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+void createChart(int chartIndex, const char *filename)
+{
+    // The data for the chart
+    double data[] = {5.5, 3.5, -3.7, 1.7, -1.4, 3.3};
+    const char *labels[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun"};
+
+    // Create a XYChart object of size 200 x 190 pixels
+    XYChart *c = new XYChart(200, 190);
+
+    // Set the plot area at (30, 20) and of size 140 x 140 pixels
+    c-&gt;setPlotArea(30, 20, 140, 140);
+
+    // Configure the axis as according to the input parameter
+    if (chartIndex == 0) {
+        c-&gt;addTitle("No Axis Extension", "arial.ttf", 8);
+    } else if (chartIndex == 1) {
+        c-&gt;addTitle("Top/Bottom Extensions = 0/0", "arial.ttf", 8);
+        // Reserve 20% margin at top of plot area when auto-scaling
+        c-&gt;yAxis()-&gt;setAutoScale(0, 0);
+    } else if (chartIndex == 2) {
+        c-&gt;addTitle("Top/Bottom Extensions = 0.2/0.2", "arial.ttf", 8);
+        // Reserve 20% margin at top and bottom of plot area when auto-scaling
+        c-&gt;yAxis()-&gt;setAutoScale(0.2, 0.2);
+    } else if (chartIndex == 3) {
+        c-&gt;addTitle("Axis Top Margin = 15", "arial.ttf", 8);
+        // Reserve 15 pixels at top of plot area
+        c-&gt;yAxis()-&gt;setMargin(15);
+    } else {
+        c-&gt;addTitle("Manual Scale -5 to 10", "arial.ttf", 8);
+        // Set the y axis to scale from -5 to 10, with ticks every 5 units
+        c-&gt;yAxis()-&gt;setLinearScale(-5, 10, 5);
+    }
+
+    // Set the labels on the x axis
+    c-&gt;xAxis()-&gt;setLabels(StringArray(labels, (int)(sizeof(labels) / sizeof(labels[0]))));
+
+    // Add a color bar layer using the given data. Use a 1 pixel 3D border for the bars.
+    c-&gt;addBarLayer(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), IntArray(0, 0)
+        )-&gt;setBorderColor(-1, 1);
+
+    // Output the chart
+    c-&gt;makeChart(filename);
+
+    //free up resources
+    delete c;
+}
+
+int main(int argc, char *argv[])
+{
+    createChart(0, "axisscale0.png");
+    createChart(1, "axisscale1.png");
+    createChart(2, "axisscale2.png");
+    createChart(3, "axisscale3.png");
+    createChart(4, "axisscale4.png");
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,20 @@
+<HTML>
+<HEAD>
+<Title>Realtime Charts (QT)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Realtime Charts (QT)</p>
+<hr class="separator">
+<div class="content"><div style="background-color:#cccccc;width:99%;padding:10px">
+<b><font color="#FF0000">NOTE:</font></b> This section describes Realtime Charts for QT only. For MFC, please refer to <a href="realtimeintro.htm">Realtime Charts (MFC)</a>.
+</div><br>
+In ChartDirector, a realtime chart may be achieved by simply redrawing the chart periodically.<br><br>
+Typically, a data buffer is used to store the data to be displayed in the chart. A data update routine updates the values in the buffer in realtime. A charting routine uses the data in the buffer to create the chart.<br><br>
+If the data update rate is not very fast (eg. once per second), one can simply redraw the chart immediately when the data buffer is updated.<br><br>
+If the data update rate is very fast (eg. 1000 times per second), a better design is to update the data buffer and the chart asynchronously. In this case, the data update routine can still update the data buffer as fast as it needs to. The charting routine updates the chart at a slower rate, such as a few times per second. Essentially, the charting routine is taking a "snapshot" of the data buffer a few times per second and displays them on screen.<br><br>
+To facilitate creation of realtime charts with fast update rate (faster than several times per second), the <a href="QChartViewer.htm">QChartViewer</a> control contains built-in rate control features. It ensures there is at least 20ms (configurable using <a href="QChartViewer.setUpdateInterval.htm">QChartViewer.setUpdateInterval</a>) between two consecutive chart updates. This allows the GUI to remain smooth and responsive even with extremely fast chart update rate.<br><br>
+To use the rate control features of ChartDirector, instead of updating the chart directly, <a href="QChartViewer.updateViewPort.htm">QChartViewer.updateViewPort</a> may be used to trigger the CVN_ViewPortChanged message, and the chart is updated in the message handler. QChartViewer will ensure there is at least 20ms between two CVN_ViewPortChanged messages, and will delay the message and merge multiple messages into one message if necessary.</div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

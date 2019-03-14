@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<Title>ImageMapHandler.getValue2</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ImageMapHandler.htm">ImageMapHandler</a>.getValue2</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+const char *getValue(int i);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Gets the value of an attribute of the current hot spot by using its numeric index.<br><br>
+Each hot spot is associated with an arbitrary number of attributes, in which each attribute consists of a key and a value. This method returns the value of the (i + 1)th attribute. (The first attribute is 0, while the nth attribute is n - 1.)
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>i</td><td>(Mandatory)</td><td>The index of the attribute to retrieve (index of first attribute is 0).</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+A string representing the value of the attribute, or null if there is no such attribute.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

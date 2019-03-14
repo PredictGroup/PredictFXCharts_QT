@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<Title>Using ChartDirector with Qt</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Using ChartDirector with Qt</p>
+<hr class="separator">
+<div class="content">This section describes how to use ChartDirector with Qt.
+</div><p class="heading2">Qt Sample Programs</p><div class="content">
+ChartDirector comes with a number of Qt sample programs in the "ChartDirector/qtdemo" subdirectory.<br><br>
+<table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="24%">Project Name<th width="74%">Description
+<tr><td>helloworld<td>The "Hello World" example of using ChartDirector with Qt. This is a basic Qt project displaying a simple bar chart.
+<tr><td>qtdemo<td>The main Qt sample program, containing a chart browser for browsing over 200 charting subroutines, producing over 400 charts of various types.
+<tr><td>financedemo<td>An interactive financial chart will comprehensive technical indicators support.
+<tr><td>tracklegend<td>Demonstrates a sweep line track cursor with dynamic legend entries for the data points at the cursor position.
+<tr><td>tracklabel<td>Demonstrates a sweep line track cursor with dynamic labels for the data points at the cursor position.
+<tr><td>trackaxis<td>Demonstrates a sweep line track cursor with dynamic axis labels for the data points at the cursor position.
+<tr><td>trackbox<td>Demonstrates a track rectangle and a floating legend box for the data points in the rectangle.
+<tr><td>trackfinance<td>A finance chart with a sweep line track cursor and dynamic legend entries for the price and technical indicator values at the cursor position.
+<tr><td>crosshair<td>Demonstrates a crosshair cursor with dynamic axis labels showing the position of the cursor.
+<tr><td>simplezoomscroll<td>A simple zoomable and scrollable chart that uses mouse click and drag to control zooming and scrolling.
+<tr><td>zoomscrolltrack<td>Demonstrates using mouse click and drag, mouse wheel, and a scrollbar to control zooming and scrolling. There is also a sweep line track cursor that displays dynamic legend entries.
+<tr><td>zoomscrolltrack2<td>Demonstrates using mouse click and drag, mouse wheel, and a scrollbar to control zooming and scrolling. The axis range can also be set using date picker controls, and there is also a sweep line track cursor that displays dynamic data labels.
+<tr><td>viewportcontroldemo<td>Demonstrates using the ChartDirector viewport control to control zooming and scrolling. Other methods to control zooming and scrolling, such as using mouse click and drag and mouse wheel, are also included. There is also a sweep line track cursor, and a save button to save the chart as PDF, SVG, PNG, JPG, GIF or BMP.
+<tr><td>xyzoomscroll<td>Demonstrates using mouse click and drag, mouse wheel, a slider, and the ChartDirector viewport control to control zooming and scrolling both horizontally and vertically. There is also a crosshair cursor with axis labels, pop up tooltips over the data points, and a save button to save the chart as PDF, SVG, PNG, JPG, GIF or BMP.
+<tr><td>realtimedemo<td>A simple realtime chart with configurable update rate from 250ms to 2 sec.
+<tr><td>realtimetrack<td>A realtime chart with configurable update rate and a sweep line track cursor that displays dynamic legend entries.
+<tr><td>realtimezoomscroll<td>A realtime chart that is zoomable and scrollable, and with configurable update rate and a sweep line track cursor that displays dynamic legend entries. There is also a save button to save the chart as PDF, SVG, PNG, JPG, GIF or BMP.
+</table><br>
+The Qt ".pro" project files in the sample programs can be opened directly with the Qt Creator or the Visual Studio Qt Plug-in. You may also use qmake/make to compile the sample programs from the command line.<br><br>
+It is recommended you start with the helloworld project and then the qtdemo project. The qtdemo project demonstrates over 200 sample charting subroutine which produce over 400 charts of various types. The charting code are from simple to sophisticated, and are designed for use as tutorials.<br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px"> <center><b>Important Note For Mac OS X</b></center><br> By default, on Mac OS X, qmake will create an Xcode project file, not a make file. To create a make file, please use the "-spec macx-g++" flag:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    qmake -spec macx-g++
+    make</pre></div><br>
+If you must use Xcode, note that the Xcode project file created by qmake is incomplete. It lacks the post link script (according to Qt's web site, it is a known issue as of Qt 4.6). The post link script is used to copy "libchartdir.6.dylib" to the application bundle, so that the program can find it at runtime.<br><br>
+To solve the problem, you may copy "libchartdir.6.dylib" to "/usr/lib" so that the executable can find it.<br><br>
+For the qtdemo sample program, if it is executed in Xcode, it may be unable to find the required PNG and GIF files, causing some charts to generate incorrectly. It is because Xcode will build and execute the program in another directory (eg. in the build/Debug directory). To solve the problem, please copy the PNG and GIF files from the qtdemo sample code directory to the directory used by Xcode to execute the program.
+</div><br>
+</div><p class="heading2">The QChartViewer Widget</p><div class="content">
+All ChartDirector Qt sample programs uses the <a href="QChartViewer.htm">QChartViewer</a> widget to display charts and handle mouse interactions. The QChartViewer is a derived class of the QLabel. It is released in source code format.<br><br>
+To use QChartViewer in your own project:<br><br>
+<ul>
+<li>Include "qchartviewer.h" and "qchartviewer.cpp" in your project.<br><br>
+<li>Add the line following line to your code:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> #include "qchartviewer.h" </div><br>
+<li>Add a QChartViewer widget to your user interface.<br><br>
+</ul>
+</div><p class="heading2">Displaying Charts On Screen</p><div class="content">
+To display a chart using QChartViewer, only one line of code is needed:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>     // m_ChartViewer is a QChartViewer widget; myChart is a BaseChart pointer
+     m_ChartViewer-&gt;<a href="QChartViewer.setChart.htm">setChart</a>(myChart);</pre></div><br>
+</div><p class="heading2">Handling Hot Spots Mouse Interactions</p><div class="content">
+Hot spots are special regions in on the chart that are usually used to represent chart objects, such as data representation objects (sectors for pie chart, bars for bar charts, etc). One can display tool tips when the mouse is over the hot spots, and/or to make the hot spots clickable with mouse cursor feedback.<br><br>
+In ChartDirector, hot spots for the charts are defined using standard HTML image maps (text strings containing HTML <AREA> tags). The <a href="BaseChart.getHTMLImageMap.htm">BaseChart.getHTMLImageMap</a> method can be used to generate image maps automatically for a chart. To set the image map to the CChartViewer control, one may use:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>     m_ChartViewer-&gt;<a href="QChartViewer.setImageMap.htm">setImageMap</a>(myImageMap);</pre></div><br>
+After setting the image map, the QChartViewer widget will display the tool tips defined in the image map when the mouse is over the hot spots. For clickable hot spots, it will also change the mouse cursor into a "hand" shape.<br><br>
+When the mouse clicks on the QChartViewer widget, a <a href="QChartViewer.clicked.htm">QChartViewer.clicked</a> signal will be emitted. The signal handler can use <a href="ImageMapHandler.htm">ImageMapHandler</a> to determine which hot spot has been clicked. An example is like:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>void CMyDialog::OnChartClicked(QMouseEvent*)
+{
+    // Get the ImageMapHandler from the QChartViewer that sends the signal
+    QChartViewer *viewer = (QChartViewer *)QObject::sender();
+    <a href="ImageMapHandler.htm">ImageMapHandler</a> *handler = viewer-&gt;<a href="QChartViewer.getImageMapHandler.htm">getImageMapHandler</a>();
+
+    if (0 != handler)
+    {
+        // Query the ImageMapHandler to see if the mouse is on a clickable
+        // hot spot. We consider the hot spot as clickable if its href
+        // ("path") parameter is not empty.
+        const char *path = handler-&gt;<a href="ImageMapHandler.getValue.htm">getValue</a>("path");
+        if ((0 != path) && (0 != *path))
+        {
+            // In a clickable hot spot - do something ......
+            // In the sample code, we just show all hot spot parameters using
+            // the HotSpotDialog included in the sample code.
+            HotSpotDialog hs;
+            hs.setData(handler);
+            hs.exec();
+        }
+    }
+}</pre></div><br>
+</div><p class="heading2">Adding Track Cursor to the Chart</p><div class="content">
+In ChartDirector, track cursors can be created by drawing them on a "dynamic layer" when the mouse moves on the chart. For example, drawing a horizontal line and a vertical line will create a crosshair cursor that tracks the mouse. Other things, such as legend entries, data labels and axis labels, can also be drawn, allowing them to update as the mouse moves over the chart.<br><br>
+QChartViewer will email <a href="QChartViewer.mouseMovePlotArea.htm">QChartViewer.mouseMovePlotArea</a> signals when the mouse moves over the extended plot area. The track cursor drawing code can be implemented in the handler of this signal.
+</div><p class="heading2">Handling View Port Interactions</p><div class="content">
+A view port can be imagined as a window to an underlying surface. For example, a data series with 10 years of data can be imagined as a long surface. If only 1 year of data is displayed, we may consider this as the view port showing 10% of the underlying surface.<br><br>
+Scrolling can be handled as moving the view port, while zooming in and out can be handled as changing the view port size.<br><br>
+QChartViewer supports using mouse click and drag to control the view port (see <a href="QChartViewer.setMouseUsage.htm">QChartViewer.setMouseUsage</a>). When the view port is changed by mouse actions, QChartViewer will emit a <a href="QChartViewer.viewPortChanged.htm">QChartViewer.viewPortChanged</a> signal. The signal handler can then redraw the chart to reflect the updated view port.<br><br>
+QChartViewer also includes methods for changing the view port programmatically. This allows external controls (such as scroll bars, mouse wheel, sliders, date picker, etc) to manipulate the view port.
+</div><p class="heading2">The QViewPortControl</p><div class="content">
+The <a href="QViewPortControl.htm">QViewPortControl</a> is a Qt widget introduced in ChartDirector 6.0. It allows user to visualize and control the QChartViewer widget.<br><br>
+In typical usage, the QViewPortControl will display an "overall chart" that shows the full data range. Once the QViewPortControl is associated with the QChartViewer, it will draw a rectangle on the overall chart to represent the QChartViewer viewport, and dim out the region outside the rectangle. If the viewport changed, such as if the user zooms in the chart, the rectangle will automatically update.<br><br>
+The user can drag the rectangle to move the QChartViewer viewport (equivalent to scrolling). The user can also resize the viewport by dragging the border of the rectangle (equivalent to zooming), or drag a new rectangular region on the overall chart to be used as the new viewport, or click on a point on the chart to center the viewport at that point. In all these cases, as the viewport has changed, the <a href="QChartViewer.viewPortChanged.htm">QChartViewer.viewPortChanged</a> signal will be emitted.<br><br>
+The steps to use QViewPortControl in your own project is similar to that of QChartViewer:<br><br>
+<ul>
+<li>Include "qchartviewer.h" and "qchartviewer.cpp" in your project.<br><br>
+<li>Add the line following line to your code:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> #include "qchartviewer.h" </div><br>
+<li>Add a QViewPortControl widget to your user interface.<br><br>
+</ul>
+The QViewPortControl requires an "overall chart" on which the viewport rectangle is drawn. It also requires connection to a QChartViewer so as to visualize and control its viewport. The code to do this is:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    // m_ViewPortControl is a QViewPortControl; myOverallChart is a BaseChart pointer
+    m_ViewPortControl-&gt;<a href="QViewPortControl.setChart.htm">setChart</a>(myOverallChart);
+
+    // m_ChartViewer is the QChartViewer to be associated with the QViewPortControl
+    m_ViewPortControl-&gt;<a href="QViewPortControl.setViewer.htm">setViewer</a>(m_ChartViewer);</pre></div><br>
+</div><p class="heading2">Saving the Charts</p><div class="content">
+ChartDirector can output the charts in PDF, SVG, PNG, JPG, GIF and BMP format to a file using <a href="BaseChart.makeChart.htm">BaseChart.makeChart</a>, or to memory using <a href="BaseChart.makeChart2.htm">BaseChart.makeChart2</a>. For example, to save the chart in a CChartViewer to a file, the code is:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    // m_ChartViewer is a CChartViewer object which contains the chart to save. The
+    // format is determined by the file extension in pathname.
+    m_ChartViewer-&gt;<a href="QChartViewer.getChart.htm">getChart</a>()-&gt;makeChart(pathname);</pre></div><br>
+</div><p class="heading2">Printing Charts On Paper</p><div class="content">
+To print a chart, simply print the QPixmap in the QChartViewer with QPrinter. For example:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>    QPrinter printer;
+    QPainter painter;
+    painter.begin(&printer);
+    painter.drawImage(40, 40, m_ChartViewer.pixmap()-&gt;toImage());
+    painter.end();</pre></div></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

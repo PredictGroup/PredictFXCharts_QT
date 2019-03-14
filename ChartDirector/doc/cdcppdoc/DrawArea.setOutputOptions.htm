@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<Title>DrawArea.setOutputOptions</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="DrawArea.htm">DrawArea</a>.setOutputOptions</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setOutputOptions(const char *options);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets output format options for the next chart output. Currently, only SVG, SVGZ and PDF output formats support output options.<br><br>
+An output option can be a flag (such as "compress") or an attribute-value pair (such as "width=800"). Multiple output options can be joined using semicolons as delimiters.<br><br>
+<b>SVG Options</b> <table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="19%">SVG Option<th width="19%%">Type<th width="60%">Description
+<tr><td>compress<td>Flag<td> Compressed the SVG, that is, output SVGZ.
+<tr><td>bitmap<td>Flag<td> Render the chart as a bitmap and output the bitmap as SVG.
+<tr><td>noxmldecl<td>Flag<td> Do not include the xml declaration line "&lt;?xml version="1.0" .... &gt;" in the SVG.
+<tr><td>nodoctype<td>Flag<td> Do not include the document type declaration line "&lt;!DOCTYPE svg PUBLIC .... &gt;" in the SVG.
+<tr><td>width<td>Flag / Attribute<td> Specifies the width attribute of the SVG.<br><br>
+By default, ChartDirector will not include the width or height attribute in the SVG output. In this case, the SVG is variable in size and would assume the size of its container. For example, if the SVG is inside a &lt;DIV&gt; block in a web page, it will assume the size of the DIV block.<br><br>
+If the "width" option is used as a flag, ChartDirector will include the width attribute in the SVG and set it to the chart width. If the "width" option is used as an attribute (such as "width=800"), ChartDirector will include the width attribute in the SVG and set it to the specified value. The specified value should be some text that is valid as SVG width. Examples are "100" and "75%".
+<tr><td>height<td>Flag / Attribute<td> Specifies the height attribute of the SVG. See the description on "width" above on how to use it.
+</table><br>
+<b>PDF Options</b> <table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="19%">PDF Option<th width="19%%">Type<th width="60%">Description <tr><td>bitmap<td>Flag<td> Render the chart as a bitmap and output the bitmap as PDF.
+<tr><td>width<td>Attribute<td> The width of the chart in the PDF in pixel unit.<br><br>
+By default, ChartDirector will use the pixel width of the chart as the width of the chart in PDF. The "width" attribute can be used to specify an alternative value. The value must be a number.
+<tr><td>height<td>Attribute<td> The width of the chart in the PDF in pixel unit.<br><br>
+See the description on "width" above for how to use it.
+<tr><td>pagewidth<td>Attribute<td> The page width in pixel unit.<br><br>
+By default, ChartDirector will set the page width to the same width as the chart. The "pagewidth" attribute can be used to specify an alternative value. The value must be a number.
+<tr><td>pageheight<td>Attribute<td> The page height in pixel unit.<br><br>
+By default, ChartDirector will set the page height to the same height as the chart. The "pageheight" attribute can be used to specify an alternative value. The value must be a number.
+<tr><td>leftx<td>Attribute<td> The x coordinate of the left side of the chart within the page in pixel unit.<br><br>
+By default, ChartDirector will center the chart in the page. The "leftx" attribute can be used to specify an alternative horizontal position. The coordinate must be a number.
+<tr><td>topy<td>Attribute<td> The y coordinate of the top side of the chart within the page in pixel unit.<br><br>
+By default, ChartDirector will center the chart in the page. The "topy" attribute can be used to specify an alternative vertical position. The coordinate must be a number.
+<tr><td>dpi<td>Attribute<td> Specify the factor for conversion from pixel to physical unit.<br><br>
+The PDF viewer will convert the pixel unit into physical unit (eg. inches) so that it can be layout on paper or other physical media. The default conversion factor for the chart is 96 pixels per inch. The "dpi" attribute can be used to specify an alternative value. The value must be a number.
+</table>
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>options</td><td>(Mandatory)</td><td>A list of options delimited by semicolons.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

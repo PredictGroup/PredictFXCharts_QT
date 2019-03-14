@@ -1,0 +1,85 @@
+<HTML>
+<HEAD>
+<Title>Installation</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Installation</p>
+<hr class="separator">
+<p class="heading1aa">Installing ChartDirector for C++</p><div class="content">
+ChartDirector for C++ is released as a zip file on Windows, and as a tar.gz file on Linux, FreeBSD, Mac OS X and Solaris. To install ChartDirector for C++:, simply extract the files from distribution.<br><br>
+<ul>
+<li>On Windows, you may use Winzip or similar tools to unzip the ChartDirector distribution.<br><br>
+<li>On Linux, FreeBSD, Mac OS X and Solaris, you may use:<br><br>
+<div style="margin-left:25;font-family:courier new,courier">
+<pre>gunzip [chartdir_file_name].tar.gz
+tar xvf [chartdir_file_name].tar</pre> </div><br>
+</ul>
+</div><p class="heading1a">Running ChartDirector Sample Programs</p><div class="content">
+ChartDirector for C++ comes with three sets of sample programs.<br><br>
+<ul>
+<li>Command line sample programs are included in the "ChartDirector/cppdemo" subdirectory. They are compatible with any standard C++ compiler and work on all supported operating systems.<br><br>
+On the Windows edition of ChartDirector, Visual Studio project files are included. On the Linux, FreeBSD, Mac OS X and Solaris editions of ChartDirector, make files are included. Note that the make files assume the C++ compiler is "g++". You may need to modify the make files if you are using a different compiler.<br><br>
+<li>On the Windows edition of ChartDirector, MFC based sample programs with Visual Studio project files are included in the "ChartDirector\mfcdemo" subdirectory.<br><br>
+<li>QT based sample programs with QT ".pro" project files are included in the "ChartDirector/qtdemo" subdirectory. Please refer to <a href="firstqtproject.htm">Using ChartDirector with Qt</a> for more information on how to compile these sample programs.<br><br>
+</ul>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b>Note:</b> The Visual Studio project files for the sample programs are based on Visual Studio 2005. If you are using later versions of Visual Studio, it may prompt you to convert them to match the Visual Studio version. Please proceed to convert them. If you are using earlier versions of Visual Studio, you may need to recreate the project files in order to compile the sample code. ChartDirector has been tested to be compatible with Visual Studio 6 or later.
+</div><br>
+</div><p class="heading1a">Using ChartDirector in Your Projects on Windows</p><div class="content">
+<font color="#cc0000"><b>Note : this section is applicable for Windows only.</b></font><br><br>
+When you develop a project using ChartDirector, the development environment should be configured appropriately so that it can find the proper header files and link to the proper library files.<br><br>
+<ul> <li><b><u>Compilation</u></b><br> All C++ modules that use ChartDirector need to include the file "chartdir.h". The "chartdir.h" will in turn include more header files. All these files are located in the "ChartDirector\include" subdirectory. The development environment header file search path must be configured to include that directory.<br><br>
+<ul>
+<li>For Visual Studio, the steps are: Select "Project/Properties" from the menu bar, go to "C/C++" -> "General", in the "Additional Include Directories" field, add the path for the "ChartDirector\include" subdirectory.<br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+Note: The steps above are based on Visual Studio 2005. The exact steps may be different for other Visual Studio versions. Please refer to your Visual Studio documentation for details.
+</div><br>
+<li>For QT Creator or qmake, you may edit the QT project file and add the line:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> INCLUDEPATH += [Path_Of_ChartDirector_Include_Subdirectory] </div><br>
+</ul>
+<li><b><u>Linking</u></b><br> After compilation, the object file needs to link with "ChartDirector\lib\chartdir51.lib".<br><br>
+<ul>
+<li>For Visual Studio, the steps are: Select "Project/Properties" from the menu bar, go to "Linker" -> "Input", in the "Additional Dependencies" field, add the path of the file "chartdir51.lib".<br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+Note: The steps above are based on Visual Studio 2005. The exact steps may be different for other Visual Studio versions. Please refer to your Visual Studio documentation for details.
+</div><br>
+<li>For QT Creator or qmake, you may edit the QT project file and add the line:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> LIBS += [Path_Of_chardir50.lib] </div><br>
+</ul>
+<li><b><u>Execution</u></b><br> During execution, the executable would need to find the "chartdir51.dll". You may copy the "chartdir51.dll" to the same directory where the executable runs, or you may copy it to a directory in the operating system search path (eg. [system32]).<br><br>
+</ul>
+</div><p class="heading1a">Using ChartDirector in Your Projects on Linux, FreeBSD, Mac OSX and Solaris</p><div class="content">
+<font color="#cc0000"><b>Note : this section is applicable for Linux, FreeBSD, Mac OSX and Solaris only.</b></font><br><br>
+When you develop a project using ChartDirector, the development environment should be configured appropriately so that it can find the proper header files and link to the proper library files.<br><br>
+<ul> <li><b><u>Compilation</u></b><br> All C++ modules that use ChartDirector need to include the file "chartdir.h". The "chartdir.h" will in turn include more header files. All these files are located in the "ChartDirector/include" subdirectory. The compiler must be configured to include that directory in its header file search path. This can be achieved by using the following compiler flag:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> -I[Path_Of_ChartDirector_Include_Subdirectory] </div><br>
+If you are using QT, you may edit the QT project file and add the line:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> INCLUDEPATH += [Path_Of_ChartDirector_Include_Subdirectory] </div><br>
+<li><b><u>Linking</u></b><br> After compilation, the object file needs to link with "libchartdir.so" (for Linux, FreeBSD and Solaris) or "libchartdir.dylib" (for Mac OS X). This can be achieved by using the following linker flag:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> -L[Path_Of_ChartDirector_Lib_Subdirectory] -lchartdir </div><br>
+If you are using QT, you may edit the QT project file and add the line:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> LIBS += -L[Path_Of_ChartDirector_Lib_Subdirectory] -lchartdir </div><br>
+<li><b><u>Execution</u></b><br> The ChartDirector shared object and other dependent files are in the "ChartDirector/lib" subdirectory. To ensure the runtime linker can locate ChartDirector, you may copy *everything* (recursive copy) in "ChartDirector/lib" (including the fonts subdirectory for Linux, FreeBSD and Solaris editions of ChartDirector) to "/usr/lib". This is by first changing to the "ChartDirector" directory, then use:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> cp -R lib/* /usr/lib </div><br>
+You may also put the "ChartDirector/lib" files in other locations if you build the executable properly. For example, on Linux, FreeBSD and Solaris, you may use the -R linker flag to specify additional paths to search for shared objects. On Mac OS X, you may use the install_name_tool to specify alternative locations for shared objects. Please refer to the documentation of your development tools for details.<br><br>
+</ul>
+<div style="background-color:#cccccc;width:99%;padding:10px"> <center><b>Important Note For Solaris g++/gcc</b></center><br> In Solaris, some compilers (such as g++/gcc) requires an assembler (as) and linker (ld) to produce executable code. Solaris comes standard with as/ld in "/usr/ccs/bin". If you do not find as/ld in "/usr/ccs/bin", please install it from the Solaris CD.<br><br>
+There is also an alternative as/ld distributed in the GNU binutils package.<br><br>
+ChartDirector is compiled using the Solaris as/ld. When developing software using ChartDirector, it is suggested you use the Solaris as/ld, not the GNU as/ld.<br><br>
+If you are using g++/gcc on Solaris, and you have the GNU binutils installed, by default, the g++/gcc compiler will use the GNU as/ld. To use the Solaris as/ld, you may uninstall the GNU binutils, or add the flag "-B/usr/ccs/bin/" in your compile and link statements. Simply setting the "path" variable to search for "/usr/ccs/bin" first is not sufficient.
+</div><br>
+</div><p class="heading1a">Installing the ChartDirector License</p><div class="content">
+If you have purchased a license to use ChartDirector, you should have a license key delivered to your via email and postal mail.<br><br>
+If your license key is for upgrading from a previous version of ChartDirector, you need to append the upgrade license key to the previous version license key, and use the combined license key.<br><br>
+There are two alternative methods to install the license key.<br><br>
+<ul>
+<li>Create a one-line ASCII file using Notepad or other text editor, and put the license key in that line. The whole file should contain only the license key. Name that file "chartdir.lic" and put the file in the same directory as "chartdir??.dll" (for Windows, ?? = version number) or "libchartdir.so" (for  Linux, FreeBSD, Mac OS X and Solaris).<br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+Make sure your license file is called "chartdir.lic". In particular, Notepad may automatically append ".txt" to the file name when creating a new file. So even if the file is saved as "chartdir.lic", it may end up as "chartdir.lic.txt". If this is the case, please rename the file back to "chartdir.lic".
+</div><br>
+<li>An alternative method is to hard code the license key into the source code by using the <a href="Chart.setLicenseCode.htm">Chart::setLicenseCode</a> API. This method is recommended if your are redistributing ChartDirector, because your customer will then be unable to see the license key (unless your software is open source).<br><br>
+</ul></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

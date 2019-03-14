@@ -1,0 +1,88 @@
+<HTML>
+<HEAD>
+<Title>Side Label Layout</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Side Label Layout</p>
+<hr class="separator">
+<div class="content">
+<img src="images/sidelabelpie.png">
+<br><br>
+This example demonstrates the "side label layout" method for positioning the sector labels. It also demonstrates metallic background colors, and sector labels with glass shading effect and rounded corners.<br><br>
+With "side label layout", the sector labels are positioned on the left and right sides of the chart. In contrast, all previous examples use "circular label layout", in which the labels are positioned circularly around the pie.<br><br>
+"Side label layout" has the advantages that the labels will automatically shift up and down to avoid overlapping. In the above chart, there are a number of small sectors at the bottom-right of the pie. Note that the labels are shifted to avoid overlapping.<br><br>
+<ul><li> The golden background is achieved by using <a href="Chart.goldColor.htm">Chart::goldColor</a> to create the golden color, then use it in <a href="PieChart.PieChart.htm">PieChart.PieChart</a> as the chart background color.<br><br>
+<li> Similarly, the pink metallic background for the chart title is achieved by using <a href="Chart.metalColor.htm">Chart::metalColor</a> to create the pink metallic color, then use <a href="Box.setBackground.htm">Box.setBackground</a> of the title <a href="TextBox.htm">TextBox</a> object to set it as the background color.<br><br>
+<li> The side label layout method is specified with <a href="PieChart.setLabelLayout.htm">PieChart.setLabelLayout</a>.<br><br>
+<li> The glass shading effect of the sector labels is defined using <a href="Chart.glassEffect.htm">Chart::glassEffect</a>, then applied to the sector labels using <a href="Box.setBackground.htm">Box.setBackground</a> of the sector label prototype object (obtained via <a href="PieChart.setLabelStyle.htm">PieChart.setLabelStyle</a>).<br><br>
+<li> The rounded corners of the sector labels are configured using <a href="Box.setRoundedCorners.htm">Box.setRoundedCorners</a> of the sector label prototype object.</ul>
+This example demonstrates a technique for further improving label layout by adjusting the start angle of the first sector using <a href="PieChart.setStartAngle.htm">PieChart.setStartAngle</a>.<br><br>
+If the data have a lot of small values and are sorted, the small sectors will be crowded together. For these cases, label layout will be optimal (with the least shifting required) if the small sectors are at the left or right side of the pie, rather than at the top or bottom.<br><br>
+If the data are in descending order (like this example), a start angle of 135 degrees with clockwise sector layout can be used to put the small sectors at approximately 45 - 135 degrees (the right side of the pie). If the data are in ascending order, a start angle of 45 degrees with clockwise sector layout can be used to achieve similar effects.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/sidelabelpie". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the pie chart
+    double data[] = {35, 30, 25, 7, 6, 5, 4, 3, 2, 1};
+
+    // The labels for the pie chart
+    const char *labels[] = {"Labor", "Production", "Facilities", "Taxes", "Misc", "Legal",
+        "Insurance", "Licenses", "Transport", "Interest"};
+
+    // Create a PieChart object of size 560 x 270 pixels, with a golden background and a 1 pixel 3D
+    // border
+    PieChart *c = new PieChart(560, 270, Chart::goldColor(), -1, 1);
+
+    // Add a title box using 15pt Times Bold Italic font and metallic pink background color
+    c-&gt;addTitle("Project Cost Breakdown", "timesbi.ttf", 15)-&gt;setBackground(Chart::metalColor(
+        0xff9999));
+
+    // Set the center of the pie at (280, 135) and the radius to 110 pixels
+    c-&gt;setPieSize(280, 135, 110);
+
+    // Draw the pie in 3D with 20 pixels 3D depth
+    c-&gt;set3D(20);
+
+    // Use the side label layout method
+    c-&gt;setLabelLayout(Chart::SideLayout);
+
+    // Set the label box background color the same as the sector color, with glass effect, and with
+    // 5 pixels rounded corners
+    TextBox *t = c-&gt;setLabelStyle();
+    t-&gt;setBackground(Chart::SameAsMainColor, Chart::Transparent, Chart::glassEffect());
+    t-&gt;setRoundedCorners(5);
+
+    // Set the border color of the sector the same color as the fill color. Set the line color of
+    // the join line to black (0x0)
+    c-&gt;setLineColor(Chart::SameAsMainColor, 0x000000);
+
+    // Set the start angle to 135 degrees may improve layout when there are many small sectors at
+    // the end of the data array (that is, data sorted in descending order). It is because this
+    // makes the small sectors position near the horizontal axis, where the text label has the least
+    // tendency to overlap. For data sorted in ascending order, a start angle of 45 degrees can be
+    // used instead.
+    c-&gt;setStartAngle(135);
+
+    // Set the pie data and the pie labels
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), StringArray(labels, (int)(
+        sizeof(labels) / sizeof(labels[0]))));
+
+    // Output the chart
+    c-&gt;makeChart("sidelabelpie.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

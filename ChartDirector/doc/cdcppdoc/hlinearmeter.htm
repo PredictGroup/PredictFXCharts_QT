@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<Title>Horizontal Linear Meter</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Horizontal Linear Meter</p>
+<hr class="separator">
+<div class="content">
+<img src="images/hlinearmeter.png">
+<br><br>
+This example demonstrates the basic steps in creating a horizontal linear meter.<br><br>
+A horizontal linear meter can be created using the following steps:<br><br>
+<ul><li> Create a <a href="LinearMeter.htm">LinearMeter</a> object using <a href="LinearMeter.LinearMeter.htm">LinearMeter.LinearMeter</a>, optionally specify the background and border colors and whether to use rounded and/or thick frames..<br><br>
+<li> Specify the size of the meter scale and the orientation of the scale labels using <a href="LinearMeter.setMeter.htm">LinearMeter.setMeter</a>. In this example, the scale labels are positioned at the top of the meter scale. This automatically implies the meter as horizontal.<br><br>
+<li> Set the numeric scale of the meter using <a href="BaseMeter.setScale.htm">BaseMeter.setScale</a>.<br><br>
+<li> Optionally add a color scale to the meter using <a href="BaseMeter.addColorScale.htm">BaseMeter.addColorScale</a>. Whereas the meter scale displays the values with text labels, a color scale represents the values with different colors.<br><br>
+<li> Add a pointer to the meter using <a href="BaseMeter.addPointer.htm">BaseMeter.addPointer</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/hlinearmeter". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The value to display on the meter
+    double value = 74.25;
+
+    // Create an LinearMeter object of size 250 x 65 pixels with a very light grey (0xeeeeee)
+    // background, and a rounded 3-pixel thick light grey (0xcccccc) border
+    LinearMeter *m = new LinearMeter(250, 65, 0xeeeeee, 0xcccccc);
+    m-&gt;setRoundedFrame(Chart::Transparent);
+    m-&gt;setThickFrame(3);
+
+    // Set the scale region top-left corner at (14, 23), with size of 218 x 20 pixels. The scale
+    // labels are located on the top (implies horizontal meter)
+    m-&gt;setMeter(14, 23, 218, 20, Chart::Top);
+
+    // Set meter scale from 0 - 100, with a tick every 10 units
+    m-&gt;setScale(0, 100, 10);
+
+    // Add a smooth color scale to the meter
+    double smoothColorScale[] = {0, 0x6666ff, 25, 0x00bbbb, 50, 0x00ff00, 75, 0xffff00, 100,
+        0xff0000};
+    m-&gt;addColorScale(DoubleArray(smoothColorScale, (int)(sizeof(smoothColorScale) / sizeof(
+        smoothColorScale[0]))));
+
+    // Add a blue (0x0000cc) pointer at the specified value
+    m-&gt;addPointer(value, 0x0000cc);
+
+    // Output the chart
+    m-&gt;makeChart("hlinearmeter.png");
+
+    //free up resources
+    delete m;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<Title>Cylinder Bar Shape</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Cylinder Bar Shape</p>
+<hr class="separator">
+<div class="content">
+<img src="images/cylinderbar.png">
+<br><br>
+This example demonstrates bars of cylinder shape.<br><br>
+ChartDirector supports bars in cylindrical or arbitrary polygonal shapes. The shape are specified using <a href="BarLayer.setBarShape.htm">BarLayer.setBarShape</a> or <a href="BarLayer.setBarShape2.htm">BarLayer.setBarShape2</a>. In this example, the cylindrical shape is illustrated.<br><br>
+See <a href="shapespec.htm">Shape Specification</a> on how built-in and custom shapes are defined in ChartDirector.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/cylinderbar". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the bar chart
+    double data[] = {85, 156, 179.5, 211, 123};
+
+    // The labels for the bar chart
+    const char *labels[] = {"Mon", "Tue", "Wed", "Thu", "Fri"};
+
+    // Create a XYChart object of size 400 x 240 pixels.
+    XYChart *c = new XYChart(400, 240);
+
+    // Add a title to the chart using 14pt Times Bold Italic font
+    c-&gt;addTitle("Weekly Server Load", "timesbi.ttf", 14);
+
+    // Set the plotarea at (45, 40) and of 300 x 160 pixels in size. Use alternating light grey
+    // (f8f8f8) / white (ffffff) background.
+    c-&gt;setPlotArea(45, 40, 300, 160, 0xf8f8f8, 0xffffff);
+
+    // Add a multi-color bar chart layer
+    BarLayer *layer = c-&gt;addBarLayer(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))),
+        IntArray(0, 0));
+
+    // Set layer to 3D with 10 pixels 3D depth
+    layer-&gt;set3D(10);
+
+    // Set bar shape to circular (cylinder)
+    layer-&gt;setBarShape(Chart::CircleShape);
+
+    // Set the labels on the x axis.
+    c-&gt;xAxis()-&gt;setLabels(StringArray(labels, (int)(sizeof(labels) / sizeof(labels[0]))));
+
+    // Add a title to the y axis
+    c-&gt;yAxis()-&gt;setTitle("MBytes");
+
+    // Add a title to the x axis
+    c-&gt;xAxis()-&gt;setTitle("Work Week 25");
+
+    // Output the chart
+    c-&gt;makeChart("cylinderbar.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

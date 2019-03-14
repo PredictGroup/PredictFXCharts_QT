@@ -1,0 +1,115 @@
+<HTML>
+<HEAD>
+<Title>Rectangular Angular Meters</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Rectangular Angular Meters</p>
+<hr class="separator">
+<div class="content">
+<img src="images/rectangularmeter0.png">&nbsp;&nbsp;<img src="images/rectangularmeter1.png">&nbsp;&nbsp;<img src="images/rectangularmeter2.png">&nbsp;&nbsp;<img src="images/rectangularmeter3.png">&nbsp;&nbsp;<img src="images/rectangularmeter4.png">&nbsp;&nbsp;<img src="images/rectangularmeter5.png">
+<br><br>
+This example demonstrates rectangular angular meters.<br><br>
+The angular span of the meter scale in this example is from -60 to 60 degrees, which is one third of a circle. The meter is configured to have a rectangular frame with rounded corners. A semi-transparent rectangle is put at the bottom of the meter to create the object that covers the meter cap. The rectangle is created by using <a href="BaseChart.addText.htm">BaseChart.addText</a> to create an empty text box, and then use <a href="Box.setSize.htm">Box.setSize</a> and <a href="Box.setBackground.htm">Box.setBackground</a> to configure it to have the proper size and color.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/rectangularmeter". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+void createChart(int chartIndex, const char *filename)
+{
+    // The value to display on the meter
+    double value = 72.55;
+
+    // Create an AngularMeter object of size 240 x 170 pixels with very light grey (0xeeeeee)
+    // background, and a rounded 4-pixel thick light grey (0xcccccc) border
+    AngularMeter *m = new AngularMeter(240, 170, 0xeeeeee, 0xcccccc);
+    m-&gt;setRoundedFrame(Chart::Transparent);
+    m-&gt;setThickFrame(4);
+
+    // Set the default text and line colors to dark grey (0x222222)
+    m-&gt;setColor(Chart::TextColor, 0x222222);
+    m-&gt;setColor(Chart::LineColor, 0x222222);
+
+    // Center at (120, 145), scale radius = 128 pixels, scale angle -60 to +60 degrees
+    m-&gt;setMeter(120, 145, 128, -60, 60);
+
+    // Meter scale is 0 - 100, with major/minor/micro ticks every 20/10/5 units
+    m-&gt;setScale(0, 100, 20, 10, 5);
+
+    // Set the scale label style to 14pt Arial Italic. Set the major/minor/micro tick lengths to
+    // 16/16/10 pixels pointing inwards, and their widths to 2/1/1 pixels.
+    m-&gt;setLabelStyle("ariali.ttf", 14);
+    m-&gt;setTickLength(-16, -16, -10);
+    m-&gt;setLineWidth(0, 2, 1, 1);
+
+    // Demostrate different types of color scales and putting them at different positions
+    double smoothColorScale[] = {0, 0x3333ff, 25, 0x0088ff, 50, 0x00ff00, 75, 0xdddd00, 100,
+        0xff0000};
+    double stepColorScale[] = {0, 0x00cc00, 60, 0xffdd00, 80, 0xee0000, 100};
+    double highLowColorScale[] = {0, 0x00ff00, 70, Chart::Transparent, 100, 0xff0000};
+
+    if (chartIndex == 0) {
+        // Add the smooth color scale at the default position
+        m-&gt;addColorScale(DoubleArray(smoothColorScale, (int)(sizeof(smoothColorScale) / sizeof(
+            smoothColorScale[0]))));
+    } else if (chartIndex == 1) {
+        // Add the smooth color scale starting at radius 128 with zero width and ending at radius
+        // 128 with 16 pixels inner width
+        m-&gt;addColorScale(DoubleArray(smoothColorScale, (int)(sizeof(smoothColorScale) / sizeof(
+            smoothColorScale[0]))), 128, 0, 128, -16);
+    } else if (chartIndex == 2) {
+        // Add the smooth color scale starting at radius 70 with zero width and ending at radius 60
+        // with 20 pixels outer width
+        m-&gt;addColorScale(DoubleArray(smoothColorScale, (int)(sizeof(smoothColorScale) / sizeof(
+            smoothColorScale[0]))), 70, 0, 60, 20);
+    } else if (chartIndex == 3) {
+        // Add the high/low color scale at the default position
+        m-&gt;addColorScale(DoubleArray(highLowColorScale, (int)(sizeof(highLowColorScale) / sizeof(
+            highLowColorScale[0]))));
+    } else if (chartIndex == 4) {
+        // Add the step color scale at the default position
+        m-&gt;addColorScale(DoubleArray(stepColorScale, (int)(sizeof(stepColorScale) / sizeof(
+            stepColorScale[0]))));
+    } else {
+        // Add the smooth color scale at radius 60 with 15 pixels outer width
+        m-&gt;addColorScale(DoubleArray(smoothColorScale, (int)(sizeof(smoothColorScale) / sizeof(
+            smoothColorScale[0]))), 60, 15);
+    }
+
+    // Add a text label centered at (120, 120) with 15pt Arial Italic font
+    m-&gt;addText(120, 120, "CPU", "ariali.ttf", 15, Chart::TextColor, Chart::BottomCenter);
+
+    // Add a red (0xff0000) pointer at the specified value
+    m-&gt;addPointer2(value, 0xff0000);
+
+    // Add a semi-transparent light grey (0x3fcccccc) rectangle at (0, 120) and of size 240 x 60
+    // pixels to cover the bottom part of the meter for decoration
+    TextBox *cover = m-&gt;addText(0, 120, "");
+    cover-&gt;setSize(240, 60);
+    cover-&gt;setBackground(0x3fcccccc);
+
+    // Output the chart
+    m-&gt;makeChart(filename);
+
+    //free up resources
+    delete m;
+}
+
+int main(int argc, char *argv[])
+{
+    createChart(0, "rectangularmeter0.png");
+    createChart(1, "rectangularmeter1.png");
+    createChart(2, "rectangularmeter2.png");
+    createChart(3, "rectangularmeter3.png");
+    createChart(4, "rectangularmeter4.png");
+    createChart(5, "rectangularmeter5.png");
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

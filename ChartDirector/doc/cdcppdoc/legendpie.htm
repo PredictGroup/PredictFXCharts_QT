@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<Title>Pie Chart with Legend (1)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Pie Chart with Legend (1)</p>
+<hr class="separator">
+<div class="content">
+<img src="images/legendpie.png">
+<br><br>
+This example demonstrates how to add a legend box to a pie chart. It also demonstrates alternative sector label format and rounded edge sector shading.<br><br>
+<ul><li> Add a legend box using <a href="BaseChart.addLegend.htm">BaseChart.addLegend</a>.<br><br>
+<li> Change the sector label format using <a href="PieChart.setLabelFormat.htm">PieChart.setLabelFormat</a>.<br><br>
+<li> Set rounded edge sector shading using <a href="PieChart.setSectorStyle.htm">PieChart.setSectorStyle</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/legendpie". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the pie chart
+    double data[] = {25, 18, 15, 12, 8, 30, 35};
+
+    // The labels for the pie chart
+    const char *labels[] = {"Labor", "Licenses", "Taxes", "Legal", "Insurance", "Facilities",
+        "Production"};
+
+    // Create a PieChart object of size 450 x 270 pixels
+    PieChart *c = new PieChart(450, 270);
+
+    // Set the center of the pie at (150, 100) and the radius to 80 pixels
+    c-&gt;setPieSize(150, 135, 100);
+
+    // add a legend box where the top left corner is at (330, 50)
+    c-&gt;addLegend(330, 60);
+
+    // modify the sector label format to show percentages only
+    c-&gt;setLabelFormat("{percent}%");
+
+    // Set the pie data and the pie labels
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), StringArray(labels, (int)(
+        sizeof(labels) / sizeof(labels[0]))));
+
+    // Use rounded edge shading, with a 1 pixel white (FFFFFF) border
+    c-&gt;setSectorStyle(Chart::RoundedEdgeShading, 0xffffff, 1);
+
+    // Output the chart
+    c-&gt;makeChart("legendpie.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>DemoModule.h</itemPath>
+      <itemPath>IdentLevels.h</itemPath>
+      <itemPath>Num_Bids.h</itemPath>
+      <itemPath>Num_Offers.h</itemPath>
+      <itemPath>Open_Positions.h</itemPath>
+      <itemPath>aboutForm.h</itemPath>
+      <itemPath>financedemo.h</itemPath>
+      <itemPath>hotspotdialog.h</itemPath>
+      <itemPath>mainWnd.h</itemPath>
+      <itemPath>qchartviewer.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+      <itemPath>aboutForm.ui</itemPath>
+      <itemPath>mainWnd.ui</itemPath>
+      <itemPath>pfxMainRes.qrc</itemPath>
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>DemoModule.cpp</itemPath>
+      <itemPath>Num_Bids.cpp</itemPath>
+      <itemPath>Num_Offers.cpp</itemPath>
+      <itemPath>Open_Positions.cpp</itemPath>
+      <itemPath>aboutForm.cpp.cc</itemPath>
+      <itemPath>hotspotdialog.cpp</itemPath>
+      <itemPath>main.cpp</itemPath>
+      <itemPath>mainWnd.cpp.cc</itemPath>
+      <itemPath>qchartviewer.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="4">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <qt>
+        <modules>core gui widgets sql</modules>
+      </qt>
+      <compileType>
+        <ccTool>
+          <standard>8</standard>
+          <incDir>
+            <pElem>ChartDirector/include</pElem>
+            <pElem>ChartDirector/lib</pElem>
+          </incDir>
+          <incFile>
+            <pElem>ChartDirector/include/FinanceChart.h</pElem>
+            <pElem>ChartDirector/include/bchartdir.h</pElem>
+            <pElem>ChartDirector/include/chartdir.h</pElem>
+            <pElem>ChartDirector/include/memblock.h</pElem>
+          </incFile>
+        </ccTool>
+        <linkerTool>
+          <linkerDynSerch>
+            <pElem>ChartDirector/include</pElem>
+            <pElem>ChartDirector/lib</pElem>
+          </linkerDynSerch>
+          <linkerLibItems>
+            <linkerLibFileItem>ChartDirector/lib/libchartdir.so</linkerLibFileItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="DemoModule.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="DemoModule.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="IdentLevels.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Num_Bids.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Num_Bids.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Num_Offers.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Num_Offers.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Open_Positions.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Open_Positions.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="aboutForm.cpp.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="aboutForm.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="aboutForm.ui" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="financedemo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hotspotdialog.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="hotspotdialog.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="mainWnd.cpp.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="mainWnd.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="mainWnd.ui" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="pfxMainRes.qrc" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="qchartviewer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="qchartviewer.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="4">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <qt>
+        <buildMode>1</buildMode>
+        <modules>core gui widgets</modules>
+      </qt>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="DemoModule.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="DemoModule.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="IdentLevels.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Num_Bids.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Num_Bids.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Num_Offers.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Num_Offers.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Open_Positions.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Open_Positions.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="aboutForm.cpp.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="aboutForm.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="aboutForm.ui" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="financedemo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hotspotdialog.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="hotspotdialog.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="mainWnd.cpp.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="mainWnd.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="mainWnd.ui" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="pfxMainRes.qrc" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="qchartviewer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="qchartviewer.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

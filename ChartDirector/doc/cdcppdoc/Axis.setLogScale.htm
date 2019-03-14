@@ -1,0 +1,43 @@
+<HTML>
+<HEAD>
+<Title>Axis.setLogScale</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="Axis.htm">Axis</a>.setLogScale</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setLogScale(double lowerLimit, double upperLimit, double majorTickInc = 0, double minorTickInc = 0);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets the axis to use the given logarithmic scale.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>lowerLimit</td><td>(Mandatory)</td><td>The lower bound of the axis.</td></tr><tr><td>upperLimit</td><td>(Mandatory)</td><td>The upper bound of the axis.</td></tr><tr><td>majorTickInc</td><td>0</td><td>Adds major ticks to the axis, where the major ticks are separated by majorTickInc in ratio. For example, a value of 10 means each tick will be 10 times the value of the previous tick. Each major tick will have an associated text label for the value if the axis at the tick.<br><br>
+The predefined constant <a href="Chart.LogTick.htm">LogTick</a> means the ticks will be a segment from the sequence ..., 1, 2, 5, 10, 20, 50, 100, ... These numbers are roughly equally spaced in a logarithmic axis.<br><br>
+The predefined constant <a href="Chart.LinearTick.htm">LinearTick</a> the tick increment will be linear within two consecutive powers of 10, like ..., 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, ...<br><br>
+0 means the major ticks will be automatically determined. In this case, the lowerLimit and upperLimit may be automatically adjusted to align with the ticks.<br><br>
+Use <a href="Chart.NoValue.htm">NoValue</a> to disable major ticks.</td></tr><tr><td>minorTickInc</td><td>0</td><td>Adds minor ticks to the axis, where the minor ticks are separated by minorTickInc in ratio.<br><br>
+The predefined constant <a href="Chart.LogTick.htm">LogTick</a> and <a href="Chart.LinearTick.htm">LinearTick</a> has the same meaning as in the <b>majorTickInc</b> argument.<br><br>
+0 means no minor tick is used.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

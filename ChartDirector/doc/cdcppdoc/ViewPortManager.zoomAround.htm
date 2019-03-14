@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<Title>ViewPortManager.zoomAround</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ViewPortManager.htm">ViewPortManager</a>.zoomAround</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+bool zoomAround(int x, int y, double xZoomRatio, double yZoomRatio);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Zooms around a certain point.<br><br>
+This method adjusts the viewport position and size to reflect zooming in/out around the given point. If possible, the given point not move (that is, stays at the same x and y coordinates) after zooming in/out.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>x</td><td>(Mandatory)</td><td>The x-coordinate of the point to zoom around.</td></tr><tr><td>y</td><td>(Mandatory)</td><td>The y-coordinate of the point to zoom around.</td></tr><tr><td>xZoomRatio</td><td>(Mandatory)</td><td>The zoom magnification factor in the x direction. For example, a value of 2 means zooming in by 2x. A value of 0.5 means zooming out by 2x.</td></tr><tr><td>yZoomRatio</td><td>(Mandatory)</td><td>The zoom magnification factor in the y direction. For example, a value of 2 means zooming in by 2x. A value of 0.5 means zooming out by 2x.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+True if viewport is changed, otherwise false. It is possible for no zooming to occur if zoom limits are reached. See <a href="ViewPortManager.setZoomInWidthLimit.htm">ViewPortManager.setZoomInWidthLimit</a>, <a href="ViewPortManager.setZoomOutWidthLimit.htm">ViewPortManager.setZoomOutWidthLimit</a>, <a href="ViewPortManager.setZoomInHeightLimit.htm">ViewPortManager.setZoomInHeightLimit</a> and <a href="ViewPortManager.setZoomOutHeightLimit.htm">ViewPortManager.setZoomOutHeightLimit</a> for the meaning of zoom limits.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

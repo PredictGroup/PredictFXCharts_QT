@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<Title>BaseMeter.addColorScale</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="BaseMeter.htm">BaseMeter</a>.addColorScale</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void addColorScale(DoubleArray colorStops, int startPos = -0x7fffffff, int startWidth = -0x7fffffff, int endPos = -0x7fffffff, int endWidth = -0x7fffffff, int edgeColor = -1);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Adds a color scale to the meter.<br><br>
+A color scale is similar to a meter scale. Instead of using labels to denote the values, a color scale uses different colors for different values. The colors can vary continuously or in discrete steps. The width of the color scale can also vary based on the value. There can be multiple more than one color scale in a meter.<br><br>
+A color scale is defined with an array of numbers. For a continuous color scale, each pair of numbers represents a value and its associated color. For example, to define a continuous color scale in which 0 is blue (0000FF), 50 is yellow (FFFF00) and 100 is red (FF0000), the numbers should be:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>0.0, 0x0000ff, 50.0, 0xffff00, 100.0, 0xff0000</pre></div><br>
+For a step color scale, the number of colors would be one less than the number of values. For example, to define a step color scale in which 0 to 50 is red (FF0000), and 50 to 100 is green (00FF00), the numbers will be:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>0.0, 0xff000, 50.0, 0x00ff00, 100.0</pre></div>
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>colorStops</td><td>(Mandatory)</td><td>An array of numbers alternating between values and colors. If the number count is even, the array will define a continuous color scale, otherwise it will define a step color scale.</td></tr><tr><td>startPos</td><td>-0x7fffffff</td><td>The position of the starting point of the color scale. For an angular meter, the position refers to the radius, and the default is the meter scale radius (see <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>). For a linear meter, the position refers to the x or y coordinate depending on whether the meter is vertical or horizontal, and the default is the leftX or topY coordinate of the meter scale (see <a href="LinearMeter.setMeter.htm">LinearMeter.setMeter</a>).</td></tr><tr><td>startWidth</td><td>-0x7fffffff</td><td>The width at the starting point of the color scale. A positive value means the width is in the direction of increasing "position", while a negative value means decreasing "position". Please refer to the description of <b>startPos</b> on the meaning of "position" for various types of meters. The default is the length of the major tick (see <a href="BaseMeter.setTickLength.htm">BaseMeter.setTickLength</a>).</td></tr><tr><td>endPos</td><td>-0x7fffffff</td><td>The position of the ending point of the color scale. Please refer to the description of <b>startPos</b> above on how the position parameter is interpreted. The default is for the ending position to be equal to the starting position.</td></tr><tr><td>endWidth</td><td>-0x7fffffff</td><td>The width at the ending point of the color scale. Please refer to the description of <b>startWidth</b> above on how the width parameter is interpreted. The default is for the ending width to be equal to the starting width.</td></tr><tr><td>edgeColor</td><td>-1</td><td>The edge color of the color scale. The default is to have no edge.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

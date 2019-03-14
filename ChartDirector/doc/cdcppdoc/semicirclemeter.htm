@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+<Title>Semicircle Meter</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Semicircle Meter</p>
+<hr class="separator">
+<div class="content">
+<img src="images/semicirclemeter.png">
+<br><br>
+This example demonstrates the basic steps in creating a semicircle meter.<br><br>
+A semicircle meter can be created with the following steps:<br><br>
+<ul><li> Create an <a href="AngularMeter.htm">AngularMeter</a> object using <a href="AngularMeter.AngularMeter.htm">AngularMeter.AngularMeter</a>. In this example, the background color is set <a href="Chart.Transparent.htm">Transparent</a>.<br><br>
+<li> Specify the geometry of the meter scale using <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>. This specifies the center, the radius, and the starting and ending angles of the meter scale.<br><br>
+<li> Optionally add a background with border. using <a href="AngularMeter.addScaleBackground.htm">AngularMeter.addScaleBackground</a>. The scale background usually encloses the meter scale and is larger than it.<br><br>
+<li> Set the numeric scale of the meter using <a href="BaseMeter.setScale.htm">BaseMeter.setScale</a><br><br>
+<li> Optionally configures the label style using <a href="BaseMeter.setLabelStyle.htm">BaseMeter.setLabelStyle</a>, the tick length using <a href="BaseMeter.setTickLength.htm">BaseMeter.setTickLength</a> and the tick width using <a href="BaseMeter.setLineWidth.htm">BaseMeter.setLineWidth</a>.<br><br>
+<li> Optionally add a color scale to the meter using <a href="BaseMeter.addColorScale.htm">BaseMeter.addColorScale</a>. Whereas the meter scale displays the values with text labels, a color scale represents the values with different colors.<br><br>
+<li> Optionally add additional labels to the meter using <a href="BaseChart.addText.htm">BaseChart.addText</a>.<br><br>
+<li> Add a "new style" pointer to the meter using <a href="AngularMeter.addPointer2.htm">AngularMeter.addPointer2</a>. For compatibility with earlier versions of ChartDirector, classical pointers are still supported using the previous method <a href="BaseMeter.addPointer.htm">BaseMeter.addPointer</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/semicirclemeter". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The value to display on the meter
+    double value = 72.55;
+
+    // Create an AngularMeter object of size 300 x 180 pixels with transparent background
+    AngularMeter *m = new AngularMeter(300, 180, Chart::Transparent);
+
+    // Center at (150, 150), scale radius = 128 pixels, scale angle -90 to +90 degrees
+    m-&gt;setMeter(150, 150, 128, -90, 90);
+
+    // Add a pale grey (0xeeeeee) scale background of 148 pixels radius, with a 10 pixel thick light
+    // grey (0xcccccc) border
+    m-&gt;addScaleBackground(148, 0xeeeeee, 10, 0xcccccc);
+
+    // Meter scale is 0 - 100, with major tick every 20 units, minor tick every 10 units, and micro
+    // tick every 5 units
+    m-&gt;setScale(0, 100, 20, 10, 5);
+
+    // Set the scale label style to 15pt Arial Italic. Set the major/minor/micro tick lengths to
+    // 16/16/10 pixels pointing inwards, and their widths to 2/1/1 pixels.
+    m-&gt;setLabelStyle("ariali.ttf", 16);
+    m-&gt;setTickLength(-16, -16, -10);
+    m-&gt;setLineWidth(0, 2, 1, 1);
+
+    // Add a smooth color scale to the meter
+    double smoothColorScale[] = {0, 0x3333ff, 25, 0x0088ff, 50, 0x00ff00, 75, 0xdddd00, 100,
+        0xff0000};
+    m-&gt;addColorScale(DoubleArray(smoothColorScale, (int)(sizeof(smoothColorScale) / sizeof(
+        smoothColorScale[0]))));
+
+    // Add a text label centered at (150, 125) with 15pt Arial Italic font
+    m-&gt;addText(150, 125, "CPU", "ariali.ttf", 15, Chart::TextColor, Chart::BottomCenter);
+
+    // Add a red (0xff0000) pointer at the specified value
+    m-&gt;addPointer2(value, 0xff0000);
+
+    // Output the chart
+    m-&gt;makeChart("semicirclemeter.png");
+
+    //free up resources
+    delete m;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

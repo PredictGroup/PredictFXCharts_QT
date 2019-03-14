@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>ViewPortManager.dragTo</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ViewPortManager.htm">ViewPortManager</a>.dragTo</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+bool dragTo(int scrollDirection, int deltaX, int deltaY);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Scrolls the viewport to reflect dragging of the underlying rectangular surface.<br><br>
+The amount of drag is measured as changed in mouse cursor coordinates since the call to <a href="ViewPortManager.startDrag.htm">ViewPortManager.startDrag</a>. A positive change means the dragging is to the right or bottom. A negative change means the dragging is to the left or top.<br><br>
+The drag is considered as applying to the underlying surface. The viewport moves in the opposite direction to the drag. For example, dragging the underlying surface to the right is equivalent to moving the viewport to the left.<br><br>
+The viewport may not change at all if it has reached the borders of the underlying surface.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>scrollDirection</td><td>(Mandatory)</td><td>The allowed scroll direction. Must be one of the predefined constants <a href="Chart.DirectionHorizontal.htm">DirectionHorizontal</a>, <a href="Chart.DirectionVertical.htm">DirectionVertical</a> and <a href="Chart.DirectionHorizontalVertical.htm">DirectionHorizontalVertical</a> for horizontal, vertical and bi-directional scrolling.</td></tr><tr><td>deltaX</td><td>(Mandatory)</td><td>The change in mouse x-coordinates. A positive change means the drag is to the right. A negative change means the drag is to the right.</td></tr><tr><td>deltaY</td><td>(Mandatory)</td><td>The change in mouse y-coordinates. A positive change means the drag is to the bottom. A negative change means the drag is to the top.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

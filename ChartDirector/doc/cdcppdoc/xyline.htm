@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+<Title>Arbitrary XY Line Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Arbitrary XY Line Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/xyline.png">
+<br><br>
+This example demonstrates drawing a line chart with arbitrary x coordinates (not increasing or decreasing in one direction), and adding custom data labels to data points.<br><br>
+The x values of the data points are set into the chart using <a href="Layer.setXData.htm">Layer.setXData</a>. ChartDirector merely joins the points together with lines. It does not require the points to following any particular direction.<br><br>
+Note that this example has special labels for the start and end points of the lines. They are created using <a href="Layer.addCustomDataLabel.htm">Layer.addCustomDataLabel</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/xyline". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The (x, y) data for the first line
+    double dataX0[] = {20, 90, 40, 30, 12};
+    double dataY0[] = {10, 40, 75, 54, 20};
+
+    // The (x, y) data for the second line
+    double dataX1[] = {10, 40, 75, 54, 60};
+    double dataY1[] = {50, 90, 40, 30, 10};
+
+    // Create a XYChart object of size 450 x 450 pixels
+    XYChart *c = new XYChart(450, 450);
+
+    // Set the plotarea at (55, 65) and of size 350 x 300 pixels, with white background and a light
+    // grey border (0xc0c0c0). Turn on both horizontal and vertical grid lines with light grey color
+    // (0xc0c0c0)
+    c-&gt;setPlotArea(55, 65, 350, 300, 0xffffff, -1, 0xc0c0c0, 0xc0c0c0, -1);
+
+    // Add a legend box at (50, 30) (top of the chart) with horizontal layout. Use 12pt Times Bold
+    // Italic font. Set the background and border color to Transparent.
+    c-&gt;addLegend(50, 30, false, "timesbi.ttf", 12)-&gt;setBackground(Chart::Transparent);
+
+    // Add a title to the chart using 18pt Times Bold Itatic font
+    c-&gt;addTitle("Reaction Path", "timesbi.ttf", 18);
+
+    // Add a title to the y axis using 12pt Arial Bold Italic font
+    c-&gt;yAxis()-&gt;setTitle("Temperature (Celcius)", "arialbi.ttf", 12);
+
+    // Set the y axis line width to 3 pixels
+    c-&gt;yAxis()-&gt;setWidth(3);
+
+    // Add a title to the x axis using 12pt Arial Bold Italic font
+    c-&gt;xAxis()-&gt;setTitle("Pressure (Pa)", "arialbi.ttf", 12);
+
+    // Set the x axis line width to 3 pixels
+    c-&gt;xAxis()-&gt;setWidth(3);
+
+    // Add a red (0xff3333) line layer using dataX0 and dataY0
+    LineLayer *layer1 = c-&gt;addLineLayer(DoubleArray(dataY0, (int)(sizeof(dataY0) / sizeof(dataY0[0])
+        )), 0xff3333, "Compound AAA");
+    layer1-&gt;setXData(DoubleArray(dataX0, (int)(sizeof(dataX0) / sizeof(dataX0[0]))));
+
+    // Set the line width to 3 pixels
+    layer1-&gt;setLineWidth(3);
+
+    // Use 9 pixel square symbols for the data points
+    layer1-&gt;getDataSet(0)-&gt;setDataSymbol(Chart::SquareSymbol, 9);
+
+    // Add custom text labels to the first and last point on the scatter plot using Arial Bold font
+    layer1-&gt;addCustomDataLabel(0, 0, "Start", "arialbd.ttf");
+    layer1-&gt;addCustomDataLabel(0, 4, "End", "arialbd.ttf");
+
+    // Add a green (0x33ff33) line layer using dataX1 and dataY1
+    LineLayer *layer2 = c-&gt;addLineLayer(DoubleArray(dataY1, (int)(sizeof(dataY1) / sizeof(dataY1[0])
+        )), 0x33ff33, "Compound BBB");
+    layer2-&gt;setXData(DoubleArray(dataX1, (int)(sizeof(dataX1) / sizeof(dataX1[0]))));
+
+    // Set the line width to 3 pixels
+    layer2-&gt;setLineWidth(3);
+
+    // Use 11 pixel diamond symbols for the data points
+    layer2-&gt;getDataSet(0)-&gt;setDataSymbol(Chart::DiamondSymbol, 11);
+
+    // Add custom text labels to the first and last point on the scatter plot using Arial Bold font
+    layer2-&gt;addCustomDataLabel(0, 0, "Start", "arialbd.ttf");
+    layer2-&gt;addCustomDataLabel(0, 4, "End", "arialbd.ttf");
+
+    // Output the chart
+    c-&gt;makeChart("xyline.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

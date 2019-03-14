@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+<Title>Angular Meter Pointers (1)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Angular Meter Pointers (1)</p>
+<hr class="separator">
+<div class="content">
+<img src="images/angularpointer.png">
+<br><br>
+This example demonstrates adding multiple classical pointers of different styles to a meter.<br><br>
+For angular meters, classical pointers are added using <a href="BaseMeter.addPointer.htm">BaseMeter.addPointer</a>, while new style pointers are added using <a href="AngularMeter.addPointer2.htm">AngularMeter.addPointer2</a>.<br><br>
+Comparing to new style pointers, classical angular pointers are thicker in shape. This enables them to express various shapes. They are designed to be pivoted to the center by a small pointer cap (the circle at the center). The classical pointer cap can be configured using <a href="AngularMeter.setCap.htm">AngularMeter.setCap</a>.<br><br>
+This example demonstrates the 5 built-in classical angular pointer shapes, configured using <a href="MeterPointer.setShape.htm">MeterPointer.setShape</a>. ChartDirector also supports custom shapes configured using <a href="MeterPointer.setShape2.htm">MeterPointer.setShape2</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/angularpointer". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // Create an AngularMeter object of size 300 x 300 pixels with transparent background
+    AngularMeter *m = new AngularMeter(300, 300, Chart::Transparent);
+
+    // Set the default text and line colors to white (0xffffff)
+    m-&gt;setColor(Chart::TextColor, 0xffffff);
+    m-&gt;setColor(Chart::LineColor, 0xffffff);
+
+    // Center at (150, 150), scale radius = 128 pixels, scale angle 0 to 360 degrees
+    m-&gt;setMeter(150, 150, 128, 0, 360);
+
+    // Add a black (0x000000) circle with radius 148 pixels as background
+    m-&gt;addRing(0, 148, 0x000000);
+
+    // Add a ring between radii 139 and 147 pixels using the silver color with a light grey
+    // (0xcccccc) edge as border
+    m-&gt;addRing(139, 147, Chart::silverColor(), 0xcccccc);
+
+    // Meter scale is 0 - 100, with major/minor/micro ticks every 10/5/1 units
+    m-&gt;setScale(0, 100, 10, 5, 1);
+
+    // Set the scale label style to 16pt Arial Italic. Set the major/minor/micro tick lengths to
+    // 13/10/7 pixels pointing inwards, and their widths to 2/1/1 pixels.
+    m-&gt;setLabelStyle("ariali.ttf", 16);
+    m-&gt;setTickLength(-13, -10, -7);
+    m-&gt;setLineWidth(0, 2, 1, 1);
+
+    // Add a semi-transparent blue (0x7f6666ff) pointer using the default shape
+    m-&gt;addPointer(25, 0x7f6666ff, 0x6666ff);
+
+    // Add a semi-transparent red (0x7fff6666) pointer using the arrow shape
+    m-&gt;addPointer(9, 0x7fff6666, 0xff6666)-&gt;setShape(Chart::ArrowPointer2);
+
+    // Add a semi-transparent yellow (0x7fffff66) pointer using another arrow shape
+    m-&gt;addPointer(51, 0x7fffff66, 0xffff66)-&gt;setShape(Chart::ArrowPointer);
+
+    // Add a semi-transparent green (0x7f66ff66) pointer using the line shape
+    m-&gt;addPointer(72, 0x7f66ff66, 0x66ff66)-&gt;setShape(Chart::LinePointer);
+
+    // Add a semi-transparent grey (0x7fcccccc) pointer using the pencil shape
+    m-&gt;addPointer(85, 0x7fcccccc, 0xcccccc)-&gt;setShape(Chart::PencilPointer);
+
+    // Output the chart
+    m-&gt;makeChart("angularpointer.png");
+
+    //free up resources
+    delete m;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

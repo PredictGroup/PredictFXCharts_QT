@@ -1,0 +1,39 @@
+<HTML>
+<HEAD>
+<Title>BaseChart.setThickFrame</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="BaseChart.htm">BaseChart</a>.setThickFrame</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setThickFrame(int thickness, int frameColor = -1, int outerEdgeColor = -1, int innerEdgeColor = -1);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets a thick frame around the chart.<br><br>
+The thick frame can have 3 colors for the frame itself, the outer edge and the inner edge.<br><br>
+In some applications, the frame color may be similar to the external background color. An common example is a "silver" frame (which is actually a light grey gradient) against a white background. In this case, the frame effect may look less than optimal. An outer edge of different color (such as darker grey) can often help to highlight the frame. Similarly, if the frame color is similar to the chart background, an inner edge of different color may help to improve the frame effect.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>thickness</td><td>(Mandatory)</td><td>The frame thickness.</td></tr><tr><td>frameColor</td><td>-1</td><td>The frame color. The default value of -1 means the frame color is the same as the outer edge color.</td></tr><tr><td>outerEdgeColor</td><td>-1</td><td>The outer edge color. The default value of -1 means the outer edge color is the same as the current edge color, which can be set in the chart constructor or in <a href="BaseChart.setBackground.htm">BaseChart.setBackground</a>.</td></tr><tr><td>innerEdgeColor</td><td>-1</td><td>The inner edge color. The default value of -1 means the inner edge color is the same as the frame color.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

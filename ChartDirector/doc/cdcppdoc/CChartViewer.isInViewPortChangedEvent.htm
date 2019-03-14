@@ -1,0 +1,39 @@
+<HTML>
+<HEAD>
+<Title>CChartViewer.isInViewPortChangedEvent</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="CChartViewer.htm">CChartViewer</a>.isInViewPortChangedEvent</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+bool isInViewPortChangedEvent();
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Checks if the current code is executing in a ViewPortChanged event.<br><br>
+This is to help preventing "event looping" in complicated GUI designs in which multiple controls can update the viewport and indirectly update each others.<br><br>
+For example, suppose in a scrollable chart design, the x-axis can be scrolled by both a scroll bar control and a date/time picker control. That means both scroll bar and date/time picker events may update the viewport.<br><br>
+The following sequence of events may happen:<br><br>
+<ul>
+<li> User changes the start date on the x-axis using the date/time picker control.<br><br>
+<li> The viewport is updated, so <a href="CChartViewer.updateViewPort.htm">CChartViewer.updateViewPort</a> is called, triggering a  <a href="CChartViewer.CVN_ViewPortChanged.htm">CVN_ViewPortChanged</a> message.<br><br>
+<li> In the ViewPortChanged event handler, the scroll bar position needs to be updated to reflect that the viewport has moved.<br><br>
+<li> As the scroll bar has changed, a scroll bar event occurs. The scroll bar event handler may update the viewport and call CChartViewer.updateViewPort again.<br><br>
+</ul>
+The above is potentially an infinite loop as the ViewPortChanged event will keep firing again and again. To avoid this, <a href="CChartViewer.updateViewPort.htm">CChartViewer.updateViewPort</a> will perform no action if it is called within ViewPortChanged event. So the last step above cannot actually trigger another ViewPortChanged event. This avoids the infinite loop.<br><br>
+Internally, CChartViewer.updateViewPort use this method to checks if it is called within a ViewPortChanged event, and ignores the request if it is already in the event. This method allows external code to also change behaviour in a ViewPortChanged event.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">None</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+True if the current code is executing in a  <a href="CChartViewer.CVN_ViewPortChanged.htm">CVN_ViewPortChanged</a> message, otherwise false.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

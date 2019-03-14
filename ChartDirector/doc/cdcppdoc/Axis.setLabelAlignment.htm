@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>Axis.setLabelAlignment</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="Axis.htm">Axis</a>.setLabelAlignment</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setLabelAlignment(int alignment, int minLabelSpace = 3);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets the alignment of the axis labels relative to their associated ticks.<br><br>
+By default, axis labels on a horizontal axis will be horizontally center aligned to their associated ticks. If <i>alignment</i> is set to 1, the labels will move to the positive axis direction, which is the right side if the axis is not reversed (see <a href="Axis.setReverse.htm">Axis.setReverse</a>), so that they are left aligned with the ticks, that is, the left side of the labels will be at the tick position. Similarly, if <i>alignment</i> is set to -1, the labels will move to the left so that they are right aligned with the ticks. Setting <i>alignment</i> to a larger positive and negative number will also move the labels to left or right aligned with the ticks, but with an extra margin equal to the absolute value of <i>alignment</i> minus 1.<br><br>
+The same behaviour applies to a vertical axis except that vertical alignment will be used instead of horizontal alignment.<br><br>
+When the labels are moved, labels near the edge of the plot area can partly or completely move outside the plot area border. The <i>minLabelSpace</i> argument specifies in pixels the minimum space that must be available at the plot area border in order to display the label. The default value is 3, which means the label will be displayed even if there are only 3 pixels left. In other words, unless the label moves completely or almost completely outside the plot area border, it will still be displayed.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>alignment</td><td>(Mandatory)</td><td>The alignment of the label relative to the associated tick.</td></tr><tr><td>minLabelSpace</td><td>3</td><td>The minimum space in pixels that must be available at the plot area border in order to display the label</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>ContourLayer.setExactContour</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ContourLayer.htm">ContourLayer</a>.setExactContour</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setExactContour(bool contour = true, bool markContour = Same_As_Contour);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets whether to use exact contours or boundary contours.<br><br>
+In exact contour mode, the contour at z = N refers to all points at z = N. For example, the contour at z = 10 refers to all points at z = 10. These points normally constitute lines. However, in case there is an exactly flat region at z = 10, the entire region will be the contour and will be colored using the contour color. In other words, instead of lines, a contour can become a region.<br><br>
+In boundary contour mode, the contour at z = N refers to the boundary between z &lt; N and z &gt;= N, except for the highest contour in which case the contour is the boundary between z &lt;= N and z &gt; N. With this method, if there is a flat region, the contour will occur at the boundary of the region.<br><br>
+If this method is never called, the default is to use boundary contour mode.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>contour</td><td>true</td><td>A true value specifies exact contour mode for standard contours, otherwise boundary contour mode will be used.</td></tr><tr><td>markContour</td><td>[Same_As_Contour]</td><td>A true value specifies exact contour mode for mark contours. A false value specifies boundary contour mode for mark contours. A mark contour is an extra contour added using <a href="Axis.addMark.htm">Axis.addMark</a> on the color axis (obtained using <a href="ContourLayer.colorAxis.htm">ContourLayer.colorAxis</a>). If this parameter is not specified, the default is to use the same contour mode as standard contours.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

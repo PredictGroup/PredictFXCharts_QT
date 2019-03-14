@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>ContourLayer.setZBounds</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ContourLayer.htm">ContourLayer</a>.setZBounds</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setZBounds(double minZ = DataBound, double maxZ = DataBound);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Clips the z values to the given bounds.<br><br>
+In spline surface interpolation (see <a href="ContourLayer.setSmoothInterpolation.htm">ContourLayer.setSmoothInterpolation</a>), it is possible that the interpolated surface contains regions that are higher than the highest data point, or lower than the lowest data point.<br><br>
+As an example, consider a linear sequence of points with z values [10, 20, 30, 40, 40, 30, 20, 10]. The first 4 points represent an upward slope, while the last 4 points represent a download slope. If these points are to be joined with a smooth spline, the peak will naturally fall somewhere between the middle two points and exceed 40. So there will be a region in the spline higher than the highest data point.<br><br>
+In some applications, it may be desirable to limit the z values to certain bounds. For example, if the data are about rainfall, it is not desirable if the interpolated surface falls below 0, as there cannot be negative rainfall. The setZBounds method can be used to clip the interpolated surface to the desired bounds.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>minZ</td><td><a href="Chart.DataBound.htm">DataBound</a></td><td>The minimum z value to clip to. Use <a href="Chart.NoValue.htm">NoValue</a> if there is no minimum z bound. The special constant <a href="Chart.DataBound.htm">DataBound</a> means that the minimum z value is the minimum data value.</td></tr><tr><td>maxZ</td><td><a href="Chart.DataBound.htm">DataBound</a></td><td>The maximum z value to clip to. Use <a href="Chart.NoValue.htm">NoValue</a> if there is no maximum z bound. The special constant <a href="Chart.DataBound.htm">DataBound</a> means that the maximum z value is the maximum data value.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

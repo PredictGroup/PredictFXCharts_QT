@@ -1,0 +1,101 @@
+<HTML>
+<HEAD>
+<Title>Polar Bubble Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Polar Bubble Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/polarbubble.png">
+<br><br>
+This example demonstrates how to create polar bubble charts. It also demonstrates using alternating background colors along the radial direction.<br><br>
+A polar bubble chart can be created as a polar line chart with circles as data symbols. The line width is set to 0, so only the symbols can be seen. The symbol sizes are then controlled using another data series. This will create the effects of a bubble chart.<br><br>
+The detail steps are:<br><br>
+<ul><li> Create a polar line layer using <a href="PolarChart.addLineLayer.htm">PolarChart.addLineLayer</a>.<br><br>
+<li> Enable data symbols for the line using <a href="PolarLayer.setDataSymbol.htm">PolarLayer.setDataSymbol</a> (or <a href="PolarLayer.setDataSymbol2.htm">PolarLayer.setDataSymbol2</a> or <a href="PolarLayer.setDataSymbol3.htm">PolarLayer.setDataSymbol3</a> or <a href="PolarLayer.setDataSymbol4.htm">PolarLayer.setDataSymbol4</a>). ChartDirector supports using arbitrary shapes as bubbles, although traditionally, circles are used.<br><br>
+<li> Disable the line by setting its width to 0 using <a href="PolarLayer.setLineWidth.htm">PolarLayer.setLineWidth</a>.<br><br>
+<li> Control the size of the symbols by a data series using <a href="PolarLayer.setSymbolScale.htm">PolarLayer.setSymbolScale</a>.</ul>
+Note that in this example, the polar plot area uses two alternating background colors along the radial direction. This is by using <a href="PolarChart.setPlotAreaBg.htm">PolarChart.setPlotAreaBg</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/polarbubble". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the chart
+    double data0[] = {6, 12.5, 18.2, 15};
+    double angles0[] = {45, 96, 169, 258};
+    double size0[] = {41, 105, 12, 20};
+
+    double data1[] = {18, 16, 11, 14};
+    double angles1[] = {30, 210, 240, 310};
+    double size1[] = {30, 45, 12, 90};
+
+    // Create a PolarChart object of size 460 x 460 pixels
+    PolarChart *c = new PolarChart(460, 460);
+
+    // Add a title to the chart at the top left corner using 15pt Arial Bold Italic font
+    c-&gt;addTitle(Chart::TopLeft, "&lt;*underline=2*&gt;EM Field Strength", "arialbi.ttf", 15);
+
+    // Set center of plot area at (230, 240) with radius 180 pixels
+    c-&gt;setPlotArea(230, 240, 180);
+
+    // Use alternative light grey/dark grey circular background color
+    c-&gt;setPlotAreaBg(0xdddddd, 0xeeeeee);
+
+    // Set the grid style to circular grid
+    c-&gt;setGridStyle(false);
+
+    // Add a legend box at the top right corner of the chart using 9pt Arial Bold font
+    c-&gt;addLegend(459, 0, true, "arialbd.ttf", 9)-&gt;setAlignment(Chart::TopRight);
+
+    // Set angular axis as 0 - 360, with a spoke every 30 units
+    c-&gt;angularAxis()-&gt;setLinearScale(0, 360, 30);
+
+    // Set the radial axis label format
+    c-&gt;radialAxis()-&gt;setLabelFormat("{value} km");
+
+    // Add a blue (0x9999ff) line layer to the chart using (data0, angle0)
+    PolarLineLayer *layer0 = c-&gt;addLineLayer(DoubleArray(data0, (int)(sizeof(data0) / sizeof(data0[0
+        ]))), 0x9999ff, "Cold Spot");
+    layer0-&gt;setAngles(DoubleArray(angles0, (int)(sizeof(angles0) / sizeof(angles0[0]))));
+
+    // Disable the line by setting its width to 0, so only the symbols are visible
+    layer0-&gt;setLineWidth(0);
+
+    // Use a circular data point symbol
+    layer0-&gt;setDataSymbol(Chart::CircleSymbol, 11);
+
+    // Modulate the symbol size by size0 to produce a bubble chart effect
+    layer0-&gt;setSymbolScale(DoubleArray(size0, (int)(sizeof(size0) / sizeof(size0[0]))));
+
+    // Add a red (0xff9999) line layer to the chart using (data1, angle1)
+    PolarLineLayer *layer1 = c-&gt;addLineLayer(DoubleArray(data1, (int)(sizeof(data1) / sizeof(data1[0
+        ]))), 0xff9999, "Hot Spot");
+    layer1-&gt;setAngles(DoubleArray(angles1, (int)(sizeof(angles1) / sizeof(angles1[0]))));
+
+    // Disable the line by setting its width to 0, so only the symbols are visible
+    layer1-&gt;setLineWidth(0);
+
+    // Use a circular data point symbol
+    layer1-&gt;setDataSymbol(Chart::CircleSymbol, 11);
+
+    // Modulate the symbol size by size1 to produce a bubble chart effect
+    layer1-&gt;setSymbolScale(DoubleArray(size1, (int)(sizeof(size1) / sizeof(size1[0]))));
+
+    // Output the chart
+    c-&gt;makeChart("polarbubble.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

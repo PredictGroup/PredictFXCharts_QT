@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>AngularMeter.addScaleBackground</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="AngularMeter.htm">AngularMeter</a>.addScaleBackground</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void addScaleBackground(int bgRadius, int fillColor, int edgeWidth = 0, int edgeColor = -1, int scaleRadius = -0x7fffffff, double startAngle = NoValue, double endAngle = NoValue);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Adds a background to the meter scale.<br><br>
+<img src="images/scalebackground.png"><br><br>
+In the example below, the sky blue background with the dark blue border is the scale background.<br><br>
+The scale background is a circle segment (a circle with a part cut-off by a chord). Its radius is usually configured as larger than that of the meter scale. In this case, its angular span will also be larger than that of the meter scale. In the above sample, the meter scale spans 180 degrees. The scale background spans more than 180 degrees so that it can maintain a margin at the bottom side (the chord side).
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>bgRadius</td><td>(Mandatory)</td><td>The radius of the circle segment to be used as the scale background.</td></tr><tr><td>fillColor</td><td>(Mandatory)</td><td>The fill color of the circle segment (the background color).</td></tr><tr><td>edgeWidth</td><td>0</td><td>The edge width of the circle segment. A positive width means the edge is internal to the circle segment. A negative width means the edge is external to the circle segment.</td></tr><tr><td>edgeColor</td><td>-1</td><td>The edge color. The default value of -1 means the edge color is the same as the fill color.</td></tr><tr><td>scaleRadius</td><td>-0x7fffffff</td><td>The radius of the meter scale. ChartDirector uses this value to compute the extra angular span the circle segment must have in order to maintain proper margin at the chord side. This argument is usually not necessary as ChartDirector already know the scale radius from the meter configuration. This argument can be used if you would like to use a "fake" scale radius to draw the scale background for special effects.</td></tr><tr><td>startAngle</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The start angle of the meter scale. ChartDirector uses this value to compute start angle of the circle segment. This argument is usually not necessary as ChartDirector already know the start angle from the meter configuration. This argument can be used if you would like to use a "fake" angle to draw the scale background for special effects.</td></tr><tr><td>endAngle</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The end angle of the meter scale. ChartDirector uses this value to compute end angle of the circle segment. This argument is usually not necessary as ChartDirector already know the end angle from the meter configuration. This argument can be used if you would like to use a "fake" angle to draw the scale background for special effects.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

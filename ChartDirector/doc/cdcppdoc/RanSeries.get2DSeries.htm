@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<Title>RanSeries.get2DSeries</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="RanSeries.htm">RanSeries</a>.get2DSeries</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+DoubleArray get2DSeries(int xLen, int yLen, double minValue, double maxValue);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Gets an array of random numbers representing points on a 2D grid in which the difference between neighbouring points is random.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>xLen</td><td>(Mandatory)</td><td>The number of points in the grid in the x direction.</td></tr><tr><td>yLen</td><td>(Mandatory)</td><td>The number of points in the grid in the y direction.</td></tr><tr><td>minValue</td><td>(Mandatory)</td><td>The minimum value of the random number.</td></tr><tr><td>maxValue</td><td>(Mandatory)</td><td>The maximum value of the random number.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+An array of random numbers representing points on a 2D grid in which the difference between neighbouring points is random. The array will contain (xLen * yLen) elements. The element at index (y * xLen + x) represents the point at (x, y), in which x and y are integers such that 0 &lt;= x &lt; xLen and 0 &lt;= y &lt; yLen.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+<Title>Round Meter</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Round Meter</p>
+<hr class="separator">
+<div class="content">
+<img src="images/roundmeter.png">
+<br><br>
+This example demonstrates the basic steps in creating a round meter.<br><br>
+A round meter can be created with the following steps:<br><br>
+<ul><li> Create an <a href="AngularMeter.htm">AngularMeter</a> object using <a href="AngularMeter.AngularMeter.htm">AngularMeter.AngularMeter</a>. In this example, the background color is set <a href="Chart.Transparent.htm">Transparent</a>.<br><br>
+<li> Specify the geometry of the meter scale using <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>. This specifies the center, the radius, and the starting and ending angles of the meter scale.<br><br>
+<li> Optionally add a background and/or a border using <a href="AngularMeter.addRing.htm">AngularMeter.addRing</a>.<br><br>
+<li> Set the numeric scale of the meter using <a href="BaseMeter.setScale.htm">BaseMeter.setScale</a><br><br>
+<li> Optionally configures the label style using <a href="BaseMeter.setLabelStyle.htm">BaseMeter.setLabelStyle</a>, the tick length using <a href="BaseMeter.setTickLength.htm">BaseMeter.setTickLength</a> and the tick width using <a href="BaseMeter.setLineWidth.htm">BaseMeter.setLineWidth</a>.<br><br>
+<li> Optionally add a color scale to the meter using <a href="BaseMeter.addColorScale.htm">BaseMeter.addColorScale</a>. Whereas the meter scale displays the values with text labels, a color scale represents the values with different colors.<br><br>
+<li> Optionally add additional labels to the meter using <a href="BaseChart.addText.htm">BaseChart.addText</a>.<br><br>
+<li> Add a "new style" pointer to the meter using <a href="AngularMeter.addPointer2.htm">AngularMeter.addPointer2</a>. For compatibility with earlier versions of ChartDirector, classical pointers are still supported using the previous method <a href="BaseMeter.addPointer.htm">BaseMeter.addPointer</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/roundmeter". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The value to display on the meter
+    double value = 72.3;
+
+    // Create an AngularMeter object of size 250 x 250 pixels with transparent background
+    AngularMeter *m = new AngularMeter(250, 250, Chart::Transparent);
+
+    // Center at (125, 125), scale radius = 111 pixels, scale angle -145 to +145 degrees
+    m-&gt;setMeter(125, 125, 111, -145, 145);
+
+    // Add a very light grey (0xeeeeee) circle with radius 123 pixels as background
+    m-&gt;addRing(0, 123, 0xeeeeee);
+    // Add a grey (0xcccccc) ring between radii 116 and 123 pixels as border
+    m-&gt;addRing(116, 123, 0xcccccc);
+
+    // Meter scale is 0 - 100, with major/minor/micro ticks every 10/5/1 units
+    m-&gt;setScale(0, 100, 10, 5, 1);
+
+    // Set the scale label style to 15pt Arial Italic. Set the major/minor/micro tick lengths to
+    // 12/9/6 pixels pointing inwards, and their widths to 2/1/1 pixels.
+    m-&gt;setLabelStyle("ariali.ttf", 15);
+    m-&gt;setTickLength(-12, -9, -6);
+    m-&gt;setLineWidth(0, 2, 1, 1);
+
+    // Add a smooth color scale to the meter
+    double smoothColorScale[] = {0, 0x3333ff, 25, 0x0088ff, 50, 0x00ff00, 75, 0xdddd00, 100,
+        0xff0000};
+    m-&gt;addColorScale(DoubleArray(smoothColorScale, (int)(sizeof(smoothColorScale) / sizeof(
+        smoothColorScale[0]))));
+
+    // Add a text label centered at (125, 175) with 15pt Arial Italic font
+    m-&gt;addText(125, 175, "CPU", "ariali.ttf", 15, Chart::TextColor, Chart::Center);
+
+    // Add a red (0xff0000) pointer at the specified value
+    m-&gt;addPointer2(value, 0xff0000);
+
+    // Output the chart
+    m-&gt;makeChart("roundmeter.png");
+
+    //free up resources
+    delete m;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

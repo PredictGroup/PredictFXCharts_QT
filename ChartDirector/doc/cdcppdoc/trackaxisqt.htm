@@ -1,0 +1,234 @@
+<HTML>
+<HEAD>
+<Title>Track Line with Axis Labels (QT)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Track Line with Axis Labels (QT)</p>
+<hr class="separator">
+<div class="content"><img src="images/trackaxis_qt.png"><br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b><font color="#FF0000">NOTE:</font></b> This section describes Track Line with Axis Labels for QT only. For MFC, please refer to <a href="trackaxis.htm">Track Line with Axis Labels (MFC)</a>.
+</div><br>
+This sample program demonstrates a track cursor programmed with the following features:<br><br>
+<ul>
+<li>Small dots that shows the data points at the nearest x data value from the mouse cursor.<br><br>
+<li>A vertical line that connects the data points to the x-axis, with an x-axis label displaying the x value.<br><br>
+<li>Horizontal lines that connect the data points to the y-axes, with y-axis labels displaying their values.<br><br>
+</ul>
+The code first draws the chart. Then in the     <a href="QChartViewer.mouseMovePlotArea.htm">QChartViewer.mouseMovePlotArea</a> signal        handler, the track cursor is drawn to reflect the mouse position. The track cursor is configured to automatically hide itself when the mouse leaves the plot area.<br><br>
+The <b>trackLineAxis</b> method is the routine that draws the track cursor. Its key elements are:<br><br>
+<ul>
+<li>To draw dynamic contents on the chart, the code obtains the <a href="DrawArea.htm">DrawArea</a> object for drawing on the dynamic layer of the chart using <a href="BaseChart.initDynamicLayer.htm">BaseChart.initDynamicLayer</a>.<br><br>
+<li>The nearest x data value is obtained using <a href="XYChart.getNearestXValue.htm">XYChart.getNearestXValue</a>.<br><br>
+<li>The code iterates through all data sets in all layers to find the highest data point at the nearest x data value. It then draws a vertical line from that point to the x-axis using <a href="DrawArea.vline.htm">DrawArea.vline</a>, and the corresponding x-axis label using <a href="DrawArea.text.htm">DrawArea.text</a>.<br><br>
+<li>The code iterates through all data sets in all layers once more to find all the data points at the nearest x data value. For each of these points, it draws a horizontal line to connect the point to the y-axis using <a href="DrawArea.hline.htm">DrawArea.hline</a>, draws the axis label using <a href="DrawArea.text.htm">DrawArea.text</a>, and draws a circular dot at the point using <a href="DrawArea.circle.htm">DrawArea.circle</a>.<br><br>
+</ul>
+</div><p class="heading1a">Source Code Listing</p><div class="content">
+The following is the main source code of this demo. The complete QT  project is in "qtdemo/trackaxis".<br><br>
+[File: qtdemo/trackaxis/trackaxis.cpp]<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include &lt;QApplication&gt;
+#include "trackaxis.h"
+#include &lt;sstream&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+    app.setStyleSheet("* {font-family:arial;font-size:11px}");
+    TrackAxis demo;
+    demo.show();
+    return app.exec();
+}
+
+
+TrackAxis::TrackAxis(QWidget *parent) :
+    QDialog(parent)
+{
+    setWindowTitle("Track Line with Axis Labels");
+
+    // Create the QChartViewer and draw the chart
+    m_ChartViewer = new QChartViewer(this);
+    drawChart(m_ChartViewer);
+
+    // Set the window to be of the same size as the chart
+    setFixedSize(m_ChartViewer-&gt;width(), m_ChartViewer-&gt;height());
+
+    // Set up the mouseMovePlotArea handler for drawing the track cursor
+    connect(m_ChartViewer, SIGNAL(mouseMovePlotArea(QMouseEvent*)),
+        SLOT(onMouseMovePlotArea(QMouseEvent*)));
+}
+
+TrackAxis::~TrackAxis()
+{
+    delete m_ChartViewer-&gt;getChart();
+}
+
+//
+// Draw the chart and display it in the given viewer
+//
+void TrackAxis::drawChart(QChartViewer *viewer)
+{
+    // Data for the chart as 2 random data series
+    RanSeries r(127);
+    DoubleArray data0 = r.getSeries(180, 10, -1.5, 1.5);
+    DoubleArray data1 = r.getSeries(180, 150, -15, 15);
+    DoubleArray timeStamps = r.getDateSeries(180, Chart::chartTime(2011, 1, 1), 86400);
+
+    // Create a XYChart object of size 670 x 400 pixels
+    XYChart *c = new XYChart(670, 400);
+
+    // Add a title to the chart using 18 pts Times New Roman Bold Italic font
+    c-&gt;addTitle("Plasma Stabilizer Energy Usage", "timesbi.ttf", 18);
+
+    // Set the plotarea at (50, 55) with width 100 pixels less than chart width, and height 90 pixels
+    // less than chart height. Use a vertical gradient from light blue (f0f6ff) to sky blue (a0c0ff)
+    // as background. Set border to transparent and grid lines to white (ffffff).
+    c-&gt;setPlotArea(50, 55, c-&gt;getWidth() - 100, c-&gt;getHeight() - 90, c-&gt;linearGradientColor(0, 55, 0,
+        c-&gt;getHeight() - 35, 0xf0f6ff, 0xa0c0ff), -1, Chart::Transparent, 0xffffff, 0xffffff);
+
+    // Add a legend box at (50, 25) using horizontal layout. Use 10pts Arial Bold as font. Set the
+    // background and border color to Transparent.
+    c-&gt;addLegend(50, 25, false, "arialbd.ttf", 10)-&gt;setBackground(Chart::Transparent);
+
+    // Set axis label style to 8pts Arial Bold
+    c-&gt;xAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+    c-&gt;yAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+    c-&gt;yAxis2()-&gt;setLabelStyle("arialbd.ttf", 8);
+
+    // Set the axis stem to transparent
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;yAxis2()-&gt;setColors(Chart::Transparent);
+
+    // Configure x-axis label format
+    c-&gt;xAxis()-&gt;setMultiFormat(Chart::StartOfYearFilter(), "{value|mm/yyyy} ",
+        Chart::StartOfMonthFilter(), "{value|mm}");
+
+    // Add axis title using 10pts Arial Bold Italic font
+    c-&gt;yAxis()-&gt;setTitle("Power Usage (Watt)", "arialbi.ttf", 10);
+    c-&gt;yAxis2()-&gt;setTitle("Effective Load (kg)", "arialbi.ttf", 10);
+
+    // Add a line layer to the chart using a line width of 2 pixels.
+    LineLayer *layer = c-&gt;addLineLayer();
+    layer-&gt;setLineWidth(2);
+
+    // Add 2 data series to the line layer
+    layer-&gt;setXData(timeStamps);
+    layer-&gt;addDataSet(data0, 0xcc0000, "Power Usage");
+    layer-&gt;addDataSet(data1, 0x008800, "Effective Load")-&gt;setUseYAxis2();
+
+    // Set the chart image to the QChartViewer
+    viewer-&gt;setChart(c);
+}
+
+//
+// Draw track cursor when mouse is moving over plotarea
+//
+void TrackAxis::onMouseMovePlotArea(QMouseEvent *)
+{
+    trackLineAxis((XYChart *)m_ChartViewer-&gt;getChart(), m_ChartViewer-&gt;getPlotAreaMouseX());
+    m_ChartViewer-&gt;updateDisplay();
+    
+    // Hide the track cursor when the mouse leaves the plot area
+    m_ChartViewer-&gt;removeDynamicLayer("mouseLeavePlotArea");
+}
+
+//
+// Draw track line with axis labels
+//
+void TrackAxis::trackLineAxis(XYChart *c, int mouseX)
+{
+    // Clear the current dynamic layer and get the DrawArea object to draw on it.
+    DrawArea *d = c-&gt;initDynamicLayer();
+
+    // The plot area object
+    PlotArea *plotArea = c-&gt;getPlotArea();
+
+    // Get the data x-value that is nearest to the mouse, and find its pixel coordinate.
+    double xValue = c-&gt;getNearestXValue(mouseX);
+    int xCoor = c-&gt;getXCoor(xValue);
+
+    // The vertical track line is drawn up to the highest data point (the point with smallest
+    // y-coordinate). We need to iterate all datasets in all layers to determine where it is.
+    int minY = plotArea-&gt;getBottomY();
+
+    // Iterate through all layers to find the highest data point
+    for(int i = 0; i &lt; c-&gt;getLayerCount(); ++i) {
+        Layer *layer = c-&gt;getLayerByZ(i);
+
+        // The data array index of the x-value
+        int xIndex = layer-&gt;getXIndexOf(xValue);
+
+        // Iterate through all the data sets in the layer
+        for(int j = 0; j &lt; layer-&gt;getDataSetCount(); ++j) {
+            DataSet *dataSet = layer-&gt;getDataSetByZ(j);
+
+            double dataPoint = dataSet-&gt;getPosition(xIndex);
+            if ((dataPoint != Chart::NoValue) &amp;&amp; (dataSet-&gt;getDataColor() != (int)Chart::Transparent))
+                minY = min(minY, c-&gt;getYCoor(dataPoint, dataSet-&gt;getUseYAxis()));
+        }
+    }
+
+    // Draw a vertical track line at the x-position up to the highest data point.
+    d-&gt;vline(max(minY, plotArea-&gt;getTopY()), plotArea-&gt;getBottomY() + 6, xCoor, d-&gt;dashLineColor(
+        0x000000, 0x0101));
+
+    // Draw a label on the x-axis to show the track line position
+    ostringstream xlabel;
+    xlabel &lt;&lt; "&lt;*font,bgColor=000000*&gt; " &lt;&lt; c-&gt;xAxis()-&gt;getFormattedLabel(xValue, "mmm dd, yyyy")
+        &lt;&lt; " &lt;*/font*&gt;";
+    TTFText *t = d-&gt;text(xlabel.str().c_str(), "arialbd.ttf", 8);
+    t-&gt;draw(xCoor, plotArea-&gt;getBottomY() + 6, 0xffffff, Chart::Top);
+    t-&gt;destroy();
+
+    // Iterate through all layers to build the legend array
+    for(int i = 0; i &lt; c-&gt;getLayerCount(); ++i) {
+        Layer *layer = c-&gt;getLayerByZ(i);
+
+        // The data array index of the x-value
+        int xIndex = layer-&gt;getXIndexOf(xValue);
+
+        // Iterate through all the data sets in the layer
+        for(int j = 0; j &lt; layer-&gt;getDataSetCount(); ++j) {
+            DataSet *dataSet = layer-&gt;getDataSetByZ(j);
+
+            // The positional value, axis binding, pixel coordinate and color of the data point.
+            double dataPoint = dataSet-&gt;getPosition(xIndex);
+            Axis *yAxis = dataSet-&gt;getUseYAxis();
+            int yCoor = c-&gt;getYCoor(dataPoint, yAxis);
+            int color = dataSet-&gt;getDataColor();
+
+            // Draw the axis label only for visible data points of named data sets
+            if ((dataPoint != Chart::NoValue) &amp;&amp; (color != (int)Chart::Transparent) &amp;&amp; (yCoor &gt;=
+                plotArea-&gt;getTopY()) &amp;&amp; (yCoor &lt;= plotArea-&gt;getBottomY())) {
+                // The axis label consists of 3 parts - a track dot for the data point, an axis label,
+                // and a line joining the track dot to the axis label.
+
+                // Draw the line first. The end point of the line at the axis label side depends on
+                // whether the label is at the left or right side of the axis (that is, on whether the
+                // axis is on the left or right side of the plot area).
+                int xPos = yAxis-&gt;getX() + ((yAxis-&gt;getAlignment() == Chart::Left) ? -4 : 4);
+                d-&gt;hline(xCoor, xPos, yCoor, d-&gt;dashLineColor(color, 0x0101));
+
+                // Draw the track dot
+                d-&gt;circle(xCoor, yCoor, 4, 4, color, color);
+
+                // Draw the axis label. If the axis is on the left side of the plot area, the labels
+                // should right aligned to the axis, and vice versa.
+                ostringstream axisLabel;
+                axisLabel &lt;&lt; "&lt;*font,bgColor=" &lt;&lt; hex &lt;&lt; color &lt;&lt; "*&gt; "
+                    &lt;&lt; c-&gt;formatValue(dataPoint, "{value|P4}")    &lt;&lt; " &lt;*/font*&gt;";
+                t = d-&gt;text(axisLabel.str().c_str(), "arialbd.ttf", 8);
+                t-&gt;draw(xPos, yCoor, 0xffffff,
+                    ((yAxis-&gt;getAlignment() == Chart::Left) ? Chart::Right : Chart::Left));
+                t-&gt;destroy();
+            }
+        }
+    }
+}</pre></td></tr></table></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

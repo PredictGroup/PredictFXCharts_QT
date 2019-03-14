@@ -1,0 +1,7 @@
+<RCC>
+  <qresource>
+    <file>images/exit.png</file>
+    <file>images/info.png</file>
+    <file>images/icon_vip.png</file>
+  </qresource>
+</RCC>

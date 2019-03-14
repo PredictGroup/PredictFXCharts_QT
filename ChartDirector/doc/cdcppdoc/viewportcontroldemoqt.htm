@@ -1,0 +1,455 @@
+<HTML>
+<HEAD>
+<Title>Zooming and Scrolling with Viewport Control (QT)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Zooming and Scrolling with Viewport Control (QT)</p>
+<hr class="separator">
+<div class="content"><img src="images/viewportcontroldemo_qt.png"><br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b><font color="#FF0000">NOTE:</font></b> This section describes Zooming and Scrolling with Viewport Control for QT only. For MFC, please refer to <a href="viewportcontroldemo.htm">Zooming and Scrolling with Viewport Control (MFC)</a>.
+</div><br>
+The example extends the <a href="zoomscrolltrackqt.htm">Zooming and Scrolling with Track Line (1) (QT)</a> example by replacing the scrollbar with a <a href="QViewPortControl.htm">QViewPortControl</a>. There is also a save button to save the chart in PNG, JPG, GIF, BMP, SVG or PDF formats.<br><br>
+Most of the code in this example is similar to that in the <a href="zoomscrolltrackqt.htm">Zooming and Scrolling with Track Line (1) (QT)</a> example. The key changes are:<br><br>
+<ul>
+<li>During initialization, the drawFullChart method is called to draw an overall chart that covers the full data range for display in the <a href="QViewPortControl.htm">QViewPortControl</a>. The QViewPortControl is then connected to the <a href="QChartViewer.htm">QChartViewer</a> using <a href="QViewPortControl.setViewer.htm">QViewPortControl.setViewer</a>.<br><br>
+<li>When the save button is clicked, its handler will pop up a dialog box to ask for the filename, and <a href="BaseChart.makeChart.htm">BaseChart.makeChart</a> will be used to save the chart in the <a href="QChartViewer.htm">QChartViewer</a> using the provided filename, with the file format automatically determined based on the file extension.<br><br>
+</ul>
+</div><p class="heading1a">Source Code Listing</p><div class="content">
+The following is the main source code of this demo. The complete Qt project is in "qtdemo/viewportcontroldemo".<br><br>
+[File: qtdemo/viewportcontroldemo/viewportcontroldemo.cpp]<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include &lt;QApplication&gt;
+#include &lt;QPushButton&gt;
+#include &lt;QButtonGroup&gt;
+#include &lt;QMouseEvent&gt;
+#include &lt;QFileDialog&gt;
+#include &lt;math.h&gt;
+#include &lt;sstream&gt;
+#include &lt;algorithm&gt;
+#include "viewportcontroldemo.h"
+
+using namespace std;
+
+
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+    app.setStyleSheet("* {font-family:arial;font-size:11px}");
+    ViewportControlDemo demo;
+    demo.show();
+    return app.exec();
+}
+
+ViewportControlDemo::ViewportControlDemo(QWidget *parent) :
+    QDialog(parent)
+{
+    //
+    // Set up the GUI
+    //
+
+    setFixedSize(772, 478);
+    setWindowTitle("Zooming and Scrolling with Viewport Control");
+
+    // The frame on the left side
+    QFrame *frame = new QFrame(this);
+    frame-&gt;setGeometry(4, 4, 120, 470);
+    frame-&gt;setFrameShape(QFrame::StyledPanel);
+
+    // Pointer push button
+    QPushButton *pointerPB = new QPushButton(QIcon(":/pointer.png"), "Pointer", frame);
+    pointerPB-&gt;setGeometry(4, 8, 112, 28);
+    pointerPB-&gt;setStyleSheet("QPushButton { text-align:left; padding:5px}");
+    pointerPB-&gt;setCheckable(true);
+
+    // Zoom In push button
+    QPushButton *zoomInPB = new QPushButton(QIcon(":/zoomin.png"), "Zoom In", frame);
+    zoomInPB-&gt;setGeometry(4, 36, 112, 28);
+    zoomInPB-&gt;setStyleSheet("QPushButton { text-align:left; padding:5px}");
+    zoomInPB-&gt;setCheckable(true);
+
+    // Zoom Out push button
+    QPushButton *zoomOutPB = new QPushButton(QIcon(":/zoomout.png"), "Zoom Out", frame);
+    zoomOutPB-&gt;setStyleSheet("QPushButton { text-align:left; padding:5px}");
+    zoomOutPB-&gt;setGeometry(4, 64, 112, 28);
+    zoomOutPB-&gt;setCheckable(true);
+
+    // Save push button
+    QPushButton *savePB = new QPushButton(QIcon(":/save.png"), "Save", frame);
+    savePB-&gt;setStyleSheet("QPushButton { text-align:left; padding:5px}");
+    savePB-&gt;setGeometry(4, 120, 112, 28);
+    connect(savePB, SIGNAL(clicked(bool)), SLOT(onSave(bool)));
+
+    // The Pointer/Zoom In/Zoom Out buttons form a button group
+    QButtonGroup *mouseUsage = new QButtonGroup(frame);
+    mouseUsage-&gt;addButton(pointerPB, Chart::MouseUsageScroll);
+    mouseUsage-&gt;addButton(zoomInPB, Chart::MouseUsageZoomIn);
+    mouseUsage-&gt;addButton(zoomOutPB, Chart::MouseUsageZoomOut);
+    connect(mouseUsage, SIGNAL(buttonPressed(int)), SLOT(onMouseUsageChanged(int)));
+
+    // Chart Viewer
+    m_ChartViewer = new QChartViewer(this);
+    m_ChartViewer-&gt;setGeometry(128, 4, 640, 400);
+    connect(m_ChartViewer, SIGNAL(viewPortChanged()), SLOT(onViewPortChanged()));
+    connect(m_ChartViewer, SIGNAL(mouseMovePlotArea(QMouseEvent*)), SLOT(onMouseMovePlotArea(QMouseEvent*)));
+
+    m_ViewPortControl = new QViewPortControl(this);
+    m_ViewPortControl-&gt;setGeometry(128, 403, 640, 70);
+
+    //
+    // Initialize the chart
+    //
+
+    // Load the data
+    loadData();
+
+    // Initialize the QChartViewer
+    initChartViewer(m_ChartViewer);
+
+    // Initially set the mouse to drag to scroll mode
+    pointerPB-&gt;click();
+
+    // Trigger the ViewPortChanged event to draw the chart
+    m_ChartViewer-&gt;updateViewPort(true, true);
+
+    // Draw and display the full chart in the CViewPortControl
+    drawFullChart(m_ViewPortControl, m_ChartViewer);
+
+    // Bind the CChartViewer to the CViewPortControl
+    m_ViewPortControl-&gt;setViewer(m_ChartViewer);
+}
+
+ViewportControlDemo::~ViewportControlDemo()
+{
+    delete m_ranSeries;
+    delete m_ChartViewer-&gt;getChart();
+    delete m_ViewPortControl-&gt;getChart();
+}
+
+//
+// Load the data
+//
+void ViewportControlDemo::loadData()
+{
+    // In this example, we just use random numbers as data.
+    m_ranSeries = new RanSeries(127);
+    m_timeStamps = m_ranSeries-&gt;getDateSeries(1827, Chart::chartTime(2010, 1, 1), 86400);
+    m_dataSeriesA = m_ranSeries-&gt;getSeries(1827, 150, -10, 10);
+    m_dataSeriesB = m_ranSeries-&gt;getSeries(1827, 200, -10, 10);
+    m_dataSeriesC = m_ranSeries-&gt;getSeries(1827, 250, -8, 8);
+}
+
+//
+// Initialize the QChartViewer
+//
+void ViewportControlDemo::initChartViewer(QChartViewer *viewer)
+{
+    // Set the full x range to be the duration of the data
+    viewer-&gt;setFullRange("x", m_timeStamps[0], m_timeStamps[m_timeStamps.len - 1]);
+
+    // Initialize the view port to show the latest 20% of the time range
+    viewer-&gt;setViewPortWidth(0.2);
+    viewer-&gt;setViewPortLeft(1 - viewer-&gt;getViewPortWidth());
+
+    // Set the maximum zoom to 10 points
+    viewer-&gt;setZoomInWidthLimit(10.0 / m_timeStamps.len);
+    viewer-&gt;setMouseWheelZoomRatio(1.1);
+}
+
+//
+// The ViewPortChanged event handler. This event occurs if the user scrolls or zooms in
+// or out the chart by dragging or clicking on the chart. It can also be triggered by
+// calling WinChartViewer.updateViewPort.
+//
+void ViewportControlDemo::onViewPortChanged()
+{
+    // Update chart if necessary
+    if (m_ChartViewer-&gt;needUpdateChart())
+        drawChart(m_ChartViewer);
+}
+
+//
+// Draw the chart and display it in the given viewer
+//
+void ViewportControlDemo::drawChart(QChartViewer *viewer)
+{
+    // Get the start date and end date that are visible on the chart.
+    double viewPortStartDate = viewer-&gt;getValueAtViewPort("x", viewer-&gt;getViewPortLeft());
+    double viewPortEndDate = viewer-&gt;getValueAtViewPort("x", viewer-&gt;getViewPortLeft() +
+        viewer-&gt;getViewPortWidth());
+
+    // Get the array indexes that corresponds to the visible start and end dates
+    int startIndex = (int)floor(Chart::bSearch(m_timeStamps, viewPortStartDate));
+    int endIndex = (int)ceil(Chart::bSearch(m_timeStamps, viewPortEndDate));
+    int noOfPoints = endIndex - startIndex + 1;
+
+    // Extract the part of the data array that are visible.
+    DoubleArray viewPortTimeStamps = DoubleArray(m_timeStamps.data + startIndex, noOfPoints);
+    DoubleArray viewPortDataSeriesA = DoubleArray(m_dataSeriesA.data + startIndex, noOfPoints);
+    DoubleArray viewPortDataSeriesB = DoubleArray(m_dataSeriesB.data + startIndex, noOfPoints);
+    DoubleArray viewPortDataSeriesC = DoubleArray(m_dataSeriesC.data + startIndex, noOfPoints);
+
+    //
+    // At this stage, we have extracted the visible data. We can use those data to plot the chart.
+    //
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // Configure overall chart appearance.
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    // Create an XYChart object of size 640 x 400 pixels
+    XYChart *c = new XYChart(640, 400);
+
+    // Set the plotarea at (55, 55) with width 80 pixels less than chart width, and height 92 pixels
+    // less than chart height. Use a vertical gradient from light blue (f0f6ff) to sky blue (a0c0ff)
+    // as background. Set border to transparent and grid lines to white (ffffff).
+    c-&gt;setPlotArea(55, 55, c-&gt;getWidth() - 80, c-&gt;getHeight() - 92, c-&gt;linearGradientColor(0, 55, 0,
+        c-&gt;getHeight() - 35, 0xf0f6ff, 0xa0c0ff), -1, Chart::Transparent, 0xffffff, 0xffffff);
+
+    // As the data can lie outside the plotarea in a zoomed chart, we need enable clipping.
+    c-&gt;setClipping();
+
+    // Add a title box using dark grey (0x333333) 15pt Arial Bold font
+    c-&gt;addTitle("   Zooming and Scrolling with Viewport Control", "arialbd.ttf", 15, 0x333333);
+
+    // Set legend icon style to use line style icon, sized for 10pt font
+    c-&gt;getLegend()-&gt;setLineStyleKey();
+    c-&gt;getLegend()-&gt;setFontSize(10);
+
+    // Set the x and y axis stems to transparent and the label font to 10pt Arial
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;xAxis()-&gt;setLabelStyle("arial.ttf", 10);
+    c-&gt;yAxis()-&gt;setLabelStyle("arial.ttf", 10);
+
+    // Add axis title using 10pt Arial Bold font
+    c-&gt;yAxis()-&gt;setTitle("Ionic Temperature (C)", "arialbd.ttf", 10);
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // Add data to chart
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    //
+    // In this example, we represent the data by lines. You may modify the code below to use other
+    // representations (areas, scatter plot, etc).
+    //
+
+    // Add a line layer for the lines, using a line width of 2 pixels
+    LineLayer *layer = c-&gt;addLineLayer();
+    layer-&gt;setLineWidth(2);
+
+    // In this demo, we do not have too many data points. In real code, the chart may contain a lot
+    // of data points when fully zoomed out - much more than the number of horizontal pixels in this
+    // plot area. So it is a good idea to use fast line mode.
+    layer-&gt;setFastLineMode();
+
+    // Now we add the 3 data series to a line layer, using the color red (0xff3333), green
+    // (0x008800) and blue (0x3333cc)
+    layer-&gt;setXData(viewPortTimeStamps);
+    layer-&gt;addDataSet(viewPortDataSeriesA, 0xff3333, "Alpha");
+    layer-&gt;addDataSet(viewPortDataSeriesB, 0x008800, "Beta");
+    layer-&gt;addDataSet(viewPortDataSeriesC, 0x3333cc, "Gamma");
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // Configure axis scale and labelling
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    // Set the x-axis as a date/time axis with the scale according to the view port x range.
+    viewer-&gt;syncDateAxisWithViewPort("x", c-&gt;xAxis());
+
+    // For the automatic y-axis labels, set the minimum spacing to 30 pixels.
+    c-&gt;yAxis()-&gt;setTickDensity(30);
+
+    //
+    // In this demo, the time range can be from a few years to a few days. We demonstrate how to
+    // set up different date/time format based on the time range.
+    //
+
+    // If all ticks are yearly aligned, then we use "yyyy" as the label format.
+    c-&gt;xAxis()-&gt;setFormatCondition("align", 360 * 86400);
+    c-&gt;xAxis()-&gt;setLabelFormat("{value|yyyy}");
+
+    // If all ticks are monthly aligned, then we use "mmm yyyy" in bold font as the first
+    // label of a year, and "mmm" for other labels.
+    c-&gt;xAxis()-&gt;setFormatCondition("align", 30 * 86400);
+    c-&gt;xAxis()-&gt;setMultiFormat(Chart::StartOfYearFilter(), "&lt;*font=bold*&gt;{value|mmm&lt;*br*&gt;yyyy}",
+        Chart::AllPassFilter(), "{value|mmm}");
+
+    // If all ticks are daily algined, then we use "mmm dd&lt;*br*&gt;yyyy" in bold font as the
+    // first label of a year, and "mmm dd" in bold font as the first label of a month, and
+    // "dd" for other labels.
+    c-&gt;xAxis()-&gt;setFormatCondition("align", 86400);
+    c-&gt;xAxis()-&gt;setMultiFormat(Chart::StartOfYearFilter(),
+        "&lt;*block,halign=left*&gt;&lt;*font=bold*&gt;{value|mmm dd&lt;*br*&gt;yyyy}",
+        Chart::StartOfMonthFilter(), "&lt;*font=bold*&gt;{value|mmm dd}");
+    c-&gt;xAxis()-&gt;setMultiFormat(Chart::AllPassFilter(), "{value|dd}");
+
+    // For all other cases (sub-daily ticks), use "hh:nn&lt;*br*&gt;mmm dd" for the first label of
+    // a day, and "hh:nn" for other labels.
+    c-&gt;xAxis()-&gt;setFormatCondition("else");
+    c-&gt;xAxis()-&gt;setMultiFormat(Chart::StartOfDayFilter(), "&lt;*font=bold*&gt;{value|hh:nn&lt;*br*&gt;mmm dd}",
+        Chart::AllPassFilter(), "{value|hh:nn}");
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // Output the chart
+    ///////////////////////////////////////////////////////////////////////////////////////
+    
+    // We need to update the track line too. If the mouse is moving on the chart (eg. if 
+    // the user drags the mouse on the chart to scroll it), the track line will be updated
+    // in the MouseMovePlotArea event. Otherwise, we need to update the track line here.
+    if (!viewer-&gt;isInMouseMoveEvent()) 
+    {
+        trackLineLegend(c, (0 == viewer-&gt;getChart()) ? c-&gt;getPlotArea()-&gt;getRightX() :
+            viewer-&gt;getPlotAreaMouseX()); 
+    }
+    delete viewer-&gt;getChart();
+    viewer-&gt;setChart(c);
+}
+
+void ViewportControlDemo::drawFullChart(QViewPortControl *vpc, QChartViewer *viewer)
+{
+    // Create an XYChart object of size 640 x 70 pixels
+    XYChart *c = new XYChart(640, 70);
+
+    // Set the plotarea with the same horizontal position as that in the main chart for alignment.
+    c-&gt;setPlotArea(55, 5, c-&gt;getWidth() - 80, c-&gt;getHeight() - 11, 0xc0d8ff, -1, 0x888888,
+        Chart::Transparent, 0xffffff);
+
+    // Set the x axis stem to transparent and the label font to 10pt Arial
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;xAxis()-&gt;setLabelStyle("arial.ttf", 10);
+
+    // Put the x-axis labels inside the plot area by setting a negative label gap. Use
+    // setLabelAlignment to put the label at the right side of the tick.
+    c-&gt;xAxis()-&gt;setLabelGap(-1);
+    c-&gt;xAxis()-&gt;setLabelAlignment(1);
+
+    // Set the y axis stem and labels to transparent (that is, hide the labels)
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent, Chart::Transparent);
+
+    // Add a line layer for the lines with fast line mode enabled
+    LineLayer *layer = c-&gt;addLineLayer();
+    layer-&gt;setFastLineMode();
+
+    // Now we add the 3 data series to a line layer, using the color red (0xff3333), green
+    // (0x008800) and blue (0x3333cc)
+    layer-&gt;setXData(m_timeStamps);
+    layer-&gt;addDataSet(m_dataSeriesA, 0xff3333);
+    layer-&gt;addDataSet(m_dataSeriesB, 0x008800);
+    layer-&gt;addDataSet(m_dataSeriesC, 0x3333cc);
+
+    // The x axis scales should reflect the full range of the view port
+    c-&gt;xAxis()-&gt;setDateScale(viewer-&gt;getValueAtViewPort("x", 0), viewer-&gt;getValueAtViewPort("x", 1));
+
+    // For the automatic x-axis labels, set the minimum spacing to 75 pixels.
+    c-&gt;xAxis()-&gt;setTickDensity(75);
+
+    // For the auto-scaled y-axis, as we hide the labels, we can disable axis rounding. This can
+    // make the axis scale fit the data tighter.
+    c-&gt;yAxis()-&gt;setRounding(false, false);
+
+    // Output the chart
+    vpc-&gt;setChart(c);
+}
+
+//
+// The Pointer, Zoom In or Zoom out button is pressed
+//
+void ViewportControlDemo::onMouseUsageChanged(int mouseUsage)
+{
+    m_ChartViewer-&gt;setMouseUsage(mouseUsage);
+}
+
+//
+// The Save button is pressed
+//
+void ViewportControlDemo::onSave(bool)
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save", "chartdirector_demo",
+        "PNG (*.png);;JPG (*.jpg);;GIF (*.gif);;BMP (*.bmp);;SVG (*.svg);;PDF (*.pdf)");
+
+    if (!fileName.isEmpty())
+    {
+        // Save the chart
+        BaseChart *c = m_ChartViewer-&gt;getChart();
+        if (0 != c)
+            c-&gt;makeChart(fileName.toUtf8().constData());
+    }
+}
+
+//
+// Draw track cursor when mouse is moving over plotarea
+//
+void ViewportControlDemo::onMouseMovePlotArea(QMouseEvent *)
+{
+    trackLineLegend((XYChart *)m_ChartViewer-&gt;getChart(), m_ChartViewer-&gt;getPlotAreaMouseX());
+    m_ChartViewer-&gt;updateDisplay();
+}
+
+//
+// Draw track line with data labels
+//
+void ViewportControlDemo::trackLineLegend(XYChart *c, int mouseX)
+{
+    // Clear the current dynamic layer and get the DrawArea object to draw on it.
+    DrawArea *d = c-&gt;initDynamicLayer();
+
+    // The plot area object
+    PlotArea *plotArea = c-&gt;getPlotArea();
+
+    // Get the data x-value that is nearest to the mouse, and find its pixel coordinate.
+    double xValue = c-&gt;getNearestXValue(mouseX);
+    int xCoor = c-&gt;getXCoor(xValue);
+
+    // Draw a vertical track line at the x-position
+    d-&gt;vline(plotArea-&gt;getTopY(), plotArea-&gt;getBottomY(), xCoor, 0xaaaaaa);
+
+    // Container to hold the legend entries
+    vector&lt;string&gt; legendEntries;
+
+    // Iterate through all layers to build the legend array
+    for (int i = 0; i &lt; c-&gt;getLayerCount(); ++i) {
+        Layer *layer = c-&gt;getLayerByZ(i);
+
+        // The data array index of the x-value
+        int xIndex = layer-&gt;getXIndexOf(xValue);
+
+        // Iterate through all the data sets in the layer
+        for (int j = 0; j &lt; layer-&gt;getDataSetCount(); ++j) {
+            DataSet *dataSet = layer-&gt;getDataSetByZ(j);
+
+            // We are only interested in visible data sets with names
+            const char *dataName = dataSet-&gt;getDataName();
+            int color = dataSet-&gt;getDataColor();
+            if (dataName &amp;&amp; *dataName &amp;&amp; (color != Chart::Transparent)) {
+                // Build the legend entry, consist of the legend icon, name and data value.
+                double dataValue = dataSet-&gt;getValue(xIndex);
+                ostringstream legendEntry;
+                legendEntry &lt;&lt; "&lt;*block*&gt;" &lt;&lt; dataSet-&gt;getLegendIcon() &lt;&lt; " " &lt;&lt; dataName &lt;&lt; ": " &lt;&lt;
+                    ((dataValue == Chart::NoValue) ? "N/A" : c-&gt;formatValue(dataValue, "{value|P4}"))
+                    &lt;&lt; "&lt;*/*&gt;";
+                legendEntries.push_back(legendEntry.str());
+
+                // Draw a track dot for data points within the plot area
+                int yCoor = c-&gt;getYCoor(dataSet-&gt;getPosition(xIndex), dataSet-&gt;getUseYAxis());
+                if ((yCoor &gt;= plotArea-&gt;getTopY()) &amp;&amp; (yCoor &lt;= plotArea-&gt;getBottomY())) {
+                    d-&gt;circle(xCoor, yCoor, 5, 5, color, color);
+                }
+            }
+        }
+    }
+
+    // Create the legend by joining the legend entries
+    ostringstream legendText;
+    legendText &lt;&lt; "&lt;*block,maxWidth=" &lt;&lt; plotArea-&gt;getWidth() &lt;&lt; "*&gt;&lt;*block*&gt;&lt;*font=arialbd.ttf*&gt;["
+        &lt;&lt; c-&gt;xAxis()-&gt;getFormattedLabel(xValue, "mm/dd/yyyy") &lt;&lt; "]&lt;*/*&gt;";
+    for (int i = ((int)legendEntries.size()) - 1; i &gt;= 0; --i)
+        legendText &lt;&lt; "        " &lt;&lt; legendEntries[i];
+
+    // Display the legend on the top of the plot area
+    TTFText *t = d-&gt;text(legendText.str().c_str(), "arialbd.ttf", 10);
+    t-&gt;draw(plotArea-&gt;getLeftX() + 5, plotArea-&gt;getTopY() - 3, 0x333333, Chart::BottomLeft);
+    t-&gt;destroy();
+}</pre></td></tr></table></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

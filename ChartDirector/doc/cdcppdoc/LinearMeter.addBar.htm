@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<Title>LinearMeter.addBar</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="LinearMeter.htm">LinearMeter</a>.addBar</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+TextBox *addBar(double startValue, double endValue, int color, int raisedEffect = 0, int roundedCorners = 0);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Adds a bar to the meter.<br><br>
+This method adds an empty <a href="TextBox.htm">TextBox</a> to the meter. It configures the textbox position, size and color so that it looks like a bar on the meter scale.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>startValue</td><td>(Mandatory)</td><td>The start value of the bar.</td></tr><tr><td>endValue</td><td>(Mandatory)</td><td>The end value of the bar.</td></tr><tr><td>color</td><td>(Mandatory)</td><td>The color of the bar.</td></tr><tr><td>raisedEffect</td><td>0</td><td>The 3D border width. For positive values, the border will appear raised. For negative values, the border will appear depressed. A zero value means the border will appear flat. This argument can also be used to specify <a href="Chart.glassEffect.htm">Chart::glassEffect</a>, <a href="Chart.softLighting.htm">Chart::softLighting</a>, <a href="Chart.cylinderEffect.htm">Chart::cylinderEffect</a> or <a href="Chart.flatBorder.htm">Chart::flatBorder</a> effects.</td></tr><tr><td>roundedCorners</td><td>0</td><td>The radius for the two corners at the end position of the bar.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+A <a href="TextBox.htm">TextBox</a> object representing the bar. This may be used to fine-tune the appearance of the bar.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

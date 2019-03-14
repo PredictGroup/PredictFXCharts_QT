@@ -1,0 +1,30 @@
+<HTML>
+<HEAD>
+<Title>UTF8toWCHAR</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">UTF8toWCHAR</p>
+<hr class="separator">
+<div class="content">
+ChartDirector always uses UTF8 strings of type "char *" in its API. In C++, a common data type for international characters is the wide character type "wchar_t". The UTF8toWCHAR can be used to convert a wide string to a UTF8 string. A related utility class <a href="WCHARtoUTF8.htm">WCHARtoUTF8</a> performs the reverse conversion.<br><br>
+UTF8toWCHAR has a constructor that accepts a UTF8 character pointer "char *", and an implicit type casting operator to cast to "const wchar_t *". Thus it can be used like a function that accepts a UTF8 string as input and returns a wide string as output. Note that the memory required for the output is from the UTF8toWCHAR object, so it must be used before the object is destroyed.<br><br>
+A typical usage is like:<br><br>
+<code>functionRequiringWideString(UTF8toWCHAR(a_utf8_string));</code><br><br>
+In the above, the UTF8toWCHAR object is destroyed after the function returns, so the converted wide string is valid for the lifetime of the function call.
+<br><br>
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Method</th><th width="19%">Inherited</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td><a href="UTF8toWCHAR.UTF8toWCHAR.htm">UTF8toWCHAR</a></td><td>(Self)</td><td>Constructs a UTF8toWCHAR object.</td></tr><tr><td><a href="UTF8toWCHAR.const_wchar_t_ptr.htm">const_wchar_t_ptr</a></td><td>(Self)</td><td>Operator for implicit casting to const wchar_t *.</td>
+</tr>
+</table>
+
+</div>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

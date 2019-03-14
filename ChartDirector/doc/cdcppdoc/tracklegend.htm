@@ -1,0 +1,294 @@
+<HTML>
+<HEAD>
+<Title>Track Line with Legend (MFC)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Track Line with Legend (MFC)</p>
+<hr class="separator">
+<div class="content"><img src="images/tracklegend_cpp.png"><br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b><font color="#FF0000">NOTE:</font></b> This section describes Track Line with Legend for MFC, and is available on the Windows edition of ChartDirector for C++ only. For QT, please refer to <a href="tracklegendqt.htm">Track Line with Legend (QT)</a>.
+</div><br>
+This sample program demonstrates a track cursor programmed with the following features:<br><br>
+<ul>
+<li>A vertical line that follows the mouse cursor on the plot area and snaps to the nearest x data value.<br><br>
+<li>Small dots that shows the data points at the nearest x data value.<br><br>
+<li>Dynamically updated legend entries that shows the value of the data points at the nearest x data value.<br><br>
+</ul>
+The code first draws the chart, and sets the track cursor to the right side of the plot area. This ensures the chart initially has a legend that reflects the latest data values. In the      <a href="CChartViewer.CVN_MouseMovePlotArea.htm">CVN_MouseMovePlotArea</a> message       handler, the track cursor is updated to reflect the mouse position.<br><br>
+The <b>trackLineLegend</b> method is the routine that draws the track cursor. Its key elements are:<br><br>
+<ul>
+<li>To draw dynamic contents on the chart, the code obtains the <a href="DrawArea.htm">DrawArea</a> object for drawing on the dynamic layer of the chart using <a href="BaseChart.initDynamicLayer.htm">BaseChart.initDynamicLayer</a>.<br><br>
+<li>The nearest x data value is obtained using <a href="XYChart.getNearestXValue.htm">XYChart.getNearestXValue</a>.<br><br>
+<li>A vertical line is drawn at the nearest x data value using <a href="DrawArea.vline.htm">DrawArea.vline</a>.<br><br>
+<li>The code then iterates through all data sets in all layers to find all the data points at the nearest x data value. For each of these points, it formats a legend entry for the point, which consists of the data set icon (obtained using <a href="DataSet.getLegendIcon.htm">DataSet.getLegendIcon</a>), data set name (obtained using <a href="DataSet.getDataName.htm">DataSet.getDataName</a>), and data value (obtained using <a href="DataSet.getValue.htm">DataSet.getValue</a>). The code also gets the point's y position using <a href="DataSet.getPosition.htm">DataSet.getPosition</a>, and draws a circular dot using <a href="DrawArea.circle.htm">DrawArea.circle</a>.<br><br>
+<li>Finally, the code combines all the legend entries and draws them at the top of the plot area using <a href="DrawArea.text.htm">DrawArea.text</a>.<br><br>
+</ul>
+</div><p class="heading1a">Source Code Listing</p><div class="content">
+The following is the main source code of this demo. The complete MFC project is in "mfcdemo/tracklegend".<br><br>
+[File: mfcdemo/tracklegend/tracklegendDlg.cpp]<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>// tracklegendDlg.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "tracklegend.h"
+#include "tracklegendDlg.h"
+#include "chartdir.h"
+#include &lt;vector&gt;
+#include &lt;sstream&gt;
+
+using namespace std;
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
+// CtracklegendDlg dialog
+
+CtracklegendDlg::CtracklegendDlg(CWnd* pParent /*=NULL*/)
+    : CDialog(CtracklegendDlg::IDD, pParent)
+{
+    m_hIcon = AfxGetApp()-&gt;LoadIcon(IDR_MAINFRAME);
+}
+
+CtracklegendDlg::~CtracklegendDlg()
+{
+    delete m_ChartViewer.getChart();
+}
+
+void CtracklegendDlg::DoDataExchange(CDataExchange* pDX)
+{
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_ChartViewer, m_ChartViewer);
+}
+
+BEGIN_MESSAGE_MAP(CtracklegendDlg, CDialog)
+    ON_WM_PAINT()
+    ON_WM_QUERYDRAGICON()
+    ON_WM_ERASEBKGND()
+    ON_CONTROL(CVN_MouseMovePlotArea, IDC_ChartViewer, OnMouseMovePlotArea)
+    //}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+
+// CtracklegendDlg message handlers
+
+BOOL CtracklegendDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    // Set the icon for this dialog.  The framework does this automatically
+    //  when the application's main window is not a dialog
+    SetIcon(m_hIcon, TRUE);            // Set big icon
+    SetIcon(m_hIcon, FALSE);        // Set small icon
+
+    drawChart(&amp;m_ChartViewer);
+
+    CRect winSize;
+    m_ChartViewer.GetWindowRect(winSize);
+    m_ChartViewer.MoveWindow(5, 5, winSize.Width(), winSize.Height());
+
+    CalcWindowRect(&amp;winSize, CWnd::adjustBorder);
+    SetWindowPos(&amp;wndTop, 0, 0, winSize.Width() + 10, winSize.Height() + 10, SWP_NOMOVE);
+ 
+    return TRUE;  // return TRUE  unless you set the focus to a control
+}
+
+// If you add a minimize button to your dialog, you will need the code below
+//  to draw the icon.  For MFC applications using the document/view model,
+//  this is automatically done for you by the framework.
+
+void CtracklegendDlg::OnPaint()
+{
+    if (IsIconic())
+    {
+        CPaintDC dc(this); // device context for painting
+
+        SendMessage(WM_ICONERASEBKGND, reinterpret_cast&lt;WPARAM&gt;(dc.GetSafeHdc()), 0);
+
+        // Center icon in client rectangle
+        int cxIcon = GetSystemMetrics(SM_CXICON);
+        int cyIcon = GetSystemMetrics(SM_CYICON);
+        CRect rect;
+        GetClientRect(&amp;rect);
+        int x = (rect.Width() - cxIcon + 1) / 2;
+        int y = (rect.Height() - cyIcon + 1) / 2;
+
+        // Draw the icon
+        dc.DrawIcon(x, y, m_hIcon);
+    }
+    else
+    {
+        CDialog::OnPaint();
+    }
+}
+
+// The system calls this function to obtain the cursor to display while the user drags
+//  the minimized window.
+HCURSOR CtracklegendDlg::OnQueryDragIcon()
+{
+    return static_cast&lt;HCURSOR&gt;(m_hIcon);
+}
+
+//
+// Handle the ON_WM_ERASEBKGND message to set background color
+//
+BOOL CtracklegendDlg::OnEraseBkgnd(CDC* pDC) 
+{ 
+    // Set brush to desired background color 
+    CBrush backBrush(RGB(255, 255, 255)); 
+
+    // Save old brush 
+    CBrush* pOldBrush = pDC-&gt;SelectObject(&amp;backBrush); 
+
+    // Erase the area needed with the given background color
+    CRect rect; 
+    pDC-&gt;GetClipBox(&amp;rect);
+    pDC-&gt;PatBlt(rect.left, rect.top, rect.Width(), rect.Height(), PATCOPY); 
+
+    // Restore old brush and exit
+    pDC-&gt;SelectObject(pOldBrush); 
+    return TRUE; 
+} 
+
+//
+// Draw track cursor when mouse is moving over plotarea
+//
+void CtracklegendDlg::OnMouseMovePlotArea()
+{
+    trackLineLegend((XYChart *)m_ChartViewer.getChart(), m_ChartViewer.getPlotAreaMouseX());
+    m_ChartViewer.updateDisplay();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CtracklegendDlg methods
+
+//
+// Draw the chart and display it in the given viewer
+//
+void CtracklegendDlg::drawChart(CChartViewer *viewer)
+{
+    // Data for the chart as 3 random data series
+    RanSeries r(127);
+    DoubleArray data0 = r.getSeries(100, 100, -15, 15);
+    DoubleArray data1 = r.getSeries(100, 150, -15, 15);
+    DoubleArray data2 = r.getSeries(100, 200, -15, 15);
+    DoubleArray timeStamps = r.getDateSeries(100, Chart::chartTime(2011, 1, 1), 86400);
+
+    // Create a XYChart object of size 640 x 400 pixels
+    XYChart *c = new XYChart(640, 400);
+
+    // Add a title to the chart using 18 pts Times New Roman Bold Italic font
+    c-&gt;addTitle("    Product Line Global Revenue", "timesbi.ttf", 18);
+
+    // Set the plotarea at (50, 55) with width 70 pixels less than chart width, and height 90 pixels
+    // less than chart height. Use a vertical gradient from light blue (f0f6ff) to sky blue (a0c0ff)
+    // as background. Set border to transparent and grid lines to white (ffffff).
+    c-&gt;setPlotArea(50, 55, c-&gt;getWidth() - 70, c-&gt;getHeight() - 90, c-&gt;linearGradientColor(0, 55, 0,
+        c-&gt;getHeight() - 35, 0xf0f6ff, 0xa0c0ff), -1, Chart::Transparent, 0xffffff, 0xffffff);
+
+    // Set legend icon style to use line style icon, sized for 8pt font
+    c-&gt;getLegend()-&gt;setLineStyleKey();
+    c-&gt;getLegend()-&gt;setFontSize(8);
+
+    // Set axis label style to 8pts Arial Bold
+    c-&gt;xAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+    c-&gt;yAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+
+    // Set the axis stem to transparent
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent);
+
+    // Configure x-axis label format
+    c-&gt;xAxis()-&gt;setMultiFormat(Chart::StartOfYearFilter(), "{value|mm/yyyy} ", 
+        Chart::StartOfMonthFilter(), "{value|mm}");
+
+    // Add axis title using 10pts Arial Bold Italic font
+    c-&gt;yAxis()-&gt;setTitle("USD millions", "arialbi.ttf", 10);
+
+    // Add a line layer to the chart using a line width of 2 pixels.
+    LineLayer *layer = c-&gt;addLineLayer();
+    layer-&gt;setLineWidth(2);
+
+    // Add 3 data series to the line layer
+    layer-&gt;setXData(timeStamps);
+    layer-&gt;addDataSet(data0, 0xff3333, "Alpha");
+    layer-&gt;addDataSet(data1, 0x008800, "Beta");
+    layer-&gt;addDataSet(data2, 0x3333cc, "Gamma");
+
+    // Include track line with legend for the latest data values
+    trackLineLegend(c, c-&gt;getPlotArea()-&gt;getRightX());
+
+    // Assign the chart to the WinChartViewer
+    viewer-&gt;setChart(c);
+}
+
+//
+// Draw the track line with legend
+//
+void CtracklegendDlg::trackLineLegend(XYChart *c, int mouseX)
+{
+    // Clear the current dynamic layer and get the DrawArea object to draw on it.
+    DrawArea *d = c-&gt;initDynamicLayer();
+
+    // The plot area object
+    PlotArea *plotArea = c-&gt;getPlotArea();
+
+    // Get the data x-value that is nearest to the mouse, and find its pixel coordinate.
+    double xValue = c-&gt;getNearestXValue(mouseX);
+    int xCoor = c-&gt;getXCoor(xValue);
+
+    // Draw a vertical track line at the x-position
+    d-&gt;vline(plotArea-&gt;getTopY(), plotArea-&gt;getBottomY(), xCoor, d-&gt;dashLineColor(0x000000, 0x0101));
+
+    // Container to hold the legend entries
+    vector&lt;string&gt; legendEntries;
+
+    // Iterate through all layers to build the legend array
+    for (int i = 0; i &lt; c-&gt;getLayerCount(); ++i) {
+        Layer *layer = c-&gt;getLayerByZ(i);
+
+        // The data array index of the x-value
+        int xIndex = layer-&gt;getXIndexOf(xValue);
+
+        // Iterate through all the data sets in the layer
+        for (int j = 0; j &lt; layer-&gt;getDataSetCount(); ++j) {
+            DataSet *dataSet = layer-&gt;getDataSetByZ(j);
+
+            // We are only interested in visible data sets with names
+            const char *dataName = dataSet-&gt;getDataName();
+            int color = dataSet-&gt;getDataColor();
+            if (dataName &amp;&amp; *dataName &amp;&amp; (color != Chart::Transparent)) {
+                // Build the legend entry, consist of the legend icon, name and data value.
+                double dataValue = dataSet-&gt;getValue(xIndex);
+                ostringstream legendEntry;
+                legendEntry &lt;&lt; "&lt;*block*&gt;" &lt;&lt; dataSet-&gt;getLegendIcon() &lt;&lt; " " &lt;&lt; dataName &lt;&lt; ": " &lt;&lt;
+                    ((dataValue == Chart::NoValue) ? "N/A" : c-&gt;formatValue(dataValue, "{value|P4}"))
+                    &lt;&lt; "&lt;*/*&gt;";
+                legendEntries.push_back(legendEntry.str());
+
+                // Draw a track dot for data points within the plot area
+                int yCoor = c-&gt;getYCoor(dataSet-&gt;getPosition(xIndex), dataSet-&gt;getUseYAxis());
+                if ((yCoor &gt;= plotArea-&gt;getTopY()) &amp;&amp; (yCoor &lt;= plotArea-&gt;getBottomY())) {
+                    d-&gt;circle(xCoor, yCoor, 4, 4, color, color);
+                }
+            }
+        }
+    }
+
+    // Create the legend by joining the legend entries
+    ostringstream legendText;
+    legendText &lt;&lt; "&lt;*block,maxWidth=" &lt;&lt; plotArea-&gt;getWidth() &lt;&lt; "*&gt;&lt;*block*&gt;&lt;*font=arialbd.ttf*&gt;["
+        &lt;&lt; c-&gt;xAxis()-&gt;getFormattedLabel(xValue, "mmm dd, yyyy") &lt;&lt; "]&lt;*/*&gt;";
+    for (int i = ((int)legendEntries.size()) - 1; i &gt;= 0; --i)
+        legendText &lt;&lt; "        " &lt;&lt; legendEntries[i];
+    
+    // Display the legend on the top of the plot area
+    TTFText *t = d-&gt;text(legendText.str().c_str(), "arial.ttf", 8);
+    t-&gt;draw(plotArea-&gt;getLeftX() + 5, plotArea-&gt;getTopY() - 3, 0x000000, Chart::BottomLeft);
+    t-&gt;destroy();
+}</pre></td></tr></table></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

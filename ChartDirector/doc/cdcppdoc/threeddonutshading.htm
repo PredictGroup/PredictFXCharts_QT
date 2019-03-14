@@ -1,0 +1,98 @@
+<HTML>
+<HEAD>
+<Title>3D Donut Shading</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">3D Donut Shading</p>
+<hr class="separator">
+<div class="content">
+<img src="images/threeddonutshading0.png">&nbsp;&nbsp;<img src="images/threeddonutshading1.png">&nbsp;&nbsp;<img src="images/threeddonutshading2.png">&nbsp;&nbsp;<img src="images/threeddonutshading3.png">&nbsp;&nbsp;<img src="images/threeddonutshading4.png">&nbsp;&nbsp;<img src="images/threeddonutshading5.png">&nbsp;&nbsp;<img src="images/threeddonutshading6.png">&nbsp;&nbsp;<img src="images/threeddonutshading7.png">
+<br><br>
+This example demonstrates various sector shading effects applicable to 3D donut charts.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/threeddonutshading". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+void createChart(int chartIndex, const char *filename)
+{
+    // The data for the pie chart
+    double data[] = {18, 30, 20, 15};
+
+    // The colors to use for the sectors
+    int colors[] = {0x66aaee, 0xeebb22, 0xbbbbbb, 0x8844ff};
+
+    // Create a PieChart object of size 200 x 200 pixels. Use a vertical gradient color from blue
+    // (0000cc) to deep blue (000044) as background. Use rounded corners of 16 pixels radius.
+    PieChart *c = new PieChart(200, 200);
+    c-&gt;setBackground(c-&gt;linearGradientColor(0, 0, 0, c-&gt;getHeight(), 0x0000cc, 0x000044));
+    c-&gt;setRoundedFrame(0xffffff, 16);
+
+    // Set donut center at (100, 100), and outer/inner radii as 80/40 pixels
+    c-&gt;setDonutSize(100, 100, 80, 40);
+
+    // Set the pie data
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))));
+
+    // Set the sector colors
+    c-&gt;setColors(Chart::DataColor, IntArray(colors, (int)(sizeof(colors) / sizeof(colors[0]))));
+
+    // Draw the pie in 3D with a pie thickness of 20 pixels
+    c-&gt;set3D(20);
+
+    // Demonstrates various shading modes
+    if (chartIndex == 0) {
+        c-&gt;addTitle("Default Shading", "bold", 12, 0xffffff);
+    } else if (chartIndex == 1) {
+        c-&gt;addTitle("Flat Gradient", "bold", 12, 0xffffff);
+        c-&gt;setSectorStyle(Chart::FlatShading);
+    } else if (chartIndex == 2) {
+        c-&gt;addTitle("Local Gradient", "bold", 12, 0xffffff);
+        c-&gt;setSectorStyle(Chart::LocalGradientShading);
+    } else if (chartIndex == 3) {
+        c-&gt;addTitle("Global Gradient", "bold", 12, 0xffffff);
+        c-&gt;setSectorStyle(Chart::GlobalGradientShading);
+    } else if (chartIndex == 4) {
+        c-&gt;addTitle("Concave Shading", "bold", 12, 0xffffff);
+        c-&gt;setSectorStyle(Chart::ConcaveShading);
+    } else if (chartIndex == 5) {
+        c-&gt;addTitle("Rounded Edge", "bold", 12, 0xffffff);
+        c-&gt;setSectorStyle(Chart::RoundedEdgeShading);
+    } else if (chartIndex == 6) {
+        c-&gt;addTitle("Radial Gradient", "bold", 12, 0xffffff);
+        c-&gt;setSectorStyle(Chart::RadialShading);
+    } else if (chartIndex == 7) {
+        c-&gt;addTitle("Ring Shading", "bold", 12, 0xffffff);
+        c-&gt;setSectorStyle(Chart::RingShading);
+    }
+
+    // Disable the sector labels by setting the color to Transparent
+    c-&gt;setLabelStyle("", 8, Chart::Transparent);
+
+    // Output the chart
+    c-&gt;makeChart(filename);
+
+    //free up resources
+    delete c;
+}
+
+int main(int argc, char *argv[])
+{
+    createChart(0, "threeddonutshading0.png");
+    createChart(1, "threeddonutshading1.png");
+    createChart(2, "threeddonutshading2.png");
+    createChart(3, "threeddonutshading3.png");
+    createChart(4, "threeddonutshading4.png");
+    createChart(5, "threeddonutshading5.png");
+    createChart(6, "threeddonutshading6.png");
+    createChart(7, "threeddonutshading7.png");
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

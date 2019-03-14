@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<Title>AngularMeter.relativeRadialGradient</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="AngularMeter.htm">AngularMeter</a>.relativeRadialGradient</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+int relativeRadialGradient(DoubleArray gradient, double radius = -1);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Creates a radial gradient color relative to the meter center and radius.<br><br>
+A general radial gradient color can be created by <a href="BaseChart.radialGradientColor2.htm">BaseChart.radialGradientColor2</a>, which involves specifying the center x and y coordinates, horizontal and vertical radii, and the color stops. The <b>relativeRadialGradient</b> simplifies creating a radial gradient by assuming the center of the radial gradient to be the meter center, and the radial pattern is circular (so that the vertical and horizontal radii are the same), and default to using the meter scale radius (set by <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>) as the reference radius.<br><br>
+The radial gradient is defined using an array of numbers, in which each pair of numbers represents the relative radius and its associated color. The relative radius is the ratio of the absolute radius to the reference radius.<br><br>
+For example, to define a radial gradient with blue (0000FF) at the center, green (00FF00) at the mid-point between the center and the reference radius, and red at the reference radius, the numbers should be:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>0.0, 0x0000ff, 0.5, 0x00ff00, 1.0, 0xff0000</pre></div><br>
+The relative radii in the array must be arranged in increasing order. It is possible to define a relative radial gradient smaller or larger than the reference radius by using a relative radius smaller or greater than 1.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>gradient</td><td>(Mandatory)</td><td>An numeric array defining the color stops. Please refer to the description above for details.</td></tr><tr><td>radius</td><td>-1</td><td>The reference radius of the radial gradient. The default is the meter scale radius (set by <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>).</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+A 32-bit integer representing the radial gradient color.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

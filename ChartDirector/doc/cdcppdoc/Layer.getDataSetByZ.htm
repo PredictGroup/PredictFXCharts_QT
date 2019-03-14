@@ -1,0 +1,39 @@
+<HTML>
+<HEAD>
+<Title>Layer.getDataSetByZ</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="Layer.htm">Layer</a>.getDataSetByZ</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+DataSet *getDataSetByZ(int zIndex);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Gets a <a href="DataSet.htm">DataSet</a> object based on the order in which it is being drawn.<br><br>
+In certain layer types, the data sets are drawn in a certain order. For example, in a line layer, the data sets represent lines and they are drawn one by one. In contrast, for a candlestick layer, the high, low, open and close data sets are combined into candlestick symbols, and there is no specific order on which data sets are drawn.<br><br>
+This method can be used to get the data set based on the order it is being drawn. If the data sets are not drawn in any specific order, this method will return the data sets in the reverse order to which it is added to the layer.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>zIndex</td><td>(Mandatory)</td><td>The z-index of the required data set. The z-index of the first data set drawn is 0. The z-index for the Nth data set drawn is N - 1.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+The <a href="DataSet.htm">DataSet</a> object at the specified z-order.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

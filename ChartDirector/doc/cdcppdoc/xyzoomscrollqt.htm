@@ -1,0 +1,478 @@
+<HTML>
+<HEAD>
+<Title>XY Zooming and Scrolling (QT)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">XY Zooming and Scrolling (QT)</p>
+<hr class="separator">
+<div class="content"><img src="images/xyzoomscroll_qt.png"><br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b><font color="#FF0000">NOTE:</font></b> This section describes XY Zooming and Scrolling for QT only. For MFC, please refer to <a href="xyzoomscroll.htm">XY Zooming and Scrolling (MFC)</a>.
+</div><br>
+This example demonstrates zooming and scrolling in both horizontal and vertical directions. In addition to using mouse click and drag, this example demonstrates using a slider, the mouse wheel and a <a href="QViewPortControl.htm">QViewPortControl</a> to control scrolling and zooming. This example also includes a crosshair track cursor with dynamic labels on the x-axis and y-axis showing the mouse cursor position, and an image map for data point tooltips. A save button is included to save the chart in PNG, JPG, GIF, BMP, SVG or PDF.<br><br>
+The main source code listing of this sample program is included at the end of this section. The code consists of the following main parts:<br><br>
+<ul>
+<li>Initialization: It loads data into memory and initializes the <a href="QChartViewer.htm">QChartViewer</a> and the <a href="QViewPortControl.htm">QViewPortControl</a>. The drawFullChart method is called to draw a small overall chart that covers the full data range for display in the QViewPortControl. The QViewPortControl is then connected to the QChartViewer using <a href="QViewPortControl.setViewer.htm">QViewPortControl.setViewer</a>.<br><br>
+<li>The     <a href="QChartViewer.viewPortChanged.htm">QChartViewer.viewPortChanged</a> signal       handler: When the view port changed, the following things need to be updated - external controls (including the slider and the navigation pad), the chart and the track cursor.<br><br>
+<li>drawChart: This is the main charting code. In the chart, the x-axis and y-axis are configured to synchronize with the view port using <a href="ViewPortManager.syncDateAxisWithViewPort.htm">ViewPortManager.syncDateAxisWithViewPort</a>.<br><br>
+<li>Slider handling code: When the slider moves, the view port will be updated to reflect the slider position and a     <a href="QChartViewer.viewPortChanged.htm">QChartViewer.viewPortChanged</a> signal       will be emitted.<br><br>
+<li>Track Cursor drawing code: This is essentially the same as the track cursor drawing code in <a href="crosshair.htm">Crosshair with Axis Labels (MFC)</a>. Please refer to that example for the explanation of the code.<br><br>
+<li>When the save button is clicked, its handler will pop up a dialog box to ask for the filename, and <a href="BaseChart.makeChart.htm">BaseChart.makeChart</a> will be used to save the chart in the <a href="QChartViewer.htm">QChartViewer</a> using the provided filename, with the file format automatically determined based on the extension.<br><br>
+</ul>
+</div><p class="heading1a">Source Code Listing</p><div class="content">
+The following is the main source code of this demo. The complete QT  project is in "qtdemo/xyzoomscroll".<br><br>
+[File: qtdemo/xyzoomscroll/xyzoomscroll.cpp]<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include &lt;QApplication&gt;
+#include &lt;QButtonGroup&gt;
+#include &lt;QMouseEvent&gt;
+#include &lt;QFileDialog&gt;
+#include "xyzoomscroll.h"
+#include "hotspotdialog.h"
+#include &lt;sstream&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+    app.setStyleSheet("* {font-family:arial;font-size:11px}");
+    XYZoomScroll demo;
+    demo.show();
+    return app.exec();
+}
+
+
+XYZoomScroll::XYZoomScroll(QWidget *parent) :
+    QDialog(parent)
+{
+    setWindowTitle("XY Zooming and Scrolling");
+    setFixedSize(644, 488);
+
+    QFrame *frame = new QFrame(this);
+    frame-&gt;setGeometry(4, 4, 120, 481);
+    frame-&gt;setFrameShape(QFrame::StyledPanel);
+
+    // Pointer push button
+    QPushButton *pointerPB = new QPushButton(QIcon(":/pointer.png"), "Pointer", frame);
+    pointerPB-&gt;setGeometry(4, 8, 112, 28);
+    pointerPB-&gt;setStyleSheet("QPushButton { text-align:left; padding:5px}");
+    pointerPB-&gt;setCheckable(true);
+
+    // Zoom In push button
+    QPushButton *zoomInPB = new QPushButton(QIcon(":/zoomin.png"), "Zoom In", frame);
+    zoomInPB-&gt;setGeometry(4, 36, 112, 28);
+    zoomInPB-&gt;setStyleSheet("QPushButton { text-align:left; padding:5px}");
+    zoomInPB-&gt;setCheckable(true);
+
+    // Zoom Out push button
+    QPushButton *zoomOutPB = new QPushButton(QIcon(":/zoomout.png"), "Zoom Out", frame);
+    zoomOutPB-&gt;setGeometry(4, 64, 112, 28);
+    zoomOutPB-&gt;setStyleSheet("QPushButton { text-align:left; padding:5px}");
+    zoomOutPB-&gt;setCheckable(true);
+
+    // Save push button
+    QPushButton *savePB = new QPushButton(QIcon(":/save.png"), "Save", frame);
+    savePB-&gt;setStyleSheet("QPushButton { text-align:left; padding:5px}");
+    savePB-&gt;setGeometry(4, 120, 112, 28);
+    connect(savePB, SIGNAL(clicked(bool)), SLOT(onSave(bool)));
+
+    // The Pointer/Zoom In/Zoom Out buttons form a button group
+    QButtonGroup *mouseUsage = new QButtonGroup(frame);
+    mouseUsage-&gt;addButton(pointerPB, Chart::MouseUsageScroll);
+    mouseUsage-&gt;addButton(zoomInPB, Chart::MouseUsageZoomIn);
+    mouseUsage-&gt;addButton(zoomOutPB, Chart::MouseUsageZoomOut);
+    connect(mouseUsage, SIGNAL(buttonPressed(int)), SLOT(onMouseUsageChanged(int)));
+
+    // Zoom Mode label
+    QLabel *zoomModeLabel = new QLabel("Zoom Level", frame);
+    zoomModeLabel-&gt;setGeometry(6, 180, 110, 18);
+    zoomModeLabel-&gt;setAlignment(Qt::AlignHCenter);
+
+    // Zoom level bar
+    m_ZoomBar = new QSlider(Qt::Horizontal, frame);
+    m_ZoomBar-&gt;setGeometry(12, 205, 102, 41);
+    m_ZoomBar-&gt;setRange(1, 100);
+    m_ZoomBar-&gt;setTickPosition(QSlider::TicksBothSides);
+    m_ZoomBar-&gt;setInvertedAppearance(true);
+    connect(m_ZoomBar, SIGNAL(valueChanged(int)), SLOT(onZoomBarChanged(int)));
+
+    // Viewport Control
+    m_ViewPortControl = new QViewPortControl(frame);
+    m_ViewPortControl-&gt;setGeometry(QRect(5, 334, 112, 112));
+
+    // Chart Viewer
+    m_ChartViewer = new QChartViewer(this);
+    m_ChartViewer-&gt;setGeometry(QRect(136, 4, 500, 480));
+    connect(m_ChartViewer, SIGNAL(viewPortChanged()), SLOT(onViewPortChanged()));
+    connect(m_ChartViewer, SIGNAL(mouseMovePlotArea(QMouseEvent*)), SLOT(onMouseMovePlotArea(QMouseEvent*)));
+    connect(m_ChartViewer, SIGNAL(clicked(QMouseEvent*)), SLOT(onClickChart(QMouseEvent*)));
+
+    //
+    // Initialize member variables
+    //
+
+    // Set initial zoom/scroll direction
+    m_ChartViewer-&gt;setScrollDirection(Chart::DirectionHorizontalVertical);
+    m_ChartViewer-&gt;setZoomDirection(Chart::DirectionHorizontalVertical);
+
+    // Initially set the mouse to drag to scroll mode
+    pointerPB-&gt;click();
+
+    // Enable mouse wheel zooming by setting the zoom ratio to 1.1 per wheel event
+    m_ChartViewer-&gt;setMouseWheelZoomRatio(1.1);
+
+    // Load the data
+    loadData();
+
+    // Can update chart now
+    m_ChartViewer-&gt;updateViewPort(true, true);
+
+    // Configure the CViewPortControl to use transparent black for region outside the viewport,
+    // that is, to darken the outside region.
+    m_ViewPortControl-&gt;setViewPortExternalColor(0x7f000000);
+    m_ViewPortControl-&gt;setViewPortBorderColor(0x7fffffff);
+    m_ViewPortControl-&gt;setSelectionBorderColor(0x7fffffff); 
+
+    // Draw and display the full chart in the QViewPortControl
+    drawFullChart(m_ViewPortControl, m_ChartViewer);
+
+    // Bind the QChartViewer to the QViewPortControl
+    m_ViewPortControl-&gt;setViewer(m_ChartViewer);
+}
+
+XYZoomScroll::~XYZoomScroll()
+{
+    delete m_ChartViewer-&gt;getChart();
+}
+
+//
+// The ViewPortChanged event handler. This event occurs if the user scrolls or zooms in or
+// out the chart by dragging or clicking on the chart. It can also be triggered by calling
+// QChartViewer.updateViewPort.
+//
+void XYZoomScroll::onViewPortChanged()
+{
+    // In addition to updating the chart, we may also need to update other controls that
+    // changes based on the view port.
+    updateControls(m_ChartViewer);
+
+    //
+    // Update chart and image map if necessary
+    //
+    if (m_ChartViewer-&gt;needUpdateChart())
+        drawChart(m_ChartViewer);
+    if (m_ChartViewer-&gt;needUpdateImageMap())
+        updateImageMap(m_ChartViewer);
+}
+
+//
+// Update other controls that may be affected by the viewport.
+//
+void XYZoomScroll::updateControls(QChartViewer *viewer)
+{
+    //
+    // Update the Zoom slider to reflect the current zoom level of the view port
+    //
+    double smallerSide = viewer-&gt;getViewPortWidth() &gt; viewer-&gt;getViewPortHeight()
+        ? viewer-&gt;getViewPortHeight() : viewer-&gt;getViewPortWidth();
+    m_ZoomBar-&gt;setValue((int)(smallerSide * m_ZoomBar-&gt;maximum() + 0.5));
+}
+
+//
+// Load the data
+//
+void XYZoomScroll::loadData()
+{
+    //
+    // For simplicity, in this demo, we just use hard coded data.
+    //
+    double X0[] = {10, 15, 6, -12, 14, -8, 13, -3, 16, 12, 10.5, -7, 3, -10, -5, 2, 5};
+    double Y0[] = {130, 150, 80, 110, -110, -105, -130, -15, -170, 125,  125, 60, 25, 150,
+        150, 15, 120};
+    double X1[] = {6, 7, -4, 3.5, 7, 8, -9, -10, -12, 11, 8, -3, -2, 8, 4, -15, 15};
+    double Y1[] = {65, -40, -40, 45, -70, -80, 80, 10, -100, 105, 60, 50, 20, 170, -25,
+        50, 75};
+    double X2[] = {-10, -12, 11, 8, 6, 12, -4, 3.5, 7, 8, -9, 3, -13, 16, -7.5, -10, -15};
+    double Y2[] = {65, -80, -40, 45, -70, -80, 80, 90, -100, 105, 60, -75, -150, -40, 120,
+        -50, -30};
+
+    dataX0.assign(X0, X0 + sizeof(X0) / sizeof(*X0));
+    dataY0.assign(Y0, Y0 + sizeof(Y0) / sizeof(*Y0));
+    dataX1.assign(X1, X1 + sizeof(X1) / sizeof(*X1));
+    dataY1.assign(Y1, Y1 + sizeof(Y1) / sizeof(*Y1));
+    dataX2.assign(X2, X2 + sizeof(X2) / sizeof(*X2));
+    dataY2.assign(Y2, Y2 + sizeof(Y2) / sizeof(*Y2));
+}
+
+//
+// Draw the chart and display it in the given viewer
+//
+void XYZoomScroll::drawChart(QChartViewer *viewer)
+{
+    // Create an XYChart object 500 x 480 pixels in size, with the same background color
+    // as the container
+    QColor bgColor = palette().color(backgroundRole()).rgb();
+    XYChart *c = new XYChart(500, 480, (bgColor.red() &lt;&lt; 16) + (bgColor.green() &lt;&lt; 8) + bgColor.blue());
+
+    // Set the plotarea at (50, 40) and of size 400 x 400 pixels. Use light grey (c0c0c0)
+    // horizontal and vertical grid lines. Set 4 quadrant coloring, where the colors of 
+    // the quadrants alternate between lighter and deeper grey (dddddd/eeeeee). 
+    c-&gt;setPlotArea(50, 40, 400, 400, -1, -1, -1, 0xc0c0c0, 0xc0c0c0
+        )-&gt;set4QBgColor(0xdddddd, 0xeeeeee, 0xdddddd, 0xeeeeee, 0x000000);
+
+    // Enable clipping mode to clip the part of the data that is outside the plot area.
+    c-&gt;setClipping();
+
+    // Set 4 quadrant mode, with both x and y axes symetrical around the origin
+    c-&gt;setAxisAtOrigin(Chart::XYAxisAtOrigin, Chart::XAxisSymmetric + Chart::YAxisSymmetric);
+
+    // Add a legend box at (450, 40) (top right corner of the chart) with vertical layout
+    // and 8 pts Arial Bold font. Set the background color to semi-transparent grey.
+    LegendBox *legendBox = c-&gt;addLegend(450, 40, true, "arialbd.ttf", 8);
+    legendBox-&gt;setAlignment(Chart::TopRight);
+    legendBox-&gt;setBackground(0x40dddddd);
+
+    // Add a titles to axes
+    c-&gt;xAxis()-&gt;setTitle("Alpha Index");
+    c-&gt;yAxis()-&gt;setTitle("Beta Index");
+
+    // Set axes width to 2 pixels
+    c-&gt;xAxis()-&gt;setWidth(2);
+    c-&gt;yAxis()-&gt;setWidth(2);
+
+    // The default ChartDirector settings has a denser y-axis grid spacing and less-dense
+    // x-axis grid spacing. In this demo, we want the tick spacing to be symmetrical.
+    // We use around 50 pixels between major ticks and 25 pixels between minor ticks.
+    c-&gt;xAxis()-&gt;setTickDensity(50, 25);
+    c-&gt;yAxis()-&gt;setTickDensity(50, 25);
+
+    //
+    // In this example, we represent the data by scatter points. If you want to represent
+    // the data by somethings else (lines, bars, areas, floating boxes, etc), just modify
+    // the code below to use the layer type of your choice. 
+    //
+
+    // Add scatter layer, using 11 pixels red (ff33333) X shape symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX0), vectorToArray(dataY0), "Group A", 
+        Chart::Cross2Shape(), 11, 0xff3333);
+
+    // Add scatter layer, using 11 pixels green (33ff33) circle symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX1), vectorToArray(dataY1), "Group B", 
+        Chart::CircleShape, 11,  0x33ff33);
+
+    // Add scatter layer, using 11 pixels blue (3333ff) triangle symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX2), vectorToArray(dataY2), "Group C", 
+        Chart::TriangleSymbol, 11, 0x3333ff);
+
+    //
+    // In this example, we have not explicitly configured the full x and y range. In this case, 
+    // the first time syncLinearAxisWithViewPort is called, ChartDirector will auto-scale the axis
+    // and assume the resulting range is the full range. In subsequent calls, ChartDirector will 
+    // set the axis range based on the view port and the full range.
+    //
+    viewer-&gt;syncLinearAxisWithViewPort("x", c-&gt;xAxis());
+    viewer-&gt;syncLinearAxisWithViewPort("y", c-&gt;yAxis());
+    
+    // We need to update the track line too. If the mouse is moving on the chart (eg. if 
+    // the user drags the mouse on the chart to scroll it), the track line will be updated
+    // in the MouseMovePlotArea event. Otherwise, we need to update the track line here.
+    if ((!viewer-&gt;isInMouseMoveEvent()) &amp;&amp; viewer-&gt;isMouseOnPlotArea())
+        crossHair(c, viewer-&gt;getPlotAreaMouseX(), viewer-&gt;getPlotAreaMouseY());
+
+    // Set the chart image to the QChartViewer
+    delete viewer-&gt;getChart();
+    viewer-&gt;setChart(c);
+}
+
+//
+// Draw the full thumbnail chart and display it in the given CViewPortControl
+//
+void XYZoomScroll::drawFullChart(QViewPortControl *vpc, QChartViewer *viewer)
+{
+    // Create an XYChart object 110 x 110 pixels in size
+    XYChart *c = new XYChart(110, 110);
+
+    // Set the plotarea to cover the entire chart. Disable grid lines by setting their colors
+    // to transparent. Set 4 quadrant coloring, where the colors of the quadrants alternate
+    // between lighter and deeper grey (dddddd/eeeeee).
+    c-&gt;setPlotArea(0, 0, c-&gt;getWidth() - 1, c-&gt;getHeight() - 1, -1, -1, -1, Chart::Transparent,
+        Chart::Transparent)-&gt;set4QBgColor(0xdddddd, 0xeeeeee, 0xdddddd, 0xeeeeee, 0x000000);
+
+    // Set 4 quadrant mode, with both x and y axes symetrical around the origin
+    c-&gt;setAxisAtOrigin(Chart::XYAxisAtOrigin, Chart::XAxisSymmetric + Chart::YAxisSymmetric);
+
+    // The x and y axis scales reflect the full range of the view port
+    c-&gt;xAxis()-&gt;setLinearScale(viewer-&gt;getValueAtViewPort("x", 0), viewer-&gt;getValueAtViewPort(
+        "x", 1), Chart::NoValue);
+    c-&gt;yAxis()-&gt;setLinearScale(viewer-&gt;getValueAtViewPort("y", 0), viewer-&gt;getValueAtViewPort(
+        "y", 1), Chart::NoValue);
+
+    // Add scatter layer, using 11 pixels red (ff33333) X shape symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX0), vectorToArray(dataY0), "", Chart::Cross2Shape(),
+        3, 0xff3333, 0xff3333);
+
+    // Add scatter layer, using 11 pixels green (33ff33) circle symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX1), vectorToArray(dataY1), "", Chart::CircleShape,
+        3, 0x33ff33, 0x33ff33);
+
+    // Add scatter layer, using 11 pixels blue (3333ff) triangle symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX2), vectorToArray(dataY2), "", Chart::TriangleSymbol,
+        3, 0x3333ff, 0x3333ff);
+
+    // Set the chart image to the WinChartViewer
+    vpc-&gt;setChart(c);
+}
+
+//
+// Update the image map
+//
+void XYZoomScroll::updateImageMap(QChartViewer *viewer)
+{
+    if (0 == viewer-&gt;getImageMapHandler())
+    {
+        // no existing image map - creates a new one
+        viewer-&gt;setImageMap(viewer-&gt;getChart()-&gt;getHTMLImageMap("clickable", "",
+            "title='[{dataSetName}] Alpha = {x}, Beta = {value}'"));
+    }
+}
+
+//
+// User clicks on the QChartViewer
+//
+void XYZoomScroll::onClickChart(QMouseEvent *)
+{
+    ImageMapHandler *handler = m_ChartViewer-&gt;getImageMapHandler();
+    if (0 != handler)
+    {
+        // Query the ImageMapHandler to see if the mouse is on a clickable hot spot. We
+        // consider the hot spot as clickable if its href ("path") parameter is not empty.
+        const char *path = handler-&gt;getValue("path");
+        if ((0 != path) &amp;&amp; (0 != *path))
+        {
+            // In this sample code, we just show all hot spot parameters.
+            HotSpotDialog hs;
+            hs.setData(handler);
+            hs.exec();
+        }
+    }
+}
+
+//
+// The Pointer, Zoom In or Zoom out button is pressed
+//
+void XYZoomScroll::onMouseUsageChanged(int mouseUsage)
+{
+    m_ChartViewer-&gt;setMouseUsage(mouseUsage);
+}
+
+//
+// The Save button is pressed
+//
+void XYZoomScroll::onSave(bool)
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save", "chartdirector_demo",
+        "PNG (*.png);;JPG (*.jpg);;GIF (*.gif);;BMP (*.bmp);;SVG (*.svg);;PDF (*.pdf)");
+
+    if (!fileName.isEmpty())
+    {
+        // Save the chart
+        BaseChart *c = m_ChartViewer-&gt;getChart();
+        if (0 != c)
+            c-&gt;makeChart(fileName.toUtf8().constData());
+    }
+}
+
+//
+// User moves the Zoom slider control
+//
+void XYZoomScroll::onZoomBarChanged(int value)
+{
+    if (!m_ChartViewer-&gt;isInViewPortChangedEvent())
+    {
+        // Remember the center point
+        double centerX = m_ChartViewer-&gt;getViewPortLeft() +
+            m_ChartViewer-&gt;getViewPortWidth() / 2;
+        double centerY = m_ChartViewer-&gt;getViewPortTop() +
+            m_ChartViewer-&gt;getViewPortHeight() / 2;
+
+        // Aspect ratio and zoom factor
+        double aspectRatio = m_ChartViewer-&gt;getViewPortWidth() /
+            m_ChartViewer-&gt;getViewPortHeight();
+        double zoomTo = ((double)value) / m_ZoomBar-&gt;maximum();
+
+        // Zoom by adjusting ViewPortWidth and ViewPortHeight while maintaining the aspect ratio
+        m_ChartViewer-&gt;setViewPortWidth(zoomTo * ((aspectRatio &lt; 1) ? 1 : aspectRatio));
+        m_ChartViewer-&gt;setViewPortHeight(zoomTo * ((aspectRatio &gt; 1) ? 1 : (1 / aspectRatio)));
+
+        // Adjust ViewPortLeft and ViewPortTop to keep center point unchanged
+        m_ChartViewer-&gt;setViewPortLeft(centerX - m_ChartViewer-&gt;getViewPortWidth() / 2);
+        m_ChartViewer-&gt;setViewPortTop(centerY - m_ChartViewer-&gt;getViewPortHeight() / 2);
+
+        // Update the chart image only, but no need to update the image map.
+        m_ChartViewer-&gt;updateViewPort(true, false);
+    }
+}
+
+//
+// Draw track cursor when mouse is moving over plotarea, and update image map if necessary
+//
+void XYZoomScroll::onMouseMovePlotArea(QMouseEvent *)
+{
+    // Draw crosshair track cursor
+    crossHair((XYChart *)m_ChartViewer-&gt;getChart(), m_ChartViewer-&gt;getPlotAreaMouseX(),
+        m_ChartViewer-&gt;getPlotAreaMouseY());
+    m_ChartViewer-&gt;updateDisplay();
+
+    // Hide the track cursor when the mouse leaves the plot area
+    m_ChartViewer-&gt;removeDynamicLayer("mouseLeavePlotArea");
+
+    // Update image map if necessary. If the mouse is still dragging, the chart is still 
+    // updating and not confirmed, so there is no need to set up the image map.
+    if (!m_ChartViewer-&gt;isMouseDragging())
+        updateImageMap(m_ChartViewer);
+}
+
+//
+// Draw cross hair cursor with axis labels
+//
+void XYZoomScroll::crossHair(XYChart *c, int mouseX, int mouseY)
+{
+    // Clear the current dynamic layer and get the DrawArea object to draw on it.
+    DrawArea *d = c-&gt;initDynamicLayer();
+
+    // The plot area object
+    PlotArea *plotArea = c-&gt;getPlotArea();
+
+    // Draw a vertical line and a horizontal line as the cross hair
+    d-&gt;vline(plotArea-&gt;getTopY(), plotArea-&gt;getBottomY(), mouseX, d-&gt;dashLineColor(0x000000, 0x0101));
+    d-&gt;hline(plotArea-&gt;getLeftX(), plotArea-&gt;getRightX(), mouseY, d-&gt;dashLineColor(0x000000, 0x0101));
+
+    // Draw y-axis label
+    ostringstream ylabel;
+    ylabel &lt;&lt; "&lt;*block,bgColor=FFFFDD,margin=3,edgeColor=000000*&gt;" &lt;&lt; c-&gt;formatValue(c-&gt;getYValue(
+        mouseY, c-&gt;yAxis()), "{value|P4}") &lt;&lt; "&lt;*/*&gt;";
+    TTFText *t = d-&gt;text(ylabel.str().c_str(), "arialbd.ttf", 8);
+    t-&gt;draw(plotArea-&gt;getLeftX() - 5, mouseY, 0x000000, Chart::Right);
+    t-&gt;destroy();
+
+    // Draw x-axis label
+    ostringstream xlabel;
+    xlabel &lt;&lt; "&lt;*block,bgColor=FFFFDD,margin=3,edgeColor=000000*&gt;" &lt;&lt; c-&gt;formatValue(c-&gt;getXValue(
+        mouseX), "{value|P4}") &lt;&lt; "&lt;*/*&gt;";
+    t = d-&gt;text(xlabel.str().c_str(), "arialbd.ttf", 8);
+    t-&gt;draw(mouseX, plotArea-&gt;getBottomY() + 5, 0x000000, Chart::Top);
+    t-&gt;destroy();
+}
+
+//
+// Convert std::vector to a DoubleArray
+//
+DoubleArray XYZoomScroll::vectorToArray(std::vector&lt;double&gt; &amp;v)
+{
+    return (v.size() == 0) ? DoubleArray() : DoubleArray(&amp;(v[0]), v.size());
+}</pre></td></tr></table></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

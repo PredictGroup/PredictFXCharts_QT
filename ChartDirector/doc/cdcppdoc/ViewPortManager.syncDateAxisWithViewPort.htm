@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>ViewPortManager.syncDateAxisWithViewPort</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ViewPortManager.htm">ViewPortManager</a>.syncDateAxisWithViewPort</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void syncDateAxisWithViewPort(const char *id, Axis *axis);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Synchronizes a date/time <a href="Axis.htm">Axis</a> with the part of the data scale in viewport.<br><br>
+If the data scale has already been defined (see <a href="ViewPortManager.setFullRange.htm">ViewPortManager.setFullRange</a> on how to define a data scale), this method will compute the visible data scale based on the viewport coordinates using date/time interpolation, and then sets the axis to that date/time scale.<br><br>
+If the data scale has not been defined, this method will define the data scale based on the axis scale and the the viewport coordinates using date/time extrapolation. Because the axis scale may not be known at the time of calling this method (the axis could be auto-scaled by ChartDirector, which may not occur until the chart is rendered), the definition of the data scale will not occur immediately, but will be pending until the chart is to be displayed.<br><br>
+If your charting code calls this method but never defines the full data scale or the viewport coordinates (in which case the viewport defaults to showing the complete data scale), then the first time the code is executed, the data scale will be defined to be equal to the axis scale. Subsequently, when the user zooms into the chart (which means the viewport coordinates are changed), the same charting code will set up the axis scale to the range that the user has zoomed to.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>id</td><td>(Mandatory)</td><td>The name of the data scale.</td></tr><tr><td>axis</td><td>(Mandatory)</td><td>The <a href="Axis.htm">Axis</a> object to synchronize with.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

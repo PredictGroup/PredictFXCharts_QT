@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>Layer.getXIndexOf</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="Layer.htm">Layer</a>.getXIndexOf</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+int getXIndexOf(double xValue, double tolerance = 0);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Gets the data point index at the specified x data value.<br><br>
+The index can be used in <a href="DataSet.getValue.htm">DataSet.getValue</a> and <a href="DataSet.getPosition.htm">DataSet.getPosition</a> to obtain the y values and positions of the data points for all data sets in the layer.<br><br>
+The <b>tolerance</b> argument is to allow this method to consider data points that are not exactly at <b>xValue</b>, but are within <b>tolerance</b> from it.<br><br>
+If multiple data points at within tolerance, this method will return the index of the data point nearest to <b>xValue</b>. If multiple data points are equally near to <b>xValue</b>, this method will choose one arbitrarily and return its data point index. If no data points are found, this method will return -1.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>xValue</td><td>(Mandatory)</td><td>The x data value used to look for the data points in order to get the data point index of the nearest data point.</td></tr><tr><td>tolerance</td><td>0</td><td>The tolerance allowed for for data points that are not exactly at the specified xValue.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+The data point index of the data point nearest to the specified x data value up to the specified tolerance, or -1 if no data points are found.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

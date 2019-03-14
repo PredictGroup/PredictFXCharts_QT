@@ -1,0 +1,31 @@
+<HTML>
+<HEAD>
+<Title>BaseChart.initDynamicLayer</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="BaseChart.htm">BaseChart</a>.initDynamicLayer</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+DrawArea *initDynamicLayer();
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Initializes a dynamic layer for drawing text and shapes.<br><br>
+This method clears the existing dynamic layer, or creates a new one if there is no existing dynamic layer. This method returned a <a href="DrawArea.htm">DrawArea</a> object that can be used to draw on the dynamic layer. The dynamic layer can later be removed using <a href="BaseChart.removeDynamicLayer.htm">BaseChart.removeDynamicLayer</a>.<br><br>
+The design of the dynamic layer is for drawing small, rapidly updatable contents for desktop applications. For example, the dynamic layer can be used to implement a cross-hair mouse cursor, with text showing the location of the mouse cursor. To do this, in the mouse move event handler, BaseChart.initDynamicLayer can be used to create or clear the dynamic layer. The returned <a href="DrawArea.htm">DrawArea</a> object can then be used to draw the cross hair cursor (as two straight lines) and the text. When the mouse cursor leaves the chart, <a href="BaseChart.removeDynamicLayer.htm">BaseChart.removeDynamicLayer</a> can be used in the mouse out event handler to remove the cross-hair cursor and the text.<br><br>
+Note that as long as the dynamic layer is not removed with <a href="BaseChart.removeDynamicLayer.htm">BaseChart.removeDynamicLayer</a>, only the returned <a href="DrawArea.htm">DrawArea</a> object should be used to draw things on the dynamic layer. No other objects should be used to draw on the chart.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">None</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+A <a href="DrawArea.htm">DrawArea</a> object that can be used to add text and shapes to the dynamic layer.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

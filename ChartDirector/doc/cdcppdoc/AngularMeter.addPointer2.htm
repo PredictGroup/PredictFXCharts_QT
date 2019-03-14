@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<Title>AngularMeter.addPointer2</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="AngularMeter.htm">AngularMeter</a>.addPointer2</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+MeterPointer *addPointer2(double value, int fillColor, int edgeColor = -1, int pointerType = TriangularPointer2, double startOffset = NoValue, double endOffset = NoValue, double widthRatio = NoValue);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Adds a new style pointer to the meter.<br><br>
+When compared to classical pointers (added by <a href="BaseMeter.addPointer.htm">BaseMeter.addPointer</a>), new style pointers are thinner. They are designed to be used with the new style meter cap (see <a href="AngularMeter.setCap2.htm">AngularMeter.setCap2</a>). They are also designed to have their base and tip movable in the radial direction, which means they can be detached from the center, and can even points from the outside inwards.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>value</td><td>(Mandatory)</td><td>The value that the pointer points to.</td></tr><tr><td>fillColor</td><td>(Mandatory)</td><td>The fill color of the pointer.</td></tr><tr><td>edgeColor</td><td>-1</td><td>The edge color of the pointer. -1 means the edge color is the same as the fill color.</td></tr><tr><td>pointerType</td><td><a href="Chart.TriangularPointer2.htm">TriangularPointer2</a></td><td>The pointer shape. Please refer to <a href="MeterPointer.setShapeAndOffset.htm">MeterPointer.setShapeAndOffset</a> for the available shapes.</td></tr><tr><td>startOffset</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The distance between the starting point of the pointer with the meter center, expressed as a ratio to the scale radius. NoValue means the radius is automatically determined. Please refer to <a href="MeterPointer.setShapeAndOffset.htm">MeterPointer.setShapeAndOffset</a> for more information about this argument.</td></tr><tr><td>endOffset</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The distance between the ending point of the pointer with the meter center, expressed as a ratio to the scale radius. NoValue means the radius is automatically determined. Please refer to <a href="MeterPointer.setShapeAndOffset.htm">MeterPointer.setShapeAndOffset</a> for more information about this argument.</td></tr><tr><td>widthRatio</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The width of the pointer relative to the default width. NoValue means the width is automatically determined.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+A <a href="MeterPointer.htm">MeterPointer</a> object representing the pointer. You may use this object to fine-tune the appearance of the pointer.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

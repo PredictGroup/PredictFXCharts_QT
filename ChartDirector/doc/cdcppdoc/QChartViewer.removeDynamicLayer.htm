@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>QChartViewer.removeDynamicLayer</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="QChartViewer.htm">QChartViewer</a>.removeDynamicLayer</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void removeDynamicLayer(const char *eventId);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Calls <a href="BaseChart.removeDynamicLayer.htm">BaseChart.removeDynamicLayer</a> when the specified event occurs.<br><br>
+The dynamic layer (see <a href="BaseChart.initDynamicLayer.htm">BaseChart.initDynamicLayer</a>) is commonly used for drawing track cursors. For these type of usages, it is often necessary to clear the dynamic layer when the mouse cursor leaves the plot area. The removeDynamicLayer method can be used in the dynamic layer drawing code to automatically clear the dynamic layer when the specified event occurs. This avoids the need to set up a separate event handler to call BaseChart.removeDynamicLayer.<br><br>
+In the current version of ChartDirector, this method only supports the <b>eventId</b> "MouseLeaveChart" and "MouseLeavePlotArea".<br><br>
+This method only applies to the first occurrence of the specified event after calling this method. If this method is called multiple times before the event occurs, only the last call has effect. To cancel this method, use an empty string as the <b>eventId</b>.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>eventId</td><td>(Mandatory)</td><td>The event that causes BaseChart.removeDynamicLayer to be called.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

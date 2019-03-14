@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+<Title>Stacked Rose Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Stacked Rose Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/stackrose.png">
+<br><br>
+This example demonstrates how to create a stacked rose chart.<br><br>
+This example employs the same approach as the previous <a href="rose.htm">Simple Rose Chart</a> example. It creates a <a href="PolarChart.htm">PolarChart</a> object as the graph paper, and adding sector zones on it using <a href="AngularAxis.addZone.htm">AngularAxis.addZone</a>. A transparent line layer is used for enabling auto-scaling.<br><br>
+In this example, multiple sectors are added for each angular direction, creating a "stacked" effect.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/stackrose". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // Data for the chart
+    double data0[] = {5, 3, 10, 4, 3, 5, 2, 5};
+    double data1[] = {12, 6, 17, 6, 7, 9, 4, 7};
+    double data2[] = {17, 7, 22, 7, 18, 13, 5, 11};
+
+    double angles[] = {0, 45, 90, 135, 180, 225, 270, 315};
+    const char *labels[] = {"North", "North\nEast", "East", "South\nEast", "South", "South\nWest",
+        "West", "North\nWest"};
+
+    // Create a PolarChart object of size 460 x 500 pixels, with a grey (e0e0e0) background and a 1
+    // pixel 3D border
+    PolarChart *c = new PolarChart(460, 500, 0xe0e0e0, 0x000000, 1);
+
+    // Add a title to the chart at the top left corner using 15pt Arial Bold Italic font. Use white
+    // text on deep blue background.
+    c-&gt;addTitle("Wind Direction", "arialbi.ttf", 15, 0xffffff)-&gt;setBackground(0x000080);
+
+    LegendBox *legendBox = c-&gt;addLegend(230, 35, false, "arialbd.ttf", 9);
+    legendBox-&gt;setAlignment(Chart::TopCenter);
+    legendBox-&gt;setBackground(Chart::Transparent, Chart::Transparent, 1);
+
+    legendBox-&gt;addKey("5 m/s or above", 0xff3333);
+    legendBox-&gt;addKey("1 - 5 m/s", 0x33ff33);
+    legendBox-&gt;addKey("less than 1 m/s", 0x3333ff);
+
+    // Set plot area center at (230, 280) with radius 180 pixels and white background
+    c-&gt;setPlotArea(230, 280, 180, 0xffffff);
+
+    // Set the grid style to circular grid
+    c-&gt;setGridStyle(false);
+
+    // Set angular axis as 0 - 360, with a spoke every 30 units
+    c-&gt;angularAxis()-&gt;setLinearScale(0, 360, StringArray(labels, (int)(sizeof(labels) / sizeof(
+        labels[0]))));
+
+    for(int i = 0; i &lt; (int)(sizeof(angles) / sizeof(angles[0])); ++i) {
+        c-&gt;angularAxis()-&gt;addZone(angles[i] - 10, angles[i] + 10, 0, data0[i], 0x3333ff, 0);
+        c-&gt;angularAxis()-&gt;addZone(angles[i] - 10, angles[i] + 10, data0[i], data1[i], 0x33ff33, 0);
+        c-&gt;angularAxis()-&gt;addZone(angles[i] - 10, angles[i] + 10, data1[i], data2[i], 0xff3333, 0);
+    }
+
+    // Add an Transparent invisible layer to ensure the axis is auto-scaled using the data
+    c-&gt;addLineLayer(DoubleArray(data2, (int)(sizeof(data2) / sizeof(data2[0]))), Chart::Transparent)
+        ;
+
+    // Output the chart
+    c-&gt;makeChart("stackrose.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

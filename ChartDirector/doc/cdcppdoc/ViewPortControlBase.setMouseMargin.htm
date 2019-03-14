@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>ViewPortControlBase.setMouseMargin</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="ViewPortControlBase.htm">ViewPortControlBase</a>.setMouseMargin</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setMouseMargin(int mouseMargin, int cornerMargin);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Sets the margin around the viewport border for mouse drag.<br><br>
+The viewport border can be as thin as 1 pixel, and it is hard to position the mouse over the border to drag it. To make it easier to drag the border, dragging can start if the mouse is within a certain margin from the border.<br><br>
+If both vertical and horizontal zooming is allowed, the viewport corners can be dragged diagonally to resize the viewport in both directions at the same time. To distinguish between dragging the corners and the borders, if the mouse is within a certain margin from the corner when the dragging starts, it is considered to be dragging the corner.<br><br>
+In either case, the mouse cursor will change to let the user know if the border or corner can be dragged.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>mouseMargin</td><td>(Mandatory)</td><td>The margin around the viewport border within which dragging of the border can start. The margin is in pixel unit. The default is 4 pixels.</td></tr><tr><td>cornerMargin</td><td>(Mandatory)</td><td>The margin around the viewport corner within which dragging of the corner can start. The margin is in pixel unit. The default is 8 pixels.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

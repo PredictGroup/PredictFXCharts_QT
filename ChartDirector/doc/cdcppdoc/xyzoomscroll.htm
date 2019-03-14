@@ -1,0 +1,581 @@
+<HTML>
+<HEAD>
+<Title>XY Zooming and Scrolling (MFC)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">XY Zooming and Scrolling (MFC)</p>
+<hr class="separator">
+<div class="content"><img src="images/xyzoomscroll_cpp.png"><br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b><font color="#FF0000">NOTE:</font></b> This section describes XY Zooming and Scrolling for MFC, and is available on the Windows edition of ChartDirector for C++ only. For QT, please refer to <a href="xyzoomscrollqt.htm">XY Zooming and Scrolling (QT)</a>.
+</div><br>
+This example demonstrates zooming and scrolling in both horizontal and vertical directions. In addition to using mouse click and drag, this example demonstrates using a slider, the mouse wheel and a <a href="CViewPortControl.htm">CViewPortControl</a> to control scrolling and zooming. This example also includes a crosshair track cursor with dynamic labels on the x-axis and y-axis showing the mouse cursor position, and an image map for data point tooltips. A save button is included to save the chart in PNG, JPG, GIF, BMP, SVG or PDF.<br><br>
+The main source code listing of this sample program is included at the end of this section. The code consists of the following main parts:<br><br>
+<ul>
+<li>Initialization: It loads data into memory and initializes the <a href="CChartViewer.htm">CChartViewer</a> and the <a href="CViewPortControl.htm">CViewPortControl</a>. The drawFullChart method is called to draw a small overall chart that covers the full data range for display in the CViewPortControl. The CViewPortControl is then connected to the CChartViewer using <a href="CViewPortControl.setViewer.htm">CViewPortControl.setViewer</a>.<br><br>
+<li>The      <a href="CChartViewer.CVN_ViewPortChanged.htm">CVN_ViewPortChanged</a> message      handler: When the view port changed, the following things need to be updated - external controls (including the slider and the navigation pad), the chart and the track cursor.<br><br>
+<li>drawChart: This is the main charting code. In the chart, the x-axis and y-axis are configured to synchronize with the view port using <a href="ViewPortManager.syncDateAxisWithViewPort.htm">ViewPortManager.syncDateAxisWithViewPort</a>.<br><br>
+<li>Slider handling code: When the slider moves, the view port will be updated to reflect the slider position and a      <a href="CChartViewer.CVN_ViewPortChanged.htm">CVN_ViewPortChanged</a> message      will be sent.<br><br>
+<li>Track Cursor drawing code: This is essentially the same as the track cursor drawing code in <a href="crosshair.htm">Crosshair with Axis Labels (MFC)</a>. Please refer to that example for the explanation of the code.<br><br>
+<li>When the save button is clicked, its handler will pop up a dialog box to ask for the filename, and <a href="BaseChart.makeChart.htm">BaseChart.makeChart</a> will be used to save the chart in the <a href="CChartViewer.htm">CChartViewer</a> using the provided filename, with the file format automatically determined based on the extension.<br><br>
+</ul>
+</div><p class="heading1a">Source Code Listing</p><div class="content">
+The following is the main source code of this demo. The complete MFC project is in "mfcdemo/xyzoomscroll".<br><br>
+[File: mfcdemo/xyzoomscroll/xyzoomscrollDlg.cpp]<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>// xyzoomscrollDlg.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "xyzoomscroll.h"
+#include "xyzoomscrollDlg.h"
+#include "HotSpotDlg.h"
+#include "chartdir.h"
+#include &lt;sstream&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+// CXyzoomscrollDlg dialog
+
+//
+// Constructor
+//
+CXyzoomscrollDlg::CXyzoomscrollDlg(CWnd* pParent /*=NULL*/)
+    : CDialog(CXyzoomscrollDlg::IDD, pParent)
+{
+    m_hIcon = AfxGetApp()-&gt;LoadIcon(IDR_MAINFRAME);
+}
+
+//
+// Destructor
+//
+CXyzoomscrollDlg::~CXyzoomscrollDlg()
+{
+    delete m_ChartViewer.getChart();
+    delete m_ViewPortControl.getChart();
+}
+
+
+void CXyzoomscrollDlg::DoDataExchange(CDataExchange* pDX)
+{
+    CDialog::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(CXyzoomscrollDlg)
+    DDX_Control(pDX, IDC_PointerPB, m_PointerPB);
+    DDX_Control(pDX, IDC_ZoomBar, m_ZoomBar);
+    DDX_Control(pDX, IDC_ChartViewer, m_ChartViewer);
+    DDX_Control(pDX, IDC_ViewPortControl, m_ViewPortControl);
+    //}}AFX_DATA_MAP
+}
+
+BEGIN_MESSAGE_MAP(CXyzoomscrollDlg, CDialog)
+    //{{AFX_MSG_MAP(CXyzoomscrollDlg)
+    ON_WM_PAINT()
+    ON_WM_QUERYDRAGICON()
+    ON_BN_CLICKED(IDC_PointerPB, OnPointerPB)
+    ON_BN_CLICKED(IDC_ZoomInPB, OnZoomInPB)
+    ON_BN_CLICKED(IDC_ZoomOutPB, OnZoomOutPB)
+    ON_BN_CLICKED(IDC_SavePB, OnSavePB)
+    ON_WM_HSCROLL()
+    ON_BN_CLICKED(IDC_ChartViewer, OnChartViewer)
+    ON_CONTROL(CVN_ViewPortChanged, IDC_ChartViewer, OnViewPortChanged)
+    ON_CONTROL(CVN_MouseMovePlotArea, IDC_ChartViewer, OnMouseMovePlotArea)
+    //}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CXyzoomscrollDlg message handlers
+
+//
+// Initialization
+//
+BOOL CXyzoomscrollDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    // *** code automatically generated by VC++ MFC AppWizard ***
+    // Set the icon for this dialog.  The framework does this automatically
+    // when the application's main window is not a dialog
+    SetIcon(m_hIcon, TRUE);         // Set big icon
+    SetIcon(m_hIcon, FALSE);        // Set small icon
+    
+    //
+    // Initialize member variables
+    //
+    m_extBgColor = getDefaultBgColor();     // Default background color
+
+    //
+    // Initialize controls
+    //
+
+    // Load icons to mouse usage buttons
+    loadButtonIcon(IDC_PointerPB, IDI_PointerPB, 100, 20);  
+    loadButtonIcon(IDC_ZoomInPB, IDI_ZoomInPB, 100, 20);    
+    loadButtonIcon(IDC_ZoomOutPB, IDI_ZoomOutPB, 100, 20);
+    loadButtonIcon(IDC_SavePB, IDI_SavePB, 100, 20);  
+
+    // Set Pointer pushbutton into clicked state
+    m_PointerPB.SetCheck(1);
+
+    // Initialize zoom bar
+    m_ZoomBar.SetRange(1, 100);
+    m_ZoomBar.SetPageSize(5);
+    m_ZoomBar.SetTicFreq(10);
+
+    // Set initial mouse usage for ChartViewer
+    m_ChartViewer.setMouseUsage(Chart::MouseUsageScroll);
+    m_ChartViewer.setScrollDirection(Chart::DirectionHorizontalVertical);
+    m_ChartViewer.setZoomDirection(Chart::DirectionHorizontalVertical);
+    
+    // Enable mouse wheel zooming by setting the zoom ratio to 1.1 per wheel event
+    m_ChartViewer.setMouseWheelZoomRatio(1.1);
+
+    // Load the data
+    loadData();
+
+    // Trigger the ViewPortChanged event to draw the chart
+    m_ChartViewer.updateViewPort(true, true);
+
+    // Configure the CViewPortControl to use transparent black for region outside the viewport,
+    // that is, to darken the outside region.
+    m_ViewPortControl.setViewPortExternalColor(0x7f000000);
+    m_ViewPortControl.setViewPortBorderColor(0x7fffffff);
+    m_ViewPortControl.setSelectionBorderColor(0x7fffffff); 
+    
+    // Draw and display the full chart in the CViewPortControl
+    drawFullChart(&amp;m_ViewPortControl, &amp;m_ChartViewer);
+
+    // Bind the CChartViewer to the CViewPortControl
+    m_ViewPortControl.setViewer(&amp;m_ChartViewer);
+
+    return TRUE;
+}
+
+// *** code automatically generated by VC++ MFC AppWizard ***
+// If you add a minimize button to your dialog, you will need the code below
+// to draw the icon.  For MFC applications using the document/view model,
+// this is automatically done for you by the framework.
+void CXyzoomscrollDlg::OnPaint() 
+{
+    if (IsIconic())
+    {
+        CPaintDC dc(this); // device context for painting
+
+        SendMessage(WM_ICONERASEBKGND, (WPARAM) dc.GetSafeHdc(), 0);
+
+        // Center icon in client rectangle
+        int cxIcon = GetSystemMetrics(SM_CXICON);
+        int cyIcon = GetSystemMetrics(SM_CYICON);
+        CRect rect;
+        GetClientRect(&amp;rect);
+        int x = (rect.Width() - cxIcon + 1) / 2;
+        int y = (rect.Height() - cyIcon + 1) / 2;
+
+        // Draw the icon
+        dc.DrawIcon(x, y, m_hIcon);
+    }
+    else
+    {
+        CDialog::OnPaint();
+    }
+}
+
+// *** code automatically generated by VC++ MFC AppWizard ***
+// The system calls this to obtain the cursor to display while the user drags
+// the minimized window.
+HCURSOR CXyzoomscrollDlg::OnQueryDragIcon()
+{
+    return (HCURSOR) m_hIcon;
+}
+
+//
+// User clicks on the Pointer pushbutton
+//
+void CXyzoomscrollDlg::OnPointerPB() 
+{
+    m_ChartViewer.setMouseUsage(Chart::MouseUsageScroll);   
+}
+
+//
+// User clicks on the Zoom In pushbutton
+//
+void CXyzoomscrollDlg::OnZoomInPB() 
+{
+    m_ChartViewer.setMouseUsage(Chart::MouseUsageZoomIn);   
+}
+
+//
+// User clicks on the Zoom Out pushbutton
+//
+void CXyzoomscrollDlg::OnZoomOutPB() 
+{
+    m_ChartViewer.setMouseUsage(Chart::MouseUsageZoomOut);  
+}
+
+//
+// User clicks on the Save pushbutton
+//
+void CXyzoomscrollDlg::OnSavePB()
+{
+    // Supported formats = PNG, JPG, GIF, BMP, SVG and PDF
+    TCHAR szFilters[]= _T("PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif|")
+        _T("BMP (*.bmp)|*.bmp|SVG (*.svg)|*.svg|PDF (*.pdf)|*.pdf||");
+
+    // The standard CFileDialog
+    CFileDialog fileDlg(FALSE, _T("png"), _T("chartdirector_demo"), OFN_HIDEREADONLY | 
+        OFN_OVERWRITEPROMPT, szFilters);
+    if(fileDlg.DoModal() != IDOK)
+        return;
+
+    // Save the chart
+    CString path = fileDlg.GetPathName();
+    BaseChart *c = m_ChartViewer.getChart();
+    if (0 != c)
+        c-&gt;makeChart(TCHARtoUTF8(path));
+}
+
+//
+// The ViewPortChanged event handler. This event occurs if the user scrolls or zooms in or 
+// out the chart by dragging or clicking on the chart. It can also be triggered by calling
+// CChartViewer.updateViewPort and by the CViewPortControl.
+//
+void CXyzoomscrollDlg::OnViewPortChanged()
+{
+    // In addition to updating the chart, we may also need to update other controls that
+    // changes based on the view port.
+    updateControls(&amp;m_ChartViewer);
+
+    // Update the chart if necessary
+    if (m_ChartViewer.needUpdateChart())
+        drawChart(&amp;m_ChartViewer);
+    
+    // Update the image map if necessary
+    if (m_ChartViewer.needUpdateImageMap())
+        updateImageMap(&amp;m_ChartViewer);
+}
+
+//
+// Draw track cursor when mouse is moving over plotarea, and update image map if necessary
+//
+void CXyzoomscrollDlg::OnMouseMovePlotArea()
+{
+    // Draw crosshair track cursor
+    crossHair((XYChart *)m_ChartViewer.getChart(), m_ChartViewer.getPlotAreaMouseX(), 
+        m_ChartViewer.getPlotAreaMouseY());
+    m_ChartViewer.updateDisplay();
+
+    // Hide the track cursor when the mouse leaves the plot area
+    m_ChartViewer.removeDynamicLayer(CVN_MouseLeavePlotArea);
+
+    // Update image map if necessary. If the mouse is still dragging, the chart is still 
+    // updating and not confirmed, so there is no need to set up the image map.
+    if (!m_ChartViewer.isMouseDragging())
+        updateImageMap(&amp;m_ChartViewer);
+}
+
+//
+// User moves the Zoom slider control
+//
+void CXyzoomscrollDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
+{
+    if (nSBCode != SB_ENDSCROLL)
+    {
+        //
+        // The slider is moving. Update the chart.
+        //
+
+        // Remember the center point
+        double centerX = m_ChartViewer.getViewPortLeft() + 
+            m_ChartViewer.getViewPortWidth() / 2;
+        double centerY = m_ChartViewer.getViewPortTop() + 
+            m_ChartViewer.getViewPortHeight() / 2;
+            
+        // Aspect ratio and zoom factor
+        double aspectRatio = m_ChartViewer.getViewPortWidth() / 
+            m_ChartViewer.getViewPortHeight();
+        double zoomTo = ((double)m_ZoomBar.GetPos()) / m_ZoomBar.GetRangeMax();
+
+        // Zoom by adjusting ViewPortWidth and ViewPortHeight while maintaining the aspect 
+        // ratio
+        m_ChartViewer.setViewPortWidth(zoomTo * ((aspectRatio &lt; 1) ? 1 : aspectRatio));
+        m_ChartViewer.setViewPortHeight(zoomTo * ((aspectRatio &gt; 1) ? 1 : (1 / aspectRatio)));
+        
+        // Adjust ViewPortLeft and ViewPortTop to keep center point unchanged
+        m_ChartViewer.setViewPortLeft(centerX - m_ChartViewer.getViewPortWidth() / 2);
+        m_ChartViewer.setViewPortTop(centerY - m_ChartViewer.getViewPortHeight() / 2);
+        
+        // Update the chart image only, but no need to update the image map.
+        m_ChartViewer.updateViewPort(true, false);
+    }
+        
+    CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+}
+
+//
+// User clicks on the CChartViewer
+//
+void CXyzoomscrollDlg::OnChartViewer() 
+{
+    ImageMapHandler *handler = m_ChartViewer.getImageMapHandler();
+    if (0 != handler)
+    {
+        //
+        // Query the ImageMapHandler to see if the mouse is on a clickable hot spot. We 
+        // consider the hot spot as clickable if its href ("path") parameter is not empty.
+        //
+        const char *path = handler-&gt;getValue("path");
+        if ((0 != path) &amp;&amp; (0 != *path))
+        {
+            // In this sample code, we just show all hot spot parameters.
+            CHotSpotDlg hs;
+            hs.SetData(handler);
+            hs.DoModal();
+        }
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CXyzoomscrollDlg methods
+
+//
+// Load the data
+//
+void CXyzoomscrollDlg::loadData()
+{
+    //
+    // For simplicity, in this demo, we just use hard coded data. 
+    //
+    double X0[] = {10, 15, 6, -12, 14, -8, 13, -3, 16, 12, 10.5, -7, 3, -10, -5, 2, 5};
+    double Y0[] = {130, 150, 80, 110, -110, -105, -130, -15, -170, 125,  125, 60, 25, 150,
+        150, 15, 120};
+    double X1[] = {6, 7, -4, 3.5, 7, 8, -9, -10, -12, 11, 8, -3, -2, 8, 4, -15, 15};
+    double Y1[] = {65, -40, -40, 45, -70, -80, 80, 10, -100, 105, 60, 50, 20, 170, -25, 
+        50, 75};
+    double X2[] = {-10, -12, 11, 8, 6, 12, -4, 3.5, 7, 8, -9, 3, -13, 16, -7.5, -10, -15};
+    double Y2[] = {65, -80, -40, 45, -70, -80, 80, 90, -100, 105, 60, -75, -150, -40, 120, 
+        -50, -30};
+
+    dataX0.assign(X0, X0 + sizeof(X0) / sizeof(*X0));
+    dataY0.assign(Y0, Y0 + sizeof(Y0) / sizeof(*Y0));
+    dataX1.assign(X1, X1 + sizeof(X1) / sizeof(*X1));
+    dataY1.assign(Y1, Y1 + sizeof(Y1) / sizeof(*Y1));
+    dataX2.assign(X2, X2 + sizeof(X2) / sizeof(*X2));
+    dataY2.assign(Y2, Y2 + sizeof(Y2) / sizeof(*Y2));
+}
+
+//
+// Draw the chart and display it in the given viewer
+//
+void CXyzoomscrollDlg::drawChart(CChartViewer *viewer)
+{               
+    // Create an XYChart object 500 x 480 pixels in size, with the same background color
+    // as the container
+    XYChart *c = new XYChart(500, 480, m_extBgColor);
+
+    // Set the plotarea at (50, 40) and of size 400 x 400 pixels. Use light grey (c0c0c0)
+    // horizontal and vertical grid lines. Set 4 quadrant coloring, where the colors of 
+    // the quadrants alternate between lighter and deeper grey (dddddd/eeeeee). 
+    c-&gt;setPlotArea(50, 40, 400, 400, -1, -1, -1, 0xc0c0c0, 0xc0c0c0
+        )-&gt;set4QBgColor(0xdddddd, 0xeeeeee, 0xdddddd, 0xeeeeee, 0x000000);
+
+    // Enable clipping mode to clip the part of the data that is outside the plot area.
+    c-&gt;setClipping();
+
+    // Set 4 quadrant mode, with both x and y axes symetrical around the origin
+    c-&gt;setAxisAtOrigin(Chart::XYAxisAtOrigin, Chart::XAxisSymmetric + Chart::YAxisSymmetric);
+
+    // Add a legend box at (450, 40) (top right corner of the chart) with vertical layout
+    // and 8 pts Arial Bold font. Set the background color to semi-transparent grey.
+    LegendBox *legendBox = c-&gt;addLegend(450, 40, true, "arialbd.ttf", 8);
+    legendBox-&gt;setAlignment(Chart::TopRight);
+    legendBox-&gt;setBackground(0x40dddddd);
+
+    // Add a titles to axes
+    c-&gt;xAxis()-&gt;setTitle("Alpha Index");
+    c-&gt;yAxis()-&gt;setTitle("Beta Index");
+
+    // Set axes width to 2 pixels
+    c-&gt;xAxis()-&gt;setWidth(2);
+    c-&gt;yAxis()-&gt;setWidth(2);
+
+    // The default ChartDirector settings has a denser y-axis grid spacing and less-dense
+    // x-axis grid spacing. In this demo, we want the tick spacing to be symmetrical.
+    // We use around 50 pixels between major ticks and 25 pixels between minor ticks.
+    c-&gt;xAxis()-&gt;setTickDensity(50, 25);
+    c-&gt;yAxis()-&gt;setTickDensity(50, 25);
+
+    //
+    // In this example, we represent the data by scatter points. If you want to represent
+    // the data by somethings else (lines, bars, areas, floating boxes, etc), just modify
+    // the code below to use the layer type of your choice. 
+    //
+
+    // Add scatter layer, using 11 pixels red (ff33333) X shape symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX0), vectorToArray(dataY0), "Group A", 
+        Chart::Cross2Shape(), 11, 0xff3333);
+
+    // Add scatter layer, using 11 pixels green (33ff33) circle symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX1), vectorToArray(dataY1), "Group B", 
+        Chart::CircleShape, 11,  0x33ff33);
+
+    // Add scatter layer, using 11 pixels blue (3333ff) triangle symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX2), vectorToArray(dataY2), "Group C", 
+        Chart::TriangleSymbol, 11, 0x3333ff);
+
+    //
+    // In this example, we have not explicitly configured the full x and y range. In this case, 
+    // the first time syncLinearAxisWithViewPort is called, ChartDirector will auto-scale the axis
+    // and assume the resulting range is the full range. In subsequent calls, ChartDirector will 
+    // set the axis range based on the view port and the full range.
+    //
+    viewer-&gt;syncLinearAxisWithViewPort("x", c-&gt;xAxis());
+    viewer-&gt;syncLinearAxisWithViewPort("y", c-&gt;yAxis());
+        
+    // We need to update the track line too. If the mouse is moving on the chart (eg. if 
+    // the user drags the mouse on the chart to scroll it), the track line will be updated
+    // in the MouseMovePlotArea event. Otherwise, we need to update the track line here.
+    if ((!viewer-&gt;isInMouseMoveEvent()) &amp;&amp; viewer-&gt;isMouseOnPlotArea())
+        crossHair(c, viewer-&gt;getPlotAreaMouseX(), viewer-&gt;getPlotAreaMouseY());
+
+    // Set the chart image to the WinChartViewer
+    delete viewer-&gt;getChart();
+    viewer-&gt;setChart(c);
+}
+
+//
+// Draw the full thumbnail chart and display it in the given CViewPortControl
+//
+void CXyzoomscrollDlg::drawFullChart(CViewPortControl *vpc, CChartViewer *viewer)
+{
+    // Create an XYChart object 110 x 110 pixels in size
+    XYChart *c = new XYChart(110, 110);
+
+    // Set the plotarea to cover the entire chart. Disable grid lines by setting their colors
+    // to transparent. Set 4 quadrant coloring, where the colors of the quadrants alternate 
+    // between lighter and deeper grey (dddddd/eeeeee). 
+    c-&gt;setPlotArea(0, 0, c-&gt;getWidth() - 1, c-&gt;getHeight() - 1, -1, -1, -1, Chart::Transparent, 
+        Chart::Transparent)-&gt;set4QBgColor(0xdddddd, 0xeeeeee, 0xdddddd, 0xeeeeee, 0x000000);
+
+    // Set 4 quadrant mode, with both x and y axes symetrical around the origin
+    c-&gt;setAxisAtOrigin(Chart::XYAxisAtOrigin, Chart::XAxisSymmetric + Chart::YAxisSymmetric);
+
+    // The x and y axis scales reflect the full range of the view port
+    c-&gt;xAxis()-&gt;setLinearScale(viewer-&gt;getValueAtViewPort("x", 0), viewer-&gt;getValueAtViewPort(
+        "x", 1), Chart::NoValue);
+    c-&gt;yAxis()-&gt;setLinearScale(viewer-&gt;getValueAtViewPort("y", 0), viewer-&gt;getValueAtViewPort(
+        "y", 1), Chart::NoValue);
+
+    // Add scatter layer, using 3 pixels red (ff33333) X shape symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX0), vectorToArray(dataY0), "", Chart::Cross2Shape(),
+        3, 0xff3333, 0xff3333);
+
+    // Add scatter layer, using 3 pixels green (33ff33) circle symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX1), vectorToArray(dataY1), "", Chart::CircleShape,
+        3, 0x33ff33, 0x33ff33);
+
+    // Add scatter layer, using 3 pixels blue (3333ff) triangle symbols
+    c-&gt;addScatterLayer(vectorToArray(dataX2), vectorToArray(dataY2), "", Chart::TriangleSymbol,
+        3, 0x3333ff, 0x3333ff);
+
+    // Set the chart image to the WinChartViewer
+    vpc-&gt;setChart(c);
+}
+
+//
+// Draw cross hair cursor with axis labels
+//
+void CXyzoomscrollDlg::crossHair(XYChart *c, int mouseX, int mouseY)
+{
+    // Clear the current dynamic layer and get the DrawArea object to draw on it.
+    DrawArea *d = c-&gt;initDynamicLayer();
+
+    // The plot area object
+    PlotArea *plotArea = c-&gt;getPlotArea();
+
+    // Draw a vertical line and a horizontal line as the cross hair
+    d-&gt;vline(plotArea-&gt;getTopY(), plotArea-&gt;getBottomY(), mouseX, d-&gt;dashLineColor(0x000000, 0x0101));
+    d-&gt;hline(plotArea-&gt;getLeftX(), plotArea-&gt;getRightX(), mouseY, d-&gt;dashLineColor(0x000000, 0x0101));
+
+    // Draw y-axis label
+    ostringstream ylabel;
+    ylabel &lt;&lt; "&lt;*block,bgColor=FFFFDD,margin=3,edgeColor=000000*&gt;" &lt;&lt; c-&gt;formatValue(c-&gt;getYValue(
+        mouseY, c-&gt;yAxis()), "{value|P4}") &lt;&lt; "&lt;*/*&gt;";
+    TTFText *t = d-&gt;text(ylabel.str().c_str(), "arialbd.ttf", 8);
+    t-&gt;draw(plotArea-&gt;getLeftX() - 5, mouseY, 0x000000, Chart::Right);
+    t-&gt;destroy();
+
+    // Draw x-axis label
+    ostringstream xlabel;
+    xlabel &lt;&lt; "&lt;*block,bgColor=FFFFDD,margin=3,edgeColor=000000*&gt;" &lt;&lt; c-&gt;formatValue(c-&gt;getXValue(
+        mouseX), "{value|P4}") &lt;&lt; "&lt;*/*&gt;";
+    t = d-&gt;text(xlabel.str().c_str(), "arialbd.ttf", 8);
+    t-&gt;draw(mouseX, plotArea-&gt;getBottomY() + 5, 0x000000, Chart::Top);
+    t-&gt;destroy();
+}
+
+//
+// Update the image map
+//
+void CXyzoomscrollDlg::updateImageMap(CChartViewer *viewer)
+{
+    if (0 == viewer-&gt;getImageMapHandler())
+    {
+        // no existing image map - creates a new one
+        viewer-&gt;setImageMap(viewer-&gt;getChart()-&gt;getHTMLImageMap("clickable", "",
+                "title='[{dataSetName}] Alpha = {x}, Beta = {value}'"));
+    }
+}
+
+//
+// Update other controls that may be affected by the viewport.
+//
+void CXyzoomscrollDlg::updateControls(CChartViewer *viewer)
+{
+    //
+    // Update the Zoom slider to reflect the current zoom level of the view port
+    //
+    double smallerSide = viewer-&gt;getViewPortWidth() &gt; viewer-&gt;getViewPortHeight() 
+        ? viewer-&gt;getViewPortHeight() : viewer-&gt;getViewPortWidth();
+    m_ZoomBar.SetPos((int)(smallerSide * m_ZoomBar.GetRangeMax() + 0.5));
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// General utilities
+
+//
+// Get the default background color
+//
+int CXyzoomscrollDlg::getDefaultBgColor()
+{
+    LOGBRUSH LogBrush; 
+    HBRUSH hBrush = (HBRUSH)SendMessage(WM_CTLCOLORDLG, (WPARAM)CClientDC(this).m_hDC, 
+        (LPARAM)m_hWnd); 
+    ::GetObject(hBrush, sizeof(LOGBRUSH), &amp;LogBrush); 
+    int ret = LogBrush.lbColor;
+    return ((ret &amp; 0xff) &lt;&lt; 16) | (ret &amp; 0xff00) | ((ret &amp; 0xff0000) &gt;&gt; 16);
+}
+
+//
+// Load an icon resource into a button
+//
+void CXyzoomscrollDlg::loadButtonIcon(int buttonId, int iconId, int width, int height)
+{
+    GetDlgItem(buttonId)-&gt;SendMessage(BM_SETIMAGE, IMAGE_ICON, (LPARAM)::LoadImage(
+        AfxGetResourceHandle(), MAKEINTRESOURCE(iconId), IMAGE_ICON, width, height, 
+        LR_DEFAULTCOLOR));  
+}
+
+//
+// Convert std::vector to a DoubleArray
+//
+DoubleArray CXyzoomscrollDlg::vectorToArray(std::vector&lt;double&gt; &amp;v)
+{
+    return (v.size() == 0) ? DoubleArray() : DoubleArray(&amp;(v[0]), v.size());
+}</pre></td></tr></table></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

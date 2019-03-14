@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<Title>Multi-Depth Pie Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Multi-Depth Pie Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/multidepthpie.png">
+<br><br>
+This example demonstrates a 3D pie chart where sectors have different 3D heights.<br><br>
+Instead of using <a href="PieChart.set3D.htm">PieChart.set3D</a> to set a single 3D depth for all sectors, in this example, <a href="PieChart.set3D2.htm">PieChart.set3D2</a> is used to set different depths for the sectors with an array of integers.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/multidepthpie". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the pie chart
+    double data[] = {72, 18, 15, 12};
+
+    // The labels for the pie chart
+    const char *labels[] = {"Labor", "Machinery", "Facilities", "Computers"};
+
+    // The depths for the sectors
+    double depths[] = {30, 20, 10, 10};
+
+    // Create a PieChart object of size 360 x 300 pixels, with a light blue (DDDDFF) background and
+    // a 1 pixel 3D border
+    PieChart *c = new PieChart(360, 300, 0xddddff, -1, 1);
+
+    // Set the center of the pie at (180, 175) and the radius to 100 pixels
+    c-&gt;setPieSize(180, 175, 100);
+
+    // Add a title box using 15pt Times Bold Italic font and blue (AAAAFF) as background color
+    c-&gt;addTitle("Project Cost Breakdown", "timesbi.ttf", 15)-&gt;setBackground(0xaaaaff);
+
+    // Set the pie data and the pie labels
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), StringArray(labels, (int)(
+        sizeof(labels) / sizeof(labels[0]))));
+
+    // Draw the pie in 3D with variable 3D depths
+    c-&gt;set3D(DoubleArray(depths, (int)(sizeof(depths) / sizeof(depths[0]))));
+
+    // Set the start angle to 225 degrees may improve layout when the depths of the sector are
+    // sorted in descending order, because it ensures the tallest sector is at the back.
+    c-&gt;setStartAngle(225);
+
+    // Output the chart
+    c-&gt;makeChart("multidepthpie.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<Title>3D Scatter Chart (1)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">3D Scatter Chart (1)</p>
+<hr class="separator">
+<div class="content">
+<img src="images/threedscatter.png">
+<br><br>
+This example demonstrates the basic steps in creating 3D scatter charts.<br><br>
+<ul><li> Create a <a href="ThreeDScatterChart.htm">ThreeDScatterChart</a> object using <a href="ThreeDScatterChart.ThreeDScatterChart.htm">ThreeDScatterChart.ThreeDScatterChart</a>.<br><br>
+<li> Specify the position and size of the plot region using <a href="ThreeDChart.setPlotRegion.htm">ThreeDChart.setPlotRegion</a>.<br><br>
+<li> Add a scatter group to the chart using <a href="ThreeDScatterChart.addScatterGroup.htm">ThreeDScatterChart.addScatterGroup</a>. In this example, the symbol color is set to <a href="Chart.SameAsMainColor.htm">SameAsMainColor</a>, which means the color depends on the z-coordinate as according to the color axis (color legend). The color axis can be accessed using <a href="ThreeDChart.colorAxis.htm">ThreeDChart.colorAxis</a>.<br><br>
+<li> Set the position of the color axis (the color legend) using <a href="ThreeDChart.setColorAxis.htm">ThreeDChart.setColorAxis</a>.<br><br>
+<li> Add chart and axis titles using <a href="BaseChart.addTitle.htm">BaseChart.addTitle</a> and <a href="Axis.setTitle.htm">Axis.setTitle</a>.<br><br>
+<li> Generate the chart using <a href="BaseChart.makeChart.htm">BaseChart.makeChart</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/threedscatter". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The XYZ data for the 3D scatter chart as 3 random data series
+    RanSeries *r = new RanSeries(0);
+    DoubleArray xData = r-&gt;getSeries(100, 100, -10, 10);
+    DoubleArray yData = r-&gt;getSeries(100, 0, 0, 20);
+    DoubleArray zData = r-&gt;getSeries(100, 100, -10, 10);
+
+    // Create a ThreeDScatterChart object of size 720 x 600 pixels
+    ThreeDScatterChart *c = new ThreeDScatterChart(720, 600);
+
+    // Add a title to the chart using 20 points Times New Roman Italic font
+    c-&gt;addTitle("3D Scatter Chart (1)  ", "timesi.ttf", 20);
+
+    // Set the center of the plot region at (350, 280), and set width x depth x height to 360 x 360
+    // x 270 pixels
+    c-&gt;setPlotRegion(350, 280, 360, 360, 270);
+
+    // Add a scatter group to the chart using 11 pixels glass sphere symbols, in which the color
+    // depends on the z value of the symbol
+    c-&gt;addScatterGroup(xData, yData, zData, "", Chart::GlassSphere2Shape, 11, Chart::SameAsMainColor
+        );
+
+    // Add a color axis (the legend) in which the left center is anchored at (645, 270). Set the
+    // length to 200 pixels and the labels on the right side.
+    c-&gt;setColorAxis(645, 270, Chart::Left, 200, Chart::Right);
+
+    // Set the x, y and z axis titles using 10 points Arial Bold font
+    c-&gt;xAxis()-&gt;setTitle("X-Axis Place Holder", "arialbd.ttf", 10);
+    c-&gt;yAxis()-&gt;setTitle("Y-Axis Place Holder", "arialbd.ttf", 10);
+    c-&gt;zAxis()-&gt;setTitle("Z-Axis Place Holder", "arialbd.ttf", 10);
+
+    // Output the chart
+    c-&gt;makeChart("threedscatter.png");
+
+    //free up resources
+    delete r;
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

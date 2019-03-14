@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<Title>XYChart.getXValue</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="XYChart.htm">XYChart</a>.getXValue</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+double getXValue(int xCoor);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Gets the x data value given the x pixel coordinate.<br><br>
+<b>Note:</b> This method should be used only after ChartDirector has output the chart image, or after <a href="XYChart.layoutAxes.htm">XYChart.layoutAxes</a>, <a href="BaseChart.layout.htm">BaseChart.layout</a> or <a href="XYChart.packPlotArea.htm">XYChart.packPlotArea</a> has been called. ChartDirector needs to perform auto- scaling and layout the axis before it can convert between pixel coordinates and data values.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>xCoor</td><td>(Mandatory)</td><td>The x pixel coordinate.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+The x data value at the x pixel coordinate.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

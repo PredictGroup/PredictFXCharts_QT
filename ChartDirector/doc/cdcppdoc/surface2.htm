@@ -1,0 +1,90 @@
+<HTML>
+<HEAD>
+<Title>Surface Chart (2)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Surface Chart (2)</p>
+<hr class="separator">
+<div class="content">
+<img src="images/surface2.jpg">
+<br><br>
+This example extends the <a href="surface.htm">Surface Chart (1)</a> example by adding surface grid and contour lines, and using alternative view angles and continuous coloring.<br><br>
+<ul><li> The alternative view angles are set using <a href="ThreeDChart.setViewAngle.htm">ThreeDChart.setViewAngle</a>.<br><br>
+<li> The surface grid lines are added using <a href="SurfaceChart.setSurfaceAxisGrid.htm">SurfaceChart.setSurfaceAxisGrid</a>.<br><br>
+<li> The contour lines are added using <a href="SurfaceChart.setContourColor.htm">SurfaceChart.setContourColor</a>.<br><br>
+<li> Note that for both the surface grid and contour lines, semi-transparent line colors are used to make the lines look thin and light.<br><br>
+<li> Continuous coloring are configured using <a href="ColorAxis.setColorGradient.htm">ColorAxis.setColorGradient</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/surface2". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+#include &lt;math.h&gt;
+
+int main(int argc, char *argv[])
+{
+    // The x and y coordinates of the grid
+    double dataX[] = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    double dataY[] = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+
+    // The values at the grid points. In this example, we will compute the values using the formula
+    // z = sin((x - 0.5) * 2 * pi) * sin((y - 0.5) * 2 * pi)
+    double dataZ[(int)(sizeof(dataX) / sizeof(dataX[0])) * (int)(sizeof(dataY) / sizeof(dataY[0]))];
+    for(int yIndex = 0; yIndex &lt; (int)(sizeof(dataY) / sizeof(dataY[0])); ++yIndex) {
+        double y = (dataY[yIndex] - 0.5) * 2 * 3.1416;
+        for(int xIndex = 0; xIndex &lt; (int)(sizeof(dataX) / sizeof(dataX[0])); ++xIndex) {
+            double x = (dataX[xIndex] - 0.5) * 2 * 3.1416;
+            dataZ[yIndex * (int)(sizeof(dataX) / sizeof(dataX[0])) + xIndex] = sin(x) * sin(y);
+        }
+    }
+
+    // Create a SurfaceChart object of size 720 x 540 pixels
+    SurfaceChart *c = new SurfaceChart(720, 540);
+
+    // Add a title to the chart using 20 points Times New Roman Italic font
+    c-&gt;addTitle("Quantum Wave Function", "timesi.ttf", 20);
+
+    // Set the center of the plot region at (360, 245), and set width x depth x height to 360 x 360
+    // x 270 pixels
+    c-&gt;setPlotRegion(360, 245, 360, 360, 270);
+
+    // Set the elevation and rotation angles to 20 and 30 degrees
+    c-&gt;setViewAngle(20, 30);
+
+    // Set the data to use to plot the chart
+    c-&gt;setData(DoubleArray(dataX, (int)(sizeof(dataX) / sizeof(dataX[0]))), DoubleArray(dataY,
+        (int)(sizeof(dataY) / sizeof(dataY[0]))), DoubleArray(dataZ, (int)(sizeof(dataZ) / sizeof(
+        dataZ[0]))));
+
+    // Spline interpolate data to a 80 x 80 grid for a smooth surface
+    c-&gt;setInterpolation(80, 80);
+
+    // Set surface grid lines to semi-transparent black (dd000000)
+    c-&gt;setSurfaceAxisGrid(0xdd000000);
+
+    // Set contour lines to semi-transparent white (80ffffff)
+    c-&gt;setContourColor(0x80ffffff);
+
+    // Add a color axis (the legend) in which the left center is anchored at (645, 270). Set the
+    // length to 200 pixels and the labels on the right side. Use smooth gradient coloring.
+    c-&gt;setColorAxis(645, 270, Chart::Left, 200, Chart::Right)-&gt;setColorGradient();
+
+    // Set the x, y and z axis titles using 10 points Arial Bold font
+    c-&gt;xAxis()-&gt;setTitle("x/L(x)", "arialbd.ttf", 10);
+    c-&gt;yAxis()-&gt;setTitle("y/L(y)", "arialbd.ttf", 10);
+    c-&gt;zAxis()-&gt;setTitle("Wave Function Amplitude", "arialbd.ttf", 10);
+
+    // Output the chart
+    c-&gt;makeChart("surface2.jpg");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

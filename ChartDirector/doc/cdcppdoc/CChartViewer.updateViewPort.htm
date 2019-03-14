@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<Title>CChartViewer.updateViewPort</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="CChartViewer.htm">CChartViewer</a>.updateViewPort</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void updateViewPort(bool needUpdateChart, bool needUpdateImageMap);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Triggers the CVN_ViewPortChanged message.<br><br>
+CChartViewer may send CVN_ViewPortChanged messages when the mouse clicks or drags on the plot area (see <a href="CChartViewer.setMouseUsage.htm">CChartViewer.setMouseUsage</a>). CChartViewer also allows external objects (such as scroll bars, navigation buttons, timers, etc) to modify the viewport. This method allows external objects to request CChartViewer to send CVN_ViewPortChanged messages.<br><br>
+Many controls are able to update the viewport continuously as they are used. For example, a scroll bar may update the viewport continuously as the mouse drags on it. For these cases, the chart display may be updated continuously as the viewport changes. However, the image map does not need to update until the scrolling is completed (when the mouse button is released on the scroll bar - on Windows, this is the SB_ENDSCROLL message of the scroll bar ).<br><br>
+The <b>needUpdateChart</b> argument and <b>needUpdateImageMap</b> argument allows one to specify if the event requires a chart update, and/or an image map update.<br><br>
+For charts with a lot of hot spots and tool tips, the CPU power needed to handle the image map may not be negligible. Removing unnecessary image map updates may increase the update rate when the chart is being updated continuously.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>needUpdateChart</td><td>(Mandatory)</td><td>A boolean value to indicate if the chart needs to be updated.</td></tr><tr><td>needUpdateImageMap</td><td>(Mandatory)</td><td>A boolean value to indicate if the image map needs to be updated.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

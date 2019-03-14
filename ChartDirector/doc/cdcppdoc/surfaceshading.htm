@@ -1,0 +1,97 @@
+<HTML>
+<HEAD>
+<Title>Surface Shading</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Surface Shading</p>
+<hr class="separator">
+<div class="content">
+<img src="images/surfaceshading0.jpg">&nbsp;&nbsp;<img src="images/surfaceshading1.jpg">&nbsp;&nbsp;<img src="images/surfaceshading2.jpg">&nbsp;&nbsp;<img src="images/surfaceshading3.jpg">
+<br><br>
+This example demonstrates the effects of various surface shading methods, configured using <a href="SurfaceChart.setShadingMode.htm">SurfaceChart.setShadingMode</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/surfaceshading". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+#include &lt;math.h&gt;
+
+void createChart(int chartIndex, const char *filename)
+{
+    // The x and y coordinates of the grid
+    double dataX[] = {-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10};
+    double dataY[] = {-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10};
+
+    // The values at the grid points. In this example, we will compute the values using the formula
+    // z = x * sin(y) + y * sin(x).
+    double dataZ[(int)(sizeof(dataX) / sizeof(dataX[0])) * (int)(sizeof(dataY) / sizeof(dataY[0]))];
+    for(int yIndex = 0; yIndex &lt; (int)(sizeof(dataY) / sizeof(dataY[0])); ++yIndex) {
+        double y = dataY[yIndex];
+        for(int xIndex = 0; xIndex &lt; (int)(sizeof(dataX) / sizeof(dataX[0])); ++xIndex) {
+            double x = dataX[xIndex];
+            dataZ[yIndex * (int)(sizeof(dataX) / sizeof(dataX[0])) + xIndex] = x * sin(y) + y * sin(
+                x);
+        }
+    }
+
+    // Create a SurfaceChart object of size 380 x 400 pixels, with white (ffffff) background and
+    // grey (888888) border.
+    SurfaceChart *c = new SurfaceChart(380, 400, 0xffffff, 0x888888);
+
+    // Demonstrate various shading methods
+    if (chartIndex == 0) {
+        c-&gt;addTitle("11 x 11 Data Points\nSmooth Shading");
+    } else if (chartIndex == 1) {
+        c-&gt;addTitle("11 x 11 Points - Spline Fitted to 50 x 50\nSmooth Shading");
+        c-&gt;setInterpolation(50, 50);
+    } else if (chartIndex == 2) {
+        c-&gt;addTitle("11 x 11 Data Points\nRectangular Shading");
+        c-&gt;setShadingMode(Chart::RectangularShading);
+    } else {
+        c-&gt;addTitle("11 x 11 Data Points\nTriangular Shading");
+        c-&gt;setShadingMode(Chart::TriangularShading);
+    }
+
+    // Set the center of the plot region at (175, 200), and set width x depth x height to 200 x 200
+    // x 160 pixels
+    c-&gt;setPlotRegion(175, 200, 200, 200, 160);
+
+    // Set the plot region wall thichness to 5 pixels
+    c-&gt;setWallThickness(5);
+
+    // Set the elevation and rotation angles to 45 and 60 degrees
+    c-&gt;setViewAngle(45, 60);
+
+    // Set the perspective level to 35
+    c-&gt;setPerspective(35);
+
+    // Set the data to use to plot the chart
+    c-&gt;setData(DoubleArray(dataX, (int)(sizeof(dataX) / sizeof(dataX[0]))), DoubleArray(dataY,
+        (int)(sizeof(dataY) / sizeof(dataY[0]))), DoubleArray(dataZ, (int)(sizeof(dataZ) / sizeof(
+        dataZ[0]))));
+
+    // Set contour lines to semi-transparent black (c0000000)
+    c-&gt;setContourColor(0xc0000000);
+
+    // Output the chart
+    c-&gt;makeChart(filename);
+
+    //free up resources
+    delete c;
+}
+
+int main(int argc, char *argv[])
+{
+    createChart(0, "surfaceshading0.jpg");
+    createChart(1, "surfaceshading1.jpg");
+    createChart(2, "surfaceshading2.jpg");
+    createChart(3, "surfaceshading3.jpg");
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

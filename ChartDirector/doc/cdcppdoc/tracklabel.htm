@@ -1,0 +1,299 @@
+<HTML>
+<HEAD>
+<Title>Track Line with Data Labels (MFC)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Track Line with Data Labels (MFC)</p>
+<hr class="separator">
+<div class="content"><img src="images/tracklabel_cpp.png"><br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+<b><font color="#FF0000">NOTE:</font></b> This section describes Track Line with Data Labels for MFC, and is available on the Windows edition of ChartDirector for C++ only. For QT, please refer to <a href="tracklabelqt.htm">Track Line with Data Labels (QT)</a>.
+</div><br>
+This sample program demonstrates a track cursor programmed with the following features:<br><br>
+<ul>
+<li>A vertical line that follows the mouse cursor on the plot area and snaps to the nearest x data value, with a label on the x-axis displaying that value.<br><br>
+<li>Small dots that shows the data points at the nearest x data value.<br><br>
+<li>Labels beside the small dots displaying the values of the data points.<br><br>
+</ul>
+The code first draws the chart. Then in the      <a href="CChartViewer.CVN_MouseMovePlotArea.htm">CVN_MouseMovePlotArea</a> message       handler, the track cursor is drawn to reflect the mouse position. The track cursor is configured to automatically hide itself when the mouse leaves the plot area.<br><br>
+The <b>trackLineLabel</b> method is the routine that draws the track cursor. Its key elements are:<br><br>
+<ul>
+<li>To draw dynamic contents on the chart, the code obtains the <a href="DrawArea.htm">DrawArea</a> object for drawing on the dynamic layer of the chart using <a href="BaseChart.initDynamicLayer.htm">BaseChart.initDynamicLayer</a>.<br><br>
+<li>The nearest x data value is obtained using <a href="XYChart.getNearestXValue.htm">XYChart.getNearestXValue</a>.<br><br>
+<li>A vertical line is drawn at the nearest x data value using <a href="DrawArea.vline.htm">DrawArea.vline</a>.<br><br>
+<li>The x-axis label at the nearest x value is drawn using <a href="DrawArea.text.htm">DrawArea.text</a>.<br><br>
+<li>The code then iterates through all data sets in all layers to find all the data points at the nearest x data value. For each of these points, it gets the point's y position using <a href="DataSet.getPosition.htm">DataSet.getPosition</a>, and draws a circular dot using <a href="DrawArea.circle.htm">DrawArea.circle</a>. It also formats the point's data value (obtained using <a href="DataSet.getValue.htm">DataSet.getValue</a>) and displays it next to the dot using <a href="DrawArea.text.htm">DrawArea.text</a>.<br><br>
+</ul>
+</div><p class="heading1a">Source Code Listing</p><div class="content">
+The following is the main source code of this demo. The complete MFC project is in "mfcdemo/tracklabel".<br><br>
+[File: mfcdemo/tracklabel/tracklabelDlg.cpp]<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>// tracklabelDlg.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "tracklabel.h"
+#include "tracklabelDlg.h"
+#include "chartdir.h"
+#include &lt;sstream&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
+// CtracklabelDlg dialog
+
+CtracklabelDlg::CtracklabelDlg(CWnd* pParent /*=NULL*/)
+    : CDialog(CtracklabelDlg::IDD, pParent)
+{
+    m_hIcon = AfxGetApp()-&gt;LoadIcon(IDR_MAINFRAME);
+}
+
+CtracklabelDlg::~CtracklabelDlg()
+{
+    delete m_ChartViewer.getChart();
+}
+
+void CtracklabelDlg::DoDataExchange(CDataExchange* pDX)
+{
+    CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_ChartViewer, m_ChartViewer);
+}
+
+BEGIN_MESSAGE_MAP(CtracklabelDlg, CDialog)
+    ON_WM_PAINT()
+    ON_WM_QUERYDRAGICON()
+    ON_WM_ERASEBKGND()
+    ON_CONTROL(CVN_MouseMovePlotArea, IDC_ChartViewer, OnMouseMovePlotArea)
+    //}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+
+// CtracklabelDlg message handlers
+
+BOOL CtracklabelDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    // Set the icon for this dialog.  The framework does this automatically
+    //  when the application's main window is not a dialog
+    SetIcon(m_hIcon, TRUE);            // Set big icon
+    SetIcon(m_hIcon, FALSE);        // Set small icon
+
+    drawChart(&amp;m_ChartViewer);
+
+    CRect winSize;
+    m_ChartViewer.GetWindowRect(winSize);
+    m_ChartViewer.MoveWindow(5, 5, winSize.Width(), winSize.Height());
+
+    CalcWindowRect(&amp;winSize, CWnd::adjustBorder);
+    SetWindowPos(&amp;wndTop, 0, 0, winSize.Width() + 10, winSize.Height() + 10, SWP_NOMOVE);
+ 
+    return TRUE;  // return TRUE  unless you set the focus to a control
+}
+
+// If you add a minimize button to your dialog, you will need the code below
+//  to draw the icon.  For MFC applications using the document/view model,
+//  this is automatically done for you by the framework.
+
+void CtracklabelDlg::OnPaint()
+{
+    if (IsIconic())
+    {
+        CPaintDC dc(this); // device context for painting
+
+        SendMessage(WM_ICONERASEBKGND, reinterpret_cast&lt;WPARAM&gt;(dc.GetSafeHdc()), 0);
+
+        // Center icon in client rectangle
+        int cxIcon = GetSystemMetrics(SM_CXICON);
+        int cyIcon = GetSystemMetrics(SM_CYICON);
+        CRect rect;
+        GetClientRect(&amp;rect);
+        int x = (rect.Width() - cxIcon + 1) / 2;
+        int y = (rect.Height() - cyIcon + 1) / 2;
+
+        // Draw the icon
+        dc.DrawIcon(x, y, m_hIcon);
+    }
+    else
+    {
+        CDialog::OnPaint();
+    }
+}
+
+// The system calls this function to obtain the cursor to display while the user drags
+//  the minimized window.
+HCURSOR CtracklabelDlg::OnQueryDragIcon()
+{
+    return static_cast&lt;HCURSOR&gt;(m_hIcon);
+}
+
+//
+// Handle the ON_WM_ERASEBKGND message to set background color
+//
+BOOL CtracklabelDlg::OnEraseBkgnd(CDC* pDC) 
+{ 
+    // Set brush to desired background color 
+    CBrush backBrush(RGB(255, 255, 255)); 
+
+    // Save old brush 
+    CBrush* pOldBrush = pDC-&gt;SelectObject(&amp;backBrush); 
+
+    // Erase the area needed with the given background color
+    CRect rect; 
+    pDC-&gt;GetClipBox(&amp;rect);
+    pDC-&gt;PatBlt(rect.left, rect.top, rect.Width(), rect.Height(), PATCOPY); 
+
+    // Restore old brush and exit
+    pDC-&gt;SelectObject(pOldBrush); 
+    return TRUE; 
+} 
+
+//
+// Draw track cursor when mouse is moving over plotarea
+//
+void CtracklabelDlg::OnMouseMovePlotArea()
+{
+    trackLineLabel((XYChart *)m_ChartViewer.getChart(), m_ChartViewer.getPlotAreaMouseX());
+    m_ChartViewer.updateDisplay();
+
+    // Hide the track cursor when the mouse leaves the plot area
+    m_ChartViewer.removeDynamicLayer(CVN_MouseLeavePlotArea);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CtracklabelDlg methods
+
+//
+// Draw the chart and display it in the given viewer
+//
+void CtracklabelDlg::drawChart(CChartViewer *viewer)
+{
+    // Data for the chart as 3 random data series
+    RanSeries r(127);
+    DoubleArray data0 = r.getSeries(100, 100, -15, 15);
+    DoubleArray data1 = r.getSeries(100, 150, -15, 15);
+    DoubleArray data2 = r.getSeries(100, 200, -15, 15);
+    DoubleArray timeStamps = r.getDateSeries(100, Chart::chartTime(2011, 1, 1), 86400);
+
+    // Create a XYChart object of size 640 x 400 pixels
+    XYChart *c = new XYChart(640, 400);
+
+    // Add a title to the chart using 18 pts Times New Roman Bold Italic font
+    c-&gt;addTitle("    Product Line Global Revenue", "timesbi.ttf", 18);
+
+    // Set the plotarea at (50, 55) with width 70 pixels less than chart width, and height 90 pixels
+    // less than chart height. Use a vertical gradient from light blue (f0f6ff) to sky blue (a0c0ff)
+    // as background. Set border to transparent and grid lines to white (ffffff).
+    c-&gt;setPlotArea(50, 55, c-&gt;getWidth() - 70, c-&gt;getHeight() - 90, c-&gt;linearGradientColor(0, 55, 0,
+        c-&gt;getHeight() - 35, 0xf0f6ff, 0xa0c0ff), -1, Chart::Transparent, 0xffffff, 0xffffff);
+
+    // Add a legend box at (50, 25) using horizontal layout. Use 10pts Arial Bold as font. Set the
+    // background and border color to Transparent.
+    c-&gt;addLegend(50, 25, false, "arialbd.ttf", 10)-&gt;setBackground(Chart::Transparent);
+
+    // Set axis label style to 8pts Arial Bold
+    c-&gt;xAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+    c-&gt;yAxis()-&gt;setLabelStyle("arialbd.ttf", 8);
+
+    // Set the axis stem to transparent
+    c-&gt;xAxis()-&gt;setColors(Chart::Transparent);
+    c-&gt;yAxis()-&gt;setColors(Chart::Transparent);
+
+    // Configure x-axis label format
+    c-&gt;xAxis()-&gt;setMultiFormat(Chart::StartOfYearFilter(), "{value|mm/yyyy} ", 
+        Chart::StartOfMonthFilter(), "{value|mm}");
+
+    // Add axis title using 10pts Arial Bold Italic font
+    c-&gt;yAxis()-&gt;setTitle("USD millions", "arialbi.ttf", 10);
+
+    // Add a line layer to the chart using a line width of 2 pixels.
+    LineLayer *layer = c-&gt;addLineLayer();
+    layer-&gt;setLineWidth(2);
+
+    // Add 3 data series to the line layer
+    layer-&gt;setXData(timeStamps);
+    layer-&gt;addDataSet(data0, 0xff3333, "Alpha");
+    layer-&gt;addDataSet(data1, 0x008800, "Beta");
+    layer-&gt;addDataSet(data2, 0x3333cc, "Gamma");
+
+    // Assign the chart to the WinChartViewer
+    viewer-&gt;setChart(c);
+}
+
+//
+// Draw track line with data labels
+//
+void CtracklabelDlg::trackLineLabel(XYChart *c, int mouseX)
+{
+    // Clear the current dynamic layer and get the DrawArea object to draw on it.
+    DrawArea *d = c-&gt;initDynamicLayer();
+
+    // The plot area object
+    PlotArea *plotArea = c-&gt;getPlotArea();
+
+    // Get the data x-value that is nearest to the mouse, and find its pixel coordinate.
+    double xValue = c-&gt;getNearestXValue(mouseX);
+    int xCoor = c-&gt;getXCoor(xValue);
+
+    // Draw a vertical track line at the x-position
+    d-&gt;vline(plotArea-&gt;getTopY(), plotArea-&gt;getBottomY(), xCoor, 
+        d-&gt;dashLineColor(0x000000, 0x0101));
+
+    // Draw a label on the x-axis to show the track line position.
+    ostringstream xlabel;
+    xlabel &lt;&lt; "&lt;*font,bgColor=000000*&gt; " &lt;&lt; c-&gt;xAxis()-&gt;getFormattedLabel(xValue, "mmm dd, yyyy") 
+        &lt;&lt; " &lt;*/font*&gt;";
+    TTFText *t = d-&gt;text(xlabel.str().c_str(), "arialbd.ttf", 8);
+
+    // Restrict the x-pixel position of the label to make sure it stays inside the chart image.
+    int xLabelPos = max(0, min(xCoor - t-&gt;getWidth() / 2, c-&gt;getWidth() - t-&gt;getWidth()));
+    t-&gt;draw(xLabelPos, plotArea-&gt;getBottomY() + 6, 0xffffff);
+    t-&gt;destroy();    
+
+    // Iterate through all layers to draw the data labels
+    for (int i = 0; i &lt; c-&gt;getLayerCount(); ++i) {
+        Layer *layer = c-&gt;getLayerByZ(i);
+
+        // The data array index of the x-value
+        int xIndex = layer-&gt;getXIndexOf(xValue);
+
+        // Iterate through all the data sets in the layer
+        for (int j = 0; j &lt; layer-&gt;getDataSetCount(); ++j) 
+        {
+            DataSet *dataSet = layer-&gt;getDataSetByZ(j);
+             const char *dataSetName = dataSet-&gt;getDataName();
+
+            // Get the color, name and position of the data label
+            int color = dataSet-&gt;getDataColor();
+            int yCoor = c-&gt;getYCoor(dataSet-&gt;getPosition(xIndex), dataSet-&gt;getUseYAxis());
+
+            // Draw a track dot with a label next to it for visible data points in the plot area
+            if ((yCoor &gt;= plotArea-&gt;getTopY()) &amp;&amp; (yCoor &lt;= plotArea-&gt;getBottomY()) &amp;&amp; (color !=
+                Chart::Transparent) &amp;&amp; dataSetName &amp;&amp; *dataSetName)
+            {
+                d-&gt;circle(xCoor, yCoor, 4, 4, color, color);
+
+                ostringstream label;
+                label &lt;&lt; "&lt;*font,bgColor=" &lt;&lt; hex &lt;&lt; color &lt;&lt; "*&gt; " 
+                    &lt;&lt; c-&gt;formatValue(dataSet-&gt;getValue(xIndex), "{value|P4}") &lt;&lt; " &lt;*font*&gt;";
+                t = d-&gt;text(label.str().c_str(), "arialbd.ttf", 8);
+                
+                // Draw the label on the right side of the dot if the mouse is on the left side the
+                // chart, and vice versa. This ensures the label will not go outside the chart image.
+                if (xCoor &lt;= (plotArea-&gt;getLeftX() + plotArea-&gt;getRightX()) / 2)
+                    t-&gt;draw(xCoor + 5, yCoor, 0xffffff, Chart::Left);
+                else
+                    t-&gt;draw(xCoor - 5, yCoor, 0xffffff, Chart::Right);
+                
+                t-&gt;destroy();
+            }
+        }
+    }
+}</pre></td></tr></table></div><br>
+<hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

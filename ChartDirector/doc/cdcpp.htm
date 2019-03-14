@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>ChartDirector 6.0 (C++ Edition)</title>
+<script>
+
+var originalTitle = "";
+var docDir = "cdcppdoc/";
+var currentHash = location.hash;
+
+function getFile(f)
+{
+	var ret = f.split("/");
+	ret = ret[ret.length - 1];
+	ret = ret.split("\\");
+	return ret[ret.length - 1];
+}
+function getIRHash()
+{
+	return "#" + getFile(ir.location.pathname) + ir.location.hash;
+}
+function onIRLoad()
+{
+	if (originalTitle)
+	{
+		try 
+		{
+			if (location.hash != getIRHash())
+			{
+				if (history.replaceState)
+					history.replaceState(null, document.title, location.pathname + getIRHash());
+				else
+					location.hash = getIRHash();
+				
+				currentHash = location.hash;
+			}
+
+			if (location.hash == "#cover.htm") 
+				document.title = originalTitle;
+			else
+				document.title = originalTitle + " - " + ir.document.title;
+				
+			if (indexleft && indexleft.syncpage)
+				indexleft.syncpage(1);
+		}
+		catch(err)
+		{
+		}
+	}
+	else
+	{
+		originalTitle = document.title;
+		ir.location = docDir + (location.hash || "#cover.htm").substring(1);
+
+		window.onhashchange = function() 
+		{
+			currentHash = location.hash;	
+			if (location.hash != getIRHash())
+				ir.location = docDir + (location.hash || "#cover.htm").substring(1); 
+		};
+		
+		window.setInterval( function() {  
+			if (location.hash != currentHash) 
+				window.onhashchange();
+		}, 100);
+	}
+}
+
+</script>
+</head>
+<FRAMESET ROWS="19,*" FRAMESPACING="0">
+	<FRAME
+	  NAME="indextop"
+	  SRC="cdcppdoc/indextop.htm"
+	  SCROLLING="no"
+	  FRAMEBORDER="1"
+	  BORDER="0"
+	>
+	<FRAMESET COLS="216,*" FRAMESPACING="0">
+		<FRAME
+				NAME="indexleft"
+				SRC="cdcppdoc/indexleft.htm"
+				SCROLLING="auto"
+				FRAMEBORDER="1"
+		>
+		<FRAME
+				NAME="ir"
+				SCROLLING="auto"
+				FRAMEBORDER="1"
+				ONLOAD='onIRLoad()'
+		>
+	</FRAMESET>
+</FRAMESET>
+</html>

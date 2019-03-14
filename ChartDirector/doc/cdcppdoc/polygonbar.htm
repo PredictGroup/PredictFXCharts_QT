@@ -1,0 +1,90 @@
+<HTML>
+<HEAD>
+<Title>Polygon Bar Shapes</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Polygon Bar Shapes</p>
+<hr class="separator">
+<div class="content">
+<img src="images/polygonbar.png">
+<br><br>
+This example demonstrates bars of various polygonal shapes.<br><br>
+ChartDirector supports bars in cylindrical or arbitrary polygonal shapes. This is specified by using <a href="BarLayer.setBarShape.htm">BarLayer.setBarShape</a> and <a href="BarLayer.setBarShape2.htm">BarLayer.setBarShape2</a>. In this example, various polygonal shapes are illustrated.<br><br>
+See <a href="shapespec.htm">Shape Specification</a> on how built-in and custom shapes are defined in ChartDirector.<br><br>
+For demonstration, in this example each bar is of a different shape. <a href="BarLayer.setBarShape.htm">BarLayer.setBarShape</a> and <a href="BarLayer.setBarShape2.htm">BarLayer.setBarShape2</a> also supports setting the bar shapes based on data groups (or data sets) or data item position. For an example, see <a href="multishapebar.htm">Multi-Shape Bar Chart</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/polygonbar". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the bar chart
+    double data[] = {85, 156, 179.5, 211, 123, 176, 195};
+
+    // The labels for the bar chart
+    const char *labels[] = {"Square", "Star(8)", "Polygon(6)", "Cross", "Cross2", "Diamond",
+        "Custom"};
+
+    // Create a XYChart object of size 500 x 280 pixels.
+    XYChart *c = new XYChart(500, 280);
+
+    // Set the plotarea at (50, 40) with alternating light grey (f8f8f8) / white (ffffff) background
+    c-&gt;setPlotArea(50, 40, 400, 200, 0xf8f8f8, 0xffffff);
+
+    // Add a title to the chart using 14pt Arial Bold Italic font
+    c-&gt;addTitle("    Bar Shape Demonstration", "arialbi.ttf", 14);
+
+    // Add a multi-color bar chart layer
+    BarLayer *layer = c-&gt;addBarLayer(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))),
+        IntArray(0, 0));
+
+    // Set layer to 3D with 10 pixels 3D depth
+    layer-&gt;set3D(10);
+
+    // Set bar shape to circular (cylinder)
+    layer-&gt;setBarShape(Chart::CircleShape);
+
+    // Set the first bar (index = 0) to square shape
+    layer-&gt;setBarShape(Chart::SquareShape, 0, 0);
+
+    // Set the second bar to 8-pointed star
+    layer-&gt;setBarShape(Chart::StarShape(8), 0, 1);
+
+    // Set the third bar to 6-sided polygon
+    layer-&gt;setBarShape(Chart::PolygonShape(6), 0, 2);
+
+    // Set the next 3 bars to cross shape, X shape and diamond shape
+    layer-&gt;setBarShape(Chart::CrossShape(), 0, 3);
+    layer-&gt;setBarShape(Chart::Cross2Shape(), 0, 4);
+    layer-&gt;setBarShape(Chart::DiamondShape, 0, 5);
+
+    // Set the last bar to a custom shape, specified as an array of (x, y) points in normalized
+    // coordinates
+    int pattern1[] = {-500, 0, 0, 500, 500, 0, 500, 1000, 0, 500, -500, 1000};
+    layer-&gt;setBarShape(IntArray(pattern1, (int)(sizeof(pattern1) / sizeof(pattern1[0]))), 0, 6);
+
+    // Set the labels on the x axis.
+    c-&gt;xAxis()-&gt;setLabels(StringArray(labels, (int)(sizeof(labels) / sizeof(labels[0]))));
+
+    // Add a title to the y axis
+    c-&gt;yAxis()-&gt;setTitle("Frequency");
+
+    // Add a title to the x axis
+    c-&gt;xAxis()-&gt;setTitle("Shapes");
+
+    // Output the chart
+    c-&gt;makeChart("polygonbar.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<Title>AngularMeter.addGlare</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="AngularMeter.htm">AngularMeter</a>.addGlare</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void addGlare(double radius = NoValue, double span = 135, double rotate = 0, double glareRadius = NoValue, double intensity = 0.13);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Adds glare effect to the meter.<br><br>
+<img src="images/glareeffect0.png" hspace="20"><img src="images/glareeffect1.png"><br><br>
+In the above meters, the brightened region on the face of the meter the glare effect.<br><br>
+The glare effect is created by brightening part of the meter face. In the above meters, the face can be considered the part of the meter inside the silver ring, but including the silver ring itself. The face is divided by an arc, of which one part is brightened. The glare effect works best for meters with dark background.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>radius</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The radius of the face of the meter. The default is the meter scale radius as set by <a href="AngularMeter.setMeter.htm">AngularMeter.setMeter</a>.</td></tr><tr><td>span</td><td>135</td><td>The angular span of the arc that divides the face into two parts. The dividing arc intersects with the face border at two points. The angular span is defined as center angle of these two points (that is, the angle subtended at the meter center by these two points).</td></tr><tr><td>rotate</td><td>0</td><td>By default, the glare will be symmetrically with respect to the vertical axis. This argument can be used to rotate the glare clockwise in degrees.</td></tr><tr><td>glareRadius</td><td><a href="Chart.NoValue.htm">NoValue</a></td><td>The radius of the arc that divides the face into two parts. A positive value means the arc will result in a convex glare, while a negative means concave glare. The default is equal to 1.5 times of the face radius.</td></tr><tr><td>intensity</td><td>0.13</td><td>The intensity of the glare, which must be from 0 to 1. A value of 0 means no glare, while a value of 1 means the glare will be 100% white.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

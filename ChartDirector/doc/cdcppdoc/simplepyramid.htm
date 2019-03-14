@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+<Title>Simple Pyramid Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Simple Pyramid Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/simplepyramid.png">
+<br><br>
+This example demonstrates the basic steps in creating pyramid charts.<br><br>
+<ul><li> Create a <a href="PyramidChart.htm">PyramidChart</a> object using <a href="PyramidChart.PyramidChart.htm">PyramidChart.PyramidChart</a>.<br><br>
+<li> Specify the center and radius of the pie using <a href="PyramidChart.setPyramidSize.htm">PyramidChart.setPyramidSize</a>.<br><br>
+<li> Specify the data used to draw the pie using <a href="PyramidChart.setData.htm">PyramidChart.setData</a>.<br><br>
+<li> Add labels at the center of the pyramid layers using <a href="PyramidChart.setCenterLabel.htm">PyramidChart.setCenterLabel</a><br><br>
+<li> Generate the chart using <a href="BaseChart.makeChart.htm">BaseChart.makeChart</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/simplepyramid". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the pyramid chart
+    double data[] = {156, 123, 211, 179};
+
+    // The labels for the pyramid chart
+    const char *labels[] = {"Funds", "Bonds", "Stocks", "Cash"};
+
+    // Create a PyramidChart object of size 360 x 360 pixels
+    PyramidChart *c = new PyramidChart(360, 360);
+
+    // Set the pyramid center at (180, 180), and width x height to 150 x 180 pixels
+    c-&gt;setPyramidSize(180, 180, 150, 300);
+
+    // Set the pyramid data and labels
+    c-&gt;setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), StringArray(labels, (int)(
+        sizeof(labels) / sizeof(labels[0]))));
+
+    // Add labels at the center of the pyramid layers using Arial Bold font. The labels will have
+    // two lines showing the layer name and percentage.
+    c-&gt;setCenterLabel("{label}\n{percent}%", "arialbd.ttf");
+
+    // Output the chart
+    c-&gt;makeChart("simplepyramid.png");
+
+    //free up resources
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,108 @@
+<HTML>
+<HEAD>
+<Title>Polar Scatter Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1">Polar Scatter Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/polarscatter.png">
+<br><br>
+This example demonstrates how to create polar scatter charts. It also demonstrates using alternating background colors along the angular direction.<br><br>
+A polar scatter chart can be created as a polar line chart with data symbols. The line width is set to 0, so only the symbols can be seen. This will create the effects of a scatter chart.<br><br>
+The detail steps are:<br><br>
+<ul><li> Create a polar line layer using <a href="PolarChart.addLineLayer.htm">PolarChart.addLineLayer</a>.<br><br>
+<li> Enable data symbols for the line using <a href="PolarLayer.setDataSymbol.htm">PolarLayer.setDataSymbol</a> (or <a href="PolarLayer.setDataSymbol2.htm">PolarLayer.setDataSymbol2</a> or <a href="PolarLayer.setDataSymbol3.htm">PolarLayer.setDataSymbol3</a> or <a href="PolarLayer.setDataSymbol4.htm">PolarLayer.setDataSymbol4</a>).<br><br>
+<li> Disable the line by setting its width to 0 using <a href="PolarLayer.setLineWidth.htm">PolarLayer.setLineWidth</a>.</ul>
+Note that in this example, the polar plot area uses two alternating background colors along the angular direction. This is by using <a href="PolarChart.setPlotAreaBg.htm">PolarChart.setPlotAreaBg</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+[The following code is available in "cppdemo/polarscatter". A MFC version of the code is available in "mfcdemo/mfcdemo" (Windows edition only). A QT version of the code is available in "qtdemo/qtdemo".]
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#include "chartdir.h"
+
+int main(int argc, char *argv[])
+{
+    // The data for the chart
+    double data0[] = {43, 89, 76, 64, 48, 18, 92, 68, 44, 79, 71, 85};
+    double angles0[] = {45, 96, 169, 258, 15, 30, 330, 260, 60, 75, 110, 140};
+
+    double data1[] = {50, 91, 26, 29, 80, 53, 62, 87, 19, 40};
+    double angles1[] = {230, 210, 240, 310, 179, 250, 244, 199, 89, 160};
+
+    double data2[] = {88, 65, 76, 49, 80, 53};
+    double angles2[] = {340, 310, 340, 210, 30, 300};
+
+    // The labels on the angular axis (spokes)
+    const char *labels[] = {"North", "North\nEast", "East", "South\nEast", "South", "South\nWest",
+        "West", "North\nWest"};
+
+    // Create a PolarChart object of size 460 x 460 pixels
+    PolarChart *c = new PolarChart(460, 460);
+
+    // Add a title to the chart at the top left corner using 15pt Arial Bold Italic font
+    c-&gt;addTitle(Chart::TopLeft, "&lt;*underline=2*&gt;Plants in Wonderland", "arialbi.ttf", 15);
+
+    // Set center of plot area at (230, 240) with radius 180 pixels
+    c-&gt;setPlotArea(230, 240, 180);
+
+    // Use alternative light grey/dark grey sector background color
+    c-&gt;setPlotAreaBg(0xdddddd, 0xeeeeee, false);
+
+    // Set the grid style to circular grid
+    c-&gt;setGridStyle(false);
+
+    // Add a legend box at the top right corner of the chart using 9pt Arial Bold font
+    c-&gt;addLegend(459, 0, true, "arialbd.ttf", 9)-&gt;setAlignment(Chart::TopRight);
+
+    // Set angular axis as 0 - 360, either 8 spokes
+    c-&gt;angularAxis()-&gt;setLinearScale(0, 360, StringArray(labels, (int)(sizeof(labels) / sizeof(
+        labels[0]))));
+
+    // Set the radial axis label format
+    c-&gt;radialAxis()-&gt;setLabelFormat("{value} km");
+
+    // Add a blue (0xff) polar line layer to the chart using (data0, angle0)
+    PolarLineLayer *layer0 = c-&gt;addLineLayer(DoubleArray(data0, (int)(sizeof(data0) / sizeof(data0[0
+        ]))), 0x0000ff, "Immortal Weed");
+    layer0-&gt;setAngles(DoubleArray(angles0, (int)(sizeof(angles0) / sizeof(angles0[0]))));
+
+    layer0-&gt;setLineWidth(0);
+    layer0-&gt;setDataSymbol(Chart::TriangleSymbol, 11);
+
+    // Add a red (0xff0000) polar line layer to the chart using (data1, angles1)
+    PolarLineLayer *layer1 = c-&gt;addLineLayer(DoubleArray(data1, (int)(sizeof(data1) / sizeof(data1[0
+        ]))), 0xff0000, "Precious Flower");
+    layer1-&gt;setAngles(DoubleArray(angles1, (int)(sizeof(angles1) / sizeof(angles1[0]))));
+
+    // Disable the line by setting its width to 0, so only the symbols are visible
+    layer1-&gt;setLineWidth(0);
+
+    // Use a 11 pixel diamond data point symbol
+    layer1-&gt;setDataSymbol(Chart::DiamondSymbol, 11);
+
+    // Add a green (0x00ff00) polar line layer to the chart using (data2, angles2)
+    PolarLineLayer *layer2 = c-&gt;addLineLayer(DoubleArray(data2, (int)(sizeof(data2) / sizeof(data2[0
+        ]))), 0x00ff00, "Magical Tree");
+    layer2-&gt;setAngles(DoubleArray(angles2, (int)(sizeof(angles2) / sizeof(angles2[0]))));
+
+    // Disable the line by setting its width to 0, so only the symbols are visible
+    layer2-&gt;setLineWidth(0);
+
+    // Use a 9 pixel square data point symbol
+    layer2-&gt;setDataSymbol(Chart::SquareSymbol, 9);
+
+    // Output the chart
+    c-&gt;makeChart("polarscatter.png");
+
+    //free up resources
+    delete c;
+    return 0;
+}</pre></td></tr></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

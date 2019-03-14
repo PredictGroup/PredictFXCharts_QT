@@ -1,0 +1,43 @@
+<HTML>
+<HEAD>
+<Title>DrawArea.setTransparentColor</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector 6.0 (C++ Edition)</p>
+<p class="heading1"><a href="DrawArea.htm">DrawArea</a>.setTransparentColor</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+void setTransparentColor(int c);
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Specifies a certain color to mean transparent when creating a raster image output.<br><br>
+There are two types of transparency:<br><br>
+<ul> <li> Alpha transparency: In addition to red, green and blue levels, there is a transparency level associated with each pixel, which can range from completely transparent to completely opaque. The data associated with the transparency information is called the alpha channel.<br><br>
+<li> Single color transparency: The image itself has no alpha channel, but a certain color is used to mean completely transparent. </ul>
+When outputting the image, to reduce image size, ChartDirector will include the alpha channel only if the chart background is a transparent or semi-transparent. You may pass -1 to setTransparentColor to force ChartDirector to include the alpha channel in the output.<br><br>
+Note that including alpha channel is possible only if the image format supports alpha channel. The PNG, SVG and PDF formats support alpha transparency, while the JPG, GIF and BMP formats does not support it.<br><br>
+Although the GIF format does not support alpha transparency, it does support single color transparency. The setTransparentColor method can be used to specify which color should be used to mean completely transparent.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>c</td><td>(Mandatory)</td><td>The color that is designated as the transparent color. If -1 is used, the alpha channel will be included in the final output if the output image format supports it.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+None
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2015 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>
