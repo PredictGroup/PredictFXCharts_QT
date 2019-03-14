@@ -1,0 +1,1 @@
+# PredictFXCharts_QT
