@@ -1,2 +1,2 @@
 # PredictFXCharts
-Stock market chartartig tool for Linux Qt.
+Stock market charting tool for Linux Qt.
